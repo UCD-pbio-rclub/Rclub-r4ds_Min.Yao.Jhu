@@ -1,0 +1,87 @@
+---
+title: "Apr-26-ggplot"
+author: "Min-Yao"
+date: "2017年4月25日"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+
+mpg
+?mpg
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+#ggplot(data = <DATA>) + 
+#  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+
+```
+
+#3.2.4 Exercises
+```{r}
+#1
+ggplot(data = mpg)
+
+#2
+mtcars
+
+#3
+?mpg
+
+#4
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = hwy, y = cyl))
+
+#5
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = class, y = drv))
+```
+
+
+>2. 1-10 of 32 rows | 1-10 of 11 columns
+
+>3. drv: f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+
+>4. cyl: number of cylinders, hwy: highway miles per gallon
+
+>5. class: "type" of car, drv: f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
