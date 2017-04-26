@@ -2,7 +2,7 @@
 Min-Yao  
 2017年4月25日  
 
-#3 Data visualisation
+# 3 Data visualisation
 
 ```r
 library(tidyverse)
@@ -79,7 +79,7 @@ ggplot(data = mpg) +
 #  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 ```
 
-#3.2.4 Exercises
+# 3.2.4 Exercises
 
 ```r
 #1
@@ -211,7 +211,7 @@ ggplot(data = mpg) +
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
 
 
-#3.3.1 Exercises
+# 3.3.1 Exercises
 
 ```r
 #1
@@ -332,7 +332,7 @@ ggplot(data = mpg) +
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
 
 
-#3.5.1 Exercises
+# 3.5.1 Exercises
 
 ```r
 #1

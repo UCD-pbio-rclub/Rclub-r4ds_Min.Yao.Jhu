@@ -7,7 +7,7 @@ output:
     keep_md: yes
 ---
 
-#3 Data visualisation
+# 3 Data visualisation
 ```{r}
 library(tidyverse)
 
@@ -22,7 +22,7 @@ ggplot(data = mpg) +
 
 ```
 
-#3.2.4 Exercises
+# 3.2.4 Exercises
 ```{r}
 #1
 ggplot(data = mpg)
@@ -73,7 +73,7 @@ ggplot(data = mpg) +
 ```
 
 
-#3.3.1 Exercises
+# 3.3.1 Exercises
 ```{r}
 #1
 ggplot(data = mpg) + 
@@ -139,7 +139,7 @@ ggplot(data = mpg) +
 ```
 
 
-#3.5.1 Exercises
+# 3.5.1 Exercises
 ```{r}
 #1
 ggplot(data = mpg) + 
