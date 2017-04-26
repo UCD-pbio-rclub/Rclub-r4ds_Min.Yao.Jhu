@@ -2,7 +2,9 @@
 title: "Apr-26-ggplot"
 author: "Min-Yao"
 date: "2017年4月25日"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 #3 Data visualisation
@@ -71,37 +73,59 @@ ggplot(data = mpg) +
 ```
 
 
+#3.3.1 Exercises
+```{r}
+#1
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
 
+#2
+?mpg
+mpg
 
+#3
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = cty))
 
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = cty))
 
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = cty))
 
+#4
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = cty, size = cty))
 
+#5
+?geom_point
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, stroke = 3))
 
+#6
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, colour = displ < 5))
 
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+>1. Parenthesis is at wrong location.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+>2. manufacturer, model, year, cyl, trans, drv, fl, and class are categorical. displ, cty, hwy are continuous.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+>3. A continuous variable can not be mapped to shape
 
-```{r cars}
-summary(cars)
-```
+>4. map the same variable to color and size.
 
-## Including Plots
+>5. change size. dots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+
+
