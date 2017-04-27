@@ -4,6 +4,20 @@ Min-Yao
 
 # 3 Data visualisation
 
+## 3.1 Introduction
+
+### 3.1.1 Prerequisites
+
+## 3.2 First steps
+
+### 3.2.1 The mpg data frame
+
+### 3.2.2 Creating a ggplot
+
+### 3.2.3 A graphing template
+
+
+
 ```r
 library(tidyverse)
 ```
@@ -79,7 +93,7 @@ ggplot(data = mpg) +
 #  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 ```
 
-# 3.2.4 Exercises
+### 3.2.4 Exercises
 
 ```r
 #1
@@ -158,7 +172,7 @@ ggplot(data = mpg) +
 >5. class: "type" of car, drv: f = front-wheel drive, r = rear wheel drive, 4 = 4wd
 
 
-#3.3 Aesthetic mappings
+## 3.3 Aesthetic mappings
 
 ```r
 ggplot(data = mpg) + 
@@ -211,6 +225,15 @@ ggplot(data = mpg) +
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
 
 ```r
+#in class notes
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class == "compact"))
+```
+
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-6.png)<!-- -->
+
+```r
+#in class notes 2
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class == "compact")) +
   labs(color = "Type") +
@@ -218,12 +241,14 @@ ggplot(data = mpg) +
                      values = c("red","blue"))
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-6.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-7.png)<!-- -->
 
 
-# 3.3.1 Exercises
+### 3.3.1 Exercises
 
 ```r
+#in class notes
+# we can use ```{r, fig.width = 6, fig.height=6} to change size of the plots
 #1
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
@@ -311,16 +336,19 @@ ggplot(data = mpg) +
 
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-4-8.png)<!-- -->
 
->1. Parenthesis is at wrong location.
+>1. Parenthesis is at the wrong location.
 
 >2. manufacturer, model, year, cyl, trans, drv, fl, and class are categorical. displ, cty, hwy are continuous.
 
 >3. A continuous variable can not be mapped to shape
 
->4. map the same variable to color and size.
+>4. I can map the same variable to color and size.
 
 >5. Use the stroke aesthetic to modify the width of the border. change size. dots
 
+## 3.4 Common problems
+
+## 3.5 Facets
 
 
 ```r
@@ -349,24 +377,34 @@ ggplot(data = mpg) +
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
 
 
-# 3.5.1 Exercises
+### 3.5.1 Exercises
 
 ```r
 #1
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
-  facet_wrap(~ cty, nrow = 2, scales= "free")
+  facet_wrap(~ cty, nrow = 2)
 ```
 
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 ```r
+# in class notes:
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
-  facet_wrap(~ cty+drv)
+  facet_wrap(~ cty, scales= "free")
 ```
 
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
+
+```r
+# neated
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ cty + year)
+```
+
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
 
 ```r
 #2
@@ -374,7 +412,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = drv, y = cyl))
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
 
 ```r
 ggplot(data = mpg) + 
@@ -382,7 +420,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ cyl)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-5.png)<!-- -->
 
 ```r
 #3
@@ -391,7 +429,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ .)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-5.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-6.png)<!-- -->
 
 ```r
 ggplot(data = mpg) + 
@@ -399,7 +437,7 @@ ggplot(data = mpg) +
   facet_grid(. ~ cyl)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-6.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-7.png)<!-- -->
 
 ```r
 #4
@@ -408,30 +446,30 @@ ggplot(data = mpg) +
   facet_wrap(~ class, nrow = 2)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-7.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-8.png)<!-- -->
 
 ```r
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-8.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-9.png)<!-- -->
 
 ```r
 #5
 ?facet_wrap
 ```
 
->2. no data points when drv = r and cyl = 4 and 5, and drv = 4 and cyl = 5. overplotting! because they are overlap with each other.
+>2. No data points when drv = r and cyl = 4 and 5, and drv = 4 and cyl = 5. It's overplotting in `ggplot(data = mpg) + geom_point(mapping = aes(x = drv, y = cyl))`! which means that they are overlap with each other.
 
->3. facet in the rows or columns dimension
+>3. Change the `.` position will change faceting in the rows or columns dimension.
 
->4. using faceting instead of the colour aesthetic can see the dot pattern easier. the disadvantages are much more plots. If I had a larger dataset, 
+>4. Using faceting instead of the colour aesthetic can see the dot pattern easier. The disadvantages are much more plots. If I had a larger dataset, 
 too many point (classes) so we cannot see the data clearly
 
->5. nrow, ncol= Number of rows and columns. other options control the layout of the individual panels: dir, facet_grid(). Because the argument of facet_grid() facet in the rows or columns dimension.
+>5. The `nrow` and `ncol` = Number of rows and columns. Other options control the layout of the individual panels: dir, facet_grid(). Because the argument of facet_grid() facet in the rows or columns dimension.
 
->6. we can see the whole picture much easlier without scrolling down, so we should put the variable with more unique levels in the columns. Fit the screen
+>6. We can see the whole picture much easlier without scrolling down because it fits the screen, so we should put the variable with more unique levels in the columns.
 
 
 
