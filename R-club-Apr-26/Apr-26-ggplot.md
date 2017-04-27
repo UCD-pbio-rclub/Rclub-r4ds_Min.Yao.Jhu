@@ -210,6 +210,16 @@ ggplot(data = mpg) +
 
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
 
+```r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class == "compact")) +
+  labs(color = "Type") +
+  scale_color_manual(labels = c("Not Compact", "Compact"), 
+                     values = c("red","blue"))
+```
+
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-3-6.png)<!-- -->
+
 
 # 3.3.1 Exercises
 
@@ -281,10 +291,17 @@ ggplot(data = mpg) +
 #5
 ?geom_point
 ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, stroke = 3))
+  geom_point(mapping = aes(x = displ, y = hwy), shape = 2, stroke = 3)
 ```
 
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-4-6.png)<!-- -->
+
+```r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), shape = 2, size = 3)
+```
+
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-4-7.png)<!-- -->
 
 ```r
 #6
@@ -292,7 +309,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, colour = displ < 5))
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-4-7.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-4-8.png)<!-- -->
 
 >1. Parenthesis is at wrong location.
 
@@ -302,7 +319,7 @@ ggplot(data = mpg) +
 
 >4. map the same variable to color and size.
 
->5. change size. dots
+>5. Use the stroke aesthetic to modify the width of the border. change size. dots
 
 
 
@@ -338,10 +355,18 @@ ggplot(data = mpg) +
 #1
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
-  facet_wrap(~ cty, nrow = 2)
+  facet_wrap(~ cty, nrow = 2, scales= "free")
 ```
 
 ![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+```r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ cty+drv)
+```
+
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
 
 ```r
 #2
@@ -349,7 +374,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = drv, y = cyl))
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
 
 ```r
 ggplot(data = mpg) + 
@@ -357,7 +382,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ cyl)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
 
 ```r
 #3
@@ -366,7 +391,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ .)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-5.png)<!-- -->
 
 ```r
 ggplot(data = mpg) + 
@@ -374,7 +399,7 @@ ggplot(data = mpg) +
   facet_grid(. ~ cyl)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-5.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-6.png)<!-- -->
 
 ```r
 #4
@@ -383,29 +408,30 @@ ggplot(data = mpg) +
   facet_wrap(~ class, nrow = 2)
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-6.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-7.png)<!-- -->
 
 ```r
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-7.png)<!-- -->
+![](Apr-26-ggplot_files/figure-html/unnamed-chunk-6-8.png)<!-- -->
 
 ```r
 #5
 ?facet_wrap
 ```
 
->2. no data points when drv = r and cyl = 4 and 5, and drv = 4 and cyl = 5.
+>2. no data points when drv = r and cyl = 4 and 5, and drv = 4 and cyl = 5. overplotting! because they are overlap with each other.
 
 >3. facet in the rows or columns dimension
 
 >4. using faceting instead of the colour aesthetic can see the dot pattern easier. the disadvantages are much more plots. If I had a larger dataset, 
+too many point (classes) so we cannot see the data clearly
 
 >5. nrow, ncol= Number of rows and columns. other options control the layout of the individual panels: dir, facet_grid(). Because the argument of facet_grid() facet in the rows or columns dimension.
 
->6. we can see the whole picture much easlier without scrolling down, so we should put the variable with more unique levels in the columns.
+>6. we can see the whole picture much easlier without scrolling down, so we should put the variable with more unique levels in the columns. Fit the screen
 
 
 

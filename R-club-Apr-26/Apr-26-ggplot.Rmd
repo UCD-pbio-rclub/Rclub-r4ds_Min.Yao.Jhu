@@ -70,11 +70,18 @@ ggplot(data = mpg) +
 #
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class == "compact")) +
+  labs(color = "Type") +
+  scale_color_manual(labels = c("Not Compact", "Compact"), 
+                     values = c("red","blue"))
+
 ```
 
 
 # 3.3.1 Exercises
-```{r}
+```{r, fig.width = 6, fig.height=6}
 #1
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
@@ -103,7 +110,10 @@ ggplot(data = mpg) +
 #5
 ?geom_point
 ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, stroke = 3))
+  geom_point(mapping = aes(x = displ, y = hwy), shape = 2, stroke = 3)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), shape = 2, size = 3)
 
 #6
 ggplot(data = mpg) + 
@@ -119,7 +129,7 @@ ggplot(data = mpg) +
 
 >4. map the same variable to color and size.
 
->5. change size. dots
+>5. Use the stroke aesthetic to modify the width of the border. change size. dots
 
 
 ```{r}
@@ -144,7 +154,11 @@ ggplot(data = mpg) +
 #1
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
-  facet_wrap(~ cty, nrow = 2)
+  facet_wrap(~ cty, nrow = 2, scales= "free")
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ cty+drv)
 
 #2
 ggplot(data = mpg) + 
@@ -174,15 +188,16 @@ ggplot(data = mpg) +
 
 ```
 
->2. no data points when drv = r and cyl = 4 and 5, and drv = 4 and cyl = 5.
+>2. no data points when drv = r and cyl = 4 and 5, and drv = 4 and cyl = 5. overplotting! because they are overlap with each other.
 
 >3. facet in the rows or columns dimension
 
 >4. using faceting instead of the colour aesthetic can see the dot pattern easier. the disadvantages are much more plots. If I had a larger dataset, 
+too many point (classes) so we cannot see the data clearly
 
 >5. nrow, ncol= Number of rows and columns. other options control the layout of the individual panels: dir, facet_grid(). Because the argument of facet_grid() facet in the rows or columns dimension.
 
->6. we can see the whole picture much easlier without scrolling down, so we should put the variable with more unique levels in the columns.
+>6. we can see the whole picture much easlier without scrolling down, so we should put the variable with more unique levels in the columns. Fit the screen
 
 
 
