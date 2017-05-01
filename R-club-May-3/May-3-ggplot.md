@@ -7,6 +7,7 @@ Min-Yao
 
 ```r
 library(ggplot2)
+library(tibble)
 ```
 
 
@@ -249,6 +250,71 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 
 >5. No, these two graphs look the same. By passing a set of mappings to ggplot(), ggplot2 will treat these mappings as global mappings that apply to each geom in the graph. In other words, this code will produce the same plot as the previous code.
 
+## 3.7 Statistical transformations
 
 
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
+?geom_bar
+```
+
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
+
+```r
+ggplot(data = diamonds) + 
+  stat_count(mapping = aes(x = cut))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+
+```r
+demo <- tribble(
+  ~a,      ~b,
+  "bar_1", 20,
+  "bar_2", 30,
+  "bar_3", 40
+)
+
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = a, y = b), stat = "identity")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-5-4.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median
+  )
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-5-5.png)<!-- -->
+
+```r
+?stat_bin
+```
+
+### 3.7.1 Exercises
 
