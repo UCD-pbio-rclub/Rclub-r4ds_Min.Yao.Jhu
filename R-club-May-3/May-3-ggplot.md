@@ -318,3 +318,76 @@ ggplot(data = diamonds) +
 
 ### 3.7.1 Exercises
 
+
+```r
+#1
+?geom_pointrange
+
+#ggplot(data = diamonds, aes(x = cut, y = depth)) + 
+#  geom_pointrange(mapping = aes(ymin = min, ymax = max))
+
+#2
+?geom_col()
+?geom_bar()
+
+#3
+?stat_count
+?stat_summary
+?geoms_point
+```
+
+```
+## No documentation for 'geoms_point' in specified packages and libraries:
+## you could try '??geoms_point'
+```
+
+```r
+?geom_smooth
+?geom_bar
+?
+#4
+?stat_smooth()
+
+#5
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop.., group = 1))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
+
+>1. the default geom associated with stat_summary() summarises the y values for each unique x value.
+
+>2. There are two types of bar charts: geom_bar makes the height of the bar proportional to the number of cases in each group (or if the weight aethetic is supplied, the sum of the weights). If you want the heights of the bars to represent values in the data, use geom_col instead. 
+
+>3.  in common: ggplot2 will treat these mappings as global mappings that apply to each geom in the graph.
+
+>4. `stat_smooth()` Calculation is performed by the (currently undocumented) predictdf generic and its methods. For most methods the standard error bounds are computed using the predict method - the exceptions are loess which uses a t-based approximation, and glm where the normal confidence interval is constructed on the link scale, and then back-transformed to the response scale.
+
+>5.
+
+## 3.8 Position adjustments
+
+
+
+
