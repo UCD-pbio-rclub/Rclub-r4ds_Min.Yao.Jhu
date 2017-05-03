@@ -340,3 +340,69 @@ ggplot(data = IVHall) +
   geom_boxplot(mapping = aes(x = identity, y = total.number))
 ```
 
+# 4 Workflow: basics
+
+## 4.1 Coding basics
+```{r}
+1 / 200 * 30
+
+(59 + 73 + 2) / 3
+
+sin(pi / 2)
+
+x <- 3 * 4
+
+```
+
+## 4.2 What’s in a name?
+
+```{r}
+x
+
+this_is_a_really_long_name <- 2.5
+this_is_a_really_long_name
+
+r_rocks <- 2 ^ 3
+r_rocks
+```
+
+## 4.3 Calling functions
+
+```{r}
+seq(1, 10)
+
+x <- "hello world"
+x
+
+y <- seq(1, 10, length.out = 5)
+y
+
+(y <- seq(1, 10, length.out = 5))
+```
+
+## 4.4 Practice
+
+```{r}
+#1.
+my_variable <- 10
+my_variable
+
+#2
+library(tidyverse)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+filter(mpg, cyl == 8)
+filter(diamonds, carat > 3)
+
+#3
+
+```
+
+>1. my_variable not my_varıable
+
+>2.
+
+>3. Press Alt + Shift + K. = Knit
+
