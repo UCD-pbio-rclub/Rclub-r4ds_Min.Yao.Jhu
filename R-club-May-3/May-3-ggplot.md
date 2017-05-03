@@ -389,5 +389,117 @@ ggplot(data = diamonds) +
 ## 3.8 Position adjustments
 
 
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-2.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-3.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+  geom_bar(alpha = 1/5, position = "identity")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-4.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+  geom_bar(fill = NA, position = "identity")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-5.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-6.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-7.png)<!-- -->
+
+```r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-7-8.png)<!-- -->
 
 
+
+
+
+```r
+#1
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
+```r
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point(position = "jitter")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-8-2.png)<!-- -->
+
+```r
+#2
+?geom_jitter()
+
+#3
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_jitter()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-8-3.png)<!-- -->
+
+```r
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_count()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-8-4.png)<!-- -->
+
+```r
+?geom_count
+
+#4
+?geom_boxplot
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_boxplot(mapping = aes(group = 1, position = "jitter"))
+```
+
+```
+## Warning: Ignoring unknown aesthetics: position
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-8-5.png)<!-- -->
+
+>1. This problem is known as overplotting. This arrangement makes it hard to see where the mass of the data is. We can improve it by adding `position = "jitter"`.
+
+>2. position: Position adjustment, either as a string, or the result of a call to a position adjustment function.
+width: Amount of vertical and horizontal jitter. The jitter is added in both positive and negative directions, so the total spread is twice the value specified here.
+height: Amount of vertical and horizontal jitter. The jitter is added in both positive and negative directions, so the total spread is twice the value specified here.
+
+>3. `geom_count` This is a variant geom_point that counts the number of observations at each location, then maps the count to point area. It useful when you have discrete data and overplotting.
+
+>4. 
