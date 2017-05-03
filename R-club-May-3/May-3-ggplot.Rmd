@@ -332,3 +332,11 @@ ggplot(data = diamonds) +
 
 ```
 
+# use ggplot to make a graph using some of your own data.
+
+```{r}
+IVHall <- read.csv("D:/2017SQ/R club/Rclub-r4ds_Min.Yao.Jhu/R-club-May-3/IVHall-reduced.csv")
+ggplot(data = IVHall) +
+  geom_boxplot(mapping = aes(x = identity, y = total.number))
+```
+

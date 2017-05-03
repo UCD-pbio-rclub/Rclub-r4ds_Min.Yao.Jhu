@@ -651,3 +651,14 @@ ggplot(data = diamonds) +
 
 ![](May-3-ggplot_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
+# use ggplot to make a graph using some of your own data.
+
+
+```r
+IVHall <- read.csv("D:/2017SQ/R club/Rclub-r4ds_Min.Yao.Jhu/R-club-May-3/IVHall-reduced.csv")
+ggplot(data = IVHall) +
+  geom_boxplot(mapping = aes(x = identity, y = total.number))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
