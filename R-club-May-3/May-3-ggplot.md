@@ -8,6 +8,11 @@ Min-Yao
 ```r
 library(ggplot2)
 library(tibble)
+library(maps)
+```
+
+```
+## Warning: package 'maps' was built under R version 3.3.3
 ```
 
 
@@ -503,3 +508,146 @@ height: Amount of vertical and horizontal jitter. The jitter is added in both po
 >3. `geom_count` This is a variant geom_point that counts the number of observations at each location, then maps the count to point area. It useful when you have discrete data and overplotting.
 
 >4. 
+
+## 3.9 Coordinate systems
+
+```r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+```r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-9-2.png)<!-- -->
+
+```r
+#
+nz <- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-9-3.png)<!-- -->
+
+```r
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_quickmap()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-9-4.png)<!-- -->
+
+```r
+#
+bar <- ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = cut, fill = cut), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+bar + coord_flip()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-9-5.png)<!-- -->
+
+```r
+bar + coord_polar()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-9-6.png)<!-- -->
+
+### 3.9.1 Exercises
+
+
+```r
+#1.
+bar2 <- ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+bar2 + coord_polar()
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+```r
+#2
+?labs()
+
+#3
+?coord_quickmap()
+?coord_map()
+nz <- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black")
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-10-2.png)<!-- -->
+
+```r
+  coord_map()
+```
+
+```
+## <ggproto object: Class CoordMap, Coord>
+##     aspect: function
+##     distance: function
+##     is_linear: function
+##     labels: function
+##     limits: list
+##     orientation: NULL
+##     params: list
+##     projection: mercator
+##     range: function
+##     render_axis_h: function
+##     render_axis_v: function
+##     render_bg: function
+##     render_fg: function
+##     train: function
+##     transform: function
+##     super:  <ggproto object: Class CoordMap, Coord>
+```
+
+```r
+#4
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()  
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-10-3.png)<!-- -->
+
+```r
+?coord_fixed()
+?geom_abline()
+```
+
+>1. Turn a stacked bar chart into a pie chart using coord_polar().
+
+>2. `labs` Good labels are critical for making your plots accessible to a wider audience. Ensure the axis and legend labels display the full variable name. Use the plot title and subtitle to explain the main findings. It's common to use the caption to provide information about the data source. You can also set axis and legend labels in the individual scales (using the first argument, the name. I recommend doing that if you're changing other scale options.
+
+>3. coord_map projects a portion of the earth, which is approximately spherical, onto a flat 2D plane using any projection defined by the mapproj package. Map projections do not, in general, preserve straight lines, so this requires considerable computation. coord_quickmap is a quick approximation that does preserve straight lines. It works best for smaller areas closer to the equator.
+
+>4.`coord_fixed`A fixed scale coordinate system forces a specified ratio between the physical representation of data units on the axes. The ratio represents the number of units on the y-axis equivalent to one unit on the x-axis. The default, ratio = 1, ensures that one unit on the x-axis is the same length as one unit on the y-axis. Ratios higher than one make units on the y axis longer than units on the x-axis, and vice versa. This is similar to eqscplot, but it works for all types of graphics.
+> `geom_abline()`These geoms add reference lines (sometimes called rules) to a plot, either horizontal, vertical, or diagonal (specified by slope and intercept). These are useful for annotating plots.
+
+## 3.10 The layered grammar of graphics
+
+
+```r
+ggplot(data = diamonds) + 
+  stat_count(mapping = aes(x = cut, y = ..count.., fill = ..count..))
+```
+
+![](May-3-ggplot_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
