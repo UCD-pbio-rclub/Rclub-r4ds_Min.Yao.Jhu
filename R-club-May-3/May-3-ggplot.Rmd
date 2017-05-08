@@ -366,7 +366,10 @@ ggplot(data = diamonds) +
 ```{r}
 IVHall <- read.csv("D:/2017SQ/R club/Rclub-r4ds_Min.Yao.Jhu/R-club-May-3/IVHall-reduced.csv")
 ggplot(data = IVHall) +
-  geom_boxplot(mapping = aes(x = identity, y = total.number, fill = identity))
+  geom_boxplot(mapping = aes(x = identity, y = total.number, fill = identity)) +
+  geom_signif(comparisons = "C", "LBD22-14")
+
+
 ```
 
 # 4 Workflow: basics
@@ -441,6 +444,9 @@ filter(diamonds, carat > 3)
 #library(gridExtra)
 #grid.arrange()
 #cowplot
+
+?geom_signif
+library(ggsignif)
 
 ```
 
