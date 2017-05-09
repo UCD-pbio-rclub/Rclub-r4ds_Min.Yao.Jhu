@@ -31,6 +31,55 @@ View(flights)
 
 ## 5.2 Filter rows with filter()
 ```{r}
+filter(flights, month == 1, day == 1)
+jan1 <- filter(flights, month == 1, day == 1)
+(dec25 <- filter(flights, month == 12, day == 25))
+
+```
+
+### 5.2.1 Comparisons
+
+```{r}
+sqrt(2) ^ 2 == 2
+1/49 * 49 == 1
+
+near(sqrt(2) ^ 2,  2)
+near(1 / 49 * 49, 1)
+```
+
+### 5.2.2 Logical operators
+
+```{r}
+filter(flights, month == 11 | month == 12)
+nov_dec <- filter(flights, month %in% c(11, 12))
+
+filter(flights, !(arr_delay > 120 | dep_delay > 120))
+filter(flights, arr_delay <= 120, dep_delay <= 120)
+```
+
+### 5.2.3 Missing values
+
+```{r}
+NA > 5
+10 == NA
+NA + 10
+NA / 2
+
+NA == NA
+x <- NA
+y <- NA
+x == y
+
+is.na(x)
+
+df <- tibble(x = c(1, NA, 3))
+filter(df, x > 1)
+filter(df, is.na(x) | x > 1)
+```
+
+### 5.2.4 Exercises
+
+```{r}
 
 ```
 
