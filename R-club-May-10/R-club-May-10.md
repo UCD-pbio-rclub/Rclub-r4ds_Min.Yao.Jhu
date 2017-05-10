@@ -874,3 +874,220 @@ arrange(flights, desc(distance))
 ## #   minute <dbl>, time_hour <dttm>
 ```
 
+## 5.4 Select columns with select()
+
+
+```r
+select(flights, year, month, day)
+```
+
+```
+## # A tibble: 336,776 × 3
+##     year month   day
+##    <int> <int> <int>
+## 1   2013     1     1
+## 2   2013     1     1
+## 3   2013     1     1
+## 4   2013     1     1
+## 5   2013     1     1
+## 6   2013     1     1
+## 7   2013     1     1
+## 8   2013     1     1
+## 9   2013     1     1
+## 10  2013     1     1
+## # ... with 336,766 more rows
+```
+
+```r
+select(flights, year:day)
+```
+
+```
+## # A tibble: 336,776 × 3
+##     year month   day
+##    <int> <int> <int>
+## 1   2013     1     1
+## 2   2013     1     1
+## 3   2013     1     1
+## 4   2013     1     1
+## 5   2013     1     1
+## 6   2013     1     1
+## 7   2013     1     1
+## 8   2013     1     1
+## 9   2013     1     1
+## 10  2013     1     1
+## # ... with 336,766 more rows
+```
+
+```r
+select(flights, -(year:day))
+```
+
+```
+## # A tibble: 336,776 × 16
+##    dep_time sched_dep_time dep_delay arr_time sched_arr_time arr_delay
+##       <int>          <int>     <dbl>    <int>          <int>     <dbl>
+## 1       517            515         2      830            819        11
+## 2       533            529         4      850            830        20
+## 3       542            540         2      923            850        33
+## 4       544            545        -1     1004           1022       -18
+## 5       554            600        -6      812            837       -25
+## 6       554            558        -4      740            728        12
+## 7       555            600        -5      913            854        19
+## 8       557            600        -3      709            723       -14
+## 9       557            600        -3      838            846        -8
+## 10      558            600        -2      753            745         8
+## # ... with 336,766 more rows, and 10 more variables: carrier <chr>,
+## #   flight <int>, tailnum <chr>, origin <chr>, dest <chr>, air_time <dbl>,
+## #   distance <dbl>, hour <dbl>, minute <dbl>, time_hour <dttm>
+```
+
+```r
+rename(flights, tail_num = tailnum)
+```
+
+```
+## # A tibble: 336,776 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     1     1      517            515         2      830
+## 2   2013     1     1      533            529         4      850
+## 3   2013     1     1      542            540         2      923
+## 4   2013     1     1      544            545        -1     1004
+## 5   2013     1     1      554            600        -6      812
+## 6   2013     1     1      554            558        -4      740
+## 7   2013     1     1      555            600        -5      913
+## 8   2013     1     1      557            600        -3      709
+## 9   2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 12 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tail_num <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>
+```
+
+```r
+select(flights, time_hour, air_time, everything())
+```
+
+```
+## # A tibble: 336,776 × 19
+##              time_hour air_time  year month   day dep_time sched_dep_time
+##                 <dttm>    <dbl> <int> <int> <int>    <int>          <int>
+## 1  2013-01-01 05:00:00      227  2013     1     1      517            515
+## 2  2013-01-01 05:00:00      227  2013     1     1      533            529
+## 3  2013-01-01 05:00:00      160  2013     1     1      542            540
+## 4  2013-01-01 05:00:00      183  2013     1     1      544            545
+## 5  2013-01-01 06:00:00      116  2013     1     1      554            600
+## 6  2013-01-01 05:00:00      150  2013     1     1      554            558
+## 7  2013-01-01 06:00:00      158  2013     1     1      555            600
+## 8  2013-01-01 06:00:00       53  2013     1     1      557            600
+## 9  2013-01-01 06:00:00      140  2013     1     1      557            600
+## 10 2013-01-01 06:00:00      138  2013     1     1      558            600
+## # ... with 336,766 more rows, and 12 more variables: dep_delay <dbl>,
+## #   arr_time <int>, sched_arr_time <int>, arr_delay <dbl>, carrier <chr>,
+## #   flight <int>, tailnum <chr>, origin <chr>, dest <chr>, distance <dbl>,
+## #   hour <dbl>, minute <dbl>
+```
+
+### 5.4.1 Exercises
+
+1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
+
+```r
+select(flights, dep_time, dep_delay, arr_time, arr_delay)
+```
+
+```
+## # A tibble: 336,776 × 4
+##    dep_time dep_delay arr_time arr_delay
+##       <int>     <dbl>    <int>     <dbl>
+## 1       517         2      830        11
+## 2       533         4      850        20
+## 3       542         2      923        33
+## 4       544        -1     1004       -18
+## 5       554        -6      812       -25
+## 6       554        -4      740        12
+## 7       555        -5      913        19
+## 8       557        -3      709       -14
+## 9       557        -3      838        -8
+## 10      558        -2      753         8
+## # ... with 336,766 more rows
+```
+
+2. What happens if you include the name of a variable multiple times in a select() call?
+
+```r
+select(flights, dep_time, dep_time)
+```
+
+```
+## # A tibble: 336,776 × 1
+##    dep_time
+##       <int>
+## 1       517
+## 2       533
+## 3       542
+## 4       544
+## 5       554
+## 6       554
+## 7       555
+## 8       557
+## 9       557
+## 10      558
+## # ... with 336,766 more rows
+```
+
+> only select once
+
+3.What does the one_of() function do? Why might it be helpful in conjunction with this vector?
+
+```r
+?one_of()
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, one_of(vars))
+```
+
+```
+## # A tibble: 336,776 × 5
+##     year month   day dep_delay arr_delay
+##    <int> <int> <int>     <dbl>     <dbl>
+## 1   2013     1     1         2        11
+## 2   2013     1     1         4        20
+## 3   2013     1     1         2        33
+## 4   2013     1     1        -1       -18
+## 5   2013     1     1        -6       -25
+## 6   2013     1     1        -4        12
+## 7   2013     1     1        -5        19
+## 8   2013     1     1        -3       -14
+## 9   2013     1     1        -3        -8
+## 10  2013     1     1        -2         8
+## # ... with 336,766 more rows
+```
+
+> one_of(): variables in character vector.
+
+4.Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
+
+
+```r
+select(flights, contains("TIME"))
+```
+
+```
+## # A tibble: 336,776 × 6
+##    dep_time sched_dep_time arr_time sched_arr_time air_time
+##       <int>          <int>    <int>          <int>    <dbl>
+## 1       517            515      830            819      227
+## 2       533            529      850            830      227
+## 3       542            540      923            850      160
+## 4       544            545     1004           1022      183
+## 5       554            600      812            837      116
+## 6       554            558      740            728      150
+## 7       555            600      913            854      158
+## 8       557            600      709            723       53
+## 9       557            600      838            846      140
+## 10      558            600      753            745      138
+## # ... with 336,766 more rows, and 1 more variables: time_hour <dttm>
+```
+
