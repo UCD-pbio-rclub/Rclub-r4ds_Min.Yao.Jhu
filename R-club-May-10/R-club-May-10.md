@@ -1177,8 +1177,223 @@ transmute(flights,
 ### 5.5.1 Useful creation functions
 
 
+```r
+transmute(flights,
+  dep_time,
+  hour = dep_time %/% 100,
+  minute = dep_time %% 100
+)
+```
+
+```
+## # A tibble: 336,776 × 3
+##    dep_time  hour minute
+##       <int> <dbl>  <dbl>
+## 1       517     5     17
+## 2       533     5     33
+## 3       542     5     42
+## 4       544     5     44
+## 5       554     5     54
+## 6       554     5     54
+## 7       555     5     55
+## 8       557     5     57
+## 9       557     5     57
+## 10      558     5     58
+## # ... with 336,766 more rows
+```
+
+```r
+(x <- 1:10)
+```
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10
+```
+
+```r
+lag(x)
+```
+
+```
+##  [1] NA  1  2  3  4  5  6  7  8  9
+```
+
+```r
+lead(x)
+```
+
+```
+##  [1]  2  3  4  5  6  7  8  9 10 NA
+```
+
+```r
+x
+```
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10
+```
+
+```r
+cumsum(x)
+```
+
+```
+##  [1]  1  3  6 10 15 21 28 36 45 55
+```
+
+```r
+cummean(x)
+```
+
+```
+##  [1] 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5
+```
+
+```r
+y <- c(1, 2, 2, NA, 3, 4)
+min_rank(y)
+```
+
+```
+## [1]  1  2  2 NA  4  5
+```
+
+```r
+min_rank(desc(y))
+```
+
+```
+## [1]  5  3  3 NA  2  1
+```
+
+```r
+row_number(y)
+```
+
+```
+## [1]  1  2  3 NA  4  5
+```
+
+```r
+dense_rank(y)
+```
+
+```
+## [1]  1  2  2 NA  3  4
+```
+
+```r
+percent_rank(y)
+```
+
+```
+## [1] 0.00 0.25 0.25   NA 0.75 1.00
+```
+
+```r
+cume_dist(y)
+```
+
+```
+## [1] 0.2 0.6 0.6  NA 0.8 1.0
+```
 
 ### 5.5.2 Exercises
 
+1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+
+```r
+transmute(flights,
+  dep_time,
+  dep_time_hour = dep_time %/% 100,
+  dep_time_minute = dep_time %% 100,
+  dep_time_min = (dep_time_hour * 60) + dep_time_minute,
+  sched_dep_time,
+  sched_dep_time_hour = sched_dep_time %/% 100,
+  sched_dep_time_minute = sched_dep_time %% 100,
+  sched_dep_time_min = (sched_dep_time_hour * 60) + sched_dep_time_minute
+  )
+```
+
+```
+## # A tibble: 336,776 × 8
+##    dep_time dep_time_hour dep_time_minute dep_time_min sched_dep_time
+##       <int>         <dbl>           <dbl>        <dbl>          <int>
+## 1       517             5              17          317            515
+## 2       533             5              33          333            529
+## 3       542             5              42          342            540
+## 4       544             5              44          344            545
+## 5       554             5              54          354            600
+## 6       554             5              54          354            558
+## 7       555             5              55          355            600
+## 8       557             5              57          357            600
+## 9       557             5              57          357            600
+## 10      558             5              58          358            600
+## # ... with 336,766 more rows, and 3 more variables:
+## #   sched_dep_time_hour <dbl>, sched_dep_time_minute <dbl>,
+## #   sched_dep_time_min <dbl>
+```
+
+2.Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?
+
+```r
+transmute(flights,
+          air_time,
+          new_air_time = arr_time - dep_time
+)
+```
+
+```
+## # A tibble: 336,776 × 2
+##    air_time new_air_time
+##       <dbl>        <int>
+## 1       227          313
+## 2       227          317
+## 3       160          381
+## 4       183          460
+## 5       116          258
+## 6       150          186
+## 7       158          358
+## 8        53          152
+## 9       140          281
+## 10      138          195
+## # ... with 336,766 more rows
+```
+
+> I expect to see air_time and arr_time - dep_time are the same, but they are not the same. We can add a new `new_air_time = arr_time - dep_time`.
+
+3.Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
 
 
+4.Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
+
+
+5.What does 1:3 + 1:10 return? Why?
+
+```r
+1:3 + 1:10
+```
+
+```
+## Warning in 1:3 + 1:10: 較長的物件長度並非較短物件長度的倍數
+```
+
+```
+##  [1]  2  4  6  5  7  9  8 10 12 11
+```
+
+6.What trigonometric functions does R provide?
+> cospi(x), sinpi(x), and tanpi(x), compute cos(pi*x), sin(pi*x), and tan(pi*x).
+cos(x)
+sin(x)
+tan(x)
+
+acos(x)
+asin(x)
+atan(x)
+atan2(y, x)
+
+cospi(x)
+sinpi(x)
+tanpi(x)
