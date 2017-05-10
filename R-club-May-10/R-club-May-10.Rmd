@@ -16,7 +16,6 @@ output:
 ```{r}
 library(nycflights13)
 library(tidyverse)
-
 ```
 
 ### 5.1.2 nycflights13
@@ -79,7 +78,51 @@ filter(df, is.na(x) | x > 1)
 
 ### 5.2.4 Exercises
 
+1.
 ```{r}
+#1
+?flights
+airlines
+##1
+filter(flights, dep_delay >= 2)
+##2
+filter(flights, dest == "IAH" | dest == "HOU")
+##3
+filter(flights, carrier == "AA" | carrier == "UA" | carrier == "DL")
+##4
+filter(flights, month %in% c(7, 8, 9))
+##5
+filter(flights, arr_delay >= 120 & dep_delay <= 0)
+##6
+filter(flights, dep_delay >= 60 & dep_delay - arr_delay > 30)
+##7
+filter(flights, dep_time >= 0000 & dep_time <= 0600)
+       
+```
+
+2.
+```{r}
+#2
+?between()
+
+##7
+filter(flights, between(dep_time, 0000, 0600))
+```
+
+> This is a shortcut for x >= left & x <= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables. between(x, left, right). Yes.
+
+3.
+```{r}
+filter(flights, is.na(dep_time))
+```
+
+4.
+```{r}
+NA ^ 0
+NA | TRUE
+FALSE & NA
+NA * 0
 
 ```
 
+>
