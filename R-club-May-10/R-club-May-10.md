@@ -1091,3 +1091,94 @@ select(flights, contains("TIME"))
 ## # ... with 336,766 more rows, and 1 more variables: time_hour <dttm>
 ```
 
+## 5.5 Add new variables with mutate()
+
+
+```r
+flights_sml <- select(flights, 
+  year:day, 
+  ends_with("delay"), 
+  distance, 
+  air_time
+)
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60
+)
+```
+
+```
+## # A tibble: 336,776 × 9
+##     year month   day dep_delay arr_delay distance air_time  gain    speed
+##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl> <dbl>    <dbl>
+## 1   2013     1     1         2        11     1400      227     9 370.0441
+## 2   2013     1     1         4        20     1416      227    16 374.2731
+## 3   2013     1     1         2        33     1089      160    31 408.3750
+## 4   2013     1     1        -1       -18     1576      183   -17 516.7213
+## 5   2013     1     1        -6       -25      762      116   -19 394.1379
+## 6   2013     1     1        -4        12      719      150    16 287.6000
+## 7   2013     1     1        -5        19     1065      158    24 404.4304
+## 8   2013     1     1        -3       -14      229       53   -11 259.2453
+## 9   2013     1     1        -3        -8      944      140    -5 404.5714
+## 10  2013     1     1        -2         8      733      138    10 318.6957
+## # ... with 336,766 more rows
+```
+
+```r
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+```
+## # A tibble: 336,776 × 10
+##     year month   day dep_delay arr_delay distance air_time  gain     hours
+##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl> <dbl>     <dbl>
+## 1   2013     1     1         2        11     1400      227     9 3.7833333
+## 2   2013     1     1         4        20     1416      227    16 3.7833333
+## 3   2013     1     1         2        33     1089      160    31 2.6666667
+## 4   2013     1     1        -1       -18     1576      183   -17 3.0500000
+## 5   2013     1     1        -6       -25      762      116   -19 1.9333333
+## 6   2013     1     1        -4        12      719      150    16 2.5000000
+## 7   2013     1     1        -5        19     1065      158    24 2.6333333
+## 8   2013     1     1        -3       -14      229       53   -11 0.8833333
+## 9   2013     1     1        -3        -8      944      140    -5 2.3333333
+## 10  2013     1     1        -2         8      733      138    10 2.3000000
+## # ... with 336,766 more rows, and 1 more variables: gain_per_hour <dbl>
+```
+
+```r
+transmute(flights,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+```
+## # A tibble: 336,776 × 3
+##     gain     hours gain_per_hour
+##    <dbl>     <dbl>         <dbl>
+## 1      9 3.7833333      2.378855
+## 2     16 3.7833333      4.229075
+## 3     31 2.6666667     11.625000
+## 4    -17 3.0500000     -5.573770
+## 5    -19 1.9333333     -9.827586
+## 6     16 2.5000000      6.400000
+## 7     24 2.6333333      9.113924
+## 8    -11 0.8833333    -12.452830
+## 9     -5 2.3333333     -2.142857
+## 10    10 2.3000000      4.347826
+## # ... with 336,766 more rows
+```
+
+### 5.5.1 Useful creation functions
+
+
+
+### 5.5.2 Exercises
+
+
+

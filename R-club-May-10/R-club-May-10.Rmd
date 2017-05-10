@@ -208,3 +208,43 @@ select(flights, one_of(vars))
 select(flights, contains("TIME"))
 ```
 
+## 5.5 Add new variables with mutate()
+
+```{r}
+flights_sml <- select(flights, 
+  year:day, 
+  ends_with("delay"), 
+  distance, 
+  air_time
+)
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60
+)
+
+
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+
+transmute(flights,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+### 5.5.1 Useful creation functions
+
+```{r}
+
+```
+
+### 5.5.2 Exercises
+
+```{r}
+
+```
+
