@@ -1365,8 +1365,94 @@ transmute(flights,
 
 3.Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
 
+```r
+transmute(flights,
+  dep_time,
+  dep_time_hour = dep_time %/% 100,
+  dep_time_minute = dep_time %% 100,
+  dep_time_min = (dep_time_hour * 60) + dep_time_minute,
+  sched_dep_time,
+  sched_dep_time_hour = sched_dep_time %/% 100,
+  sched_dep_time_minute = sched_dep_time %% 100,
+  sched_dep_time_min = (sched_dep_time_hour * 60) + sched_dep_time_minute,
+  dep_delay,
+  new_dep_delay = dep_time_min - sched_dep_time_min
+  )
+```
+
+```
+## # A tibble: 336,776 × 10
+##    dep_time dep_time_hour dep_time_minute dep_time_min sched_dep_time
+##       <int>         <dbl>           <dbl>        <dbl>          <int>
+## 1       517             5              17          317            515
+## 2       533             5              33          333            529
+## 3       542             5              42          342            540
+## 4       544             5              44          344            545
+## 5       554             5              54          354            600
+## 6       554             5              54          354            558
+## 7       555             5              55          355            600
+## 8       557             5              57          357            600
+## 9       557             5              57          357            600
+## 10      558             5              58          358            600
+## # ... with 336,766 more rows, and 5 more variables:
+## #   sched_dep_time_hour <dbl>, sched_dep_time_minute <dbl>,
+## #   sched_dep_time_min <dbl>, dep_delay <dbl>, new_dep_delay <dbl>
+```
+> dep_delay = dep_time_min - sched_dep_time_min
 
 4.Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
+
+```r
+?min_rank()
+delayrank <- mutate(flights,
+          rank_delay = min_rank(desc(arr_delay))
+          )
+delayrank
+```
+
+```
+## # A tibble: 336,776 × 20
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     1     1      517            515         2      830
+## 2   2013     1     1      533            529         4      850
+## 3   2013     1     1      542            540         2      923
+## 4   2013     1     1      544            545        -1     1004
+## 5   2013     1     1      554            600        -6      812
+## 6   2013     1     1      554            558        -4      740
+## 7   2013     1     1      555            600        -5      913
+## 8   2013     1     1      557            600        -3      709
+## 9   2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 13 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>, rank_delay <int>
+```
+
+```r
+arrange(delayrank, rank_delay)
+```
+
+```
+## # A tibble: 336,776 × 20
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     1     9      641            900      1301     1242
+## 2   2013     6    15     1432           1935      1137     1607
+## 3   2013     1    10     1121           1635      1126     1239
+## 4   2013     9    20     1139           1845      1014     1457
+## 5   2013     7    22      845           1600      1005     1044
+## 6   2013     4    10     1100           1900       960     1342
+## 7   2013     3    17     2321            810       911      135
+## 8   2013     7    22     2257            759       898      121
+## 9   2013    12     5      756           1700       896     1058
+## 10  2013     5     3     1133           2055       878     1250
+## # ... with 336,766 more rows, and 13 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>, rank_delay <int>
+```
 
 
 5.What does 1:3 + 1:10 return? Why?
@@ -1382,6 +1468,7 @@ transmute(flights,
 ```
 ##  [1]  2  4  6  5  7  9  8 10 12 11
 ```
+> Because longer object length is not a multiple of shorter object length.
 
 6.What trigonometric functions does R provide?
 > cospi(x), sinpi(x), and tanpi(x), compute cos(pi*x), sin(pi*x), and tan(pi*x).
