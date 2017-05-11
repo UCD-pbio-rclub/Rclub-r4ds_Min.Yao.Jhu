@@ -84,19 +84,21 @@ filter(df, is.na(x) | x > 1)
 ?flights
 airlines
 ##1
-filter(flights, dep_delay >= 2)
+filter(flights, dep_delay >= 120)
 ##2
 filter(flights, dest == "IAH" | dest == "HOU")
 ##3
 filter(flights, carrier == "AA" | carrier == "UA" | carrier == "DL")
 ##4
 filter(flights, month %in% c(7, 8, 9))
+filter(flights, month %in% 7:9)
 ##5
-filter(flights, arr_delay >= 120 & dep_delay <= 0)
+filter(flights, arr_delay > 120 & dep_delay <= 0)
 ##6
 filter(flights, dep_delay >= 60 & dep_delay - arr_delay > 30)
 ##7
-filter(flights, dep_time >= 0000 & dep_time <= 0600)
+filter(flights, dep_time == 2400 | dep_time <= 0600)
+summary(flights)
        
 ```
 
@@ -120,9 +122,15 @@ filter(flights, is.na(dep_time))
 ```{r}
 NA ^ 0
 NA | TRUE
+NA | 2
 FALSE & NA
 NA * 0
+Inf*0
 
+#
+test<-c(3:6, NA)
+test^0
+test<-c(3:6, NA, "blue")
 ```
 
 ## 5.3 Arrange rows with arrange()
@@ -145,6 +153,7 @@ arrange(df, desc(x))
 df <- tibble(x = c(5, 2, NA))
 arrange(df, x)
 arrange(df, desc(is.na(x)))
+arrange(df, desc(is.na(x)), x)
 ```
 
 2.Sort flights to find the most delayed flights. Find the flights that left earliest.
@@ -171,7 +180,7 @@ select(flights, year, month, day)
 select(flights, year:day)
 select(flights, -(year:day))
 
-rename(flights, tail_num = tailnum)
+rename(flights, tail_num = tailnum)#new#old
 select(flights, time_hour, air_time, everything())
 
 ```
@@ -181,8 +190,10 @@ select(flights, time_hour, air_time, everything())
 1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
 ```{r}
 select(flights, dep_time, dep_delay, arr_time, arr_delay)
-
-
+head(select(flights, starts_with("dep"), starts_with("arr")),1)
+head(select(flights, dep_time, dep_delay, arr_time, arr_delay),1)
+head(select(flights, dep_time:arr_delay, -starts_with("sched")),1)
+select(flights, matches("^(dep|arr)"))
 ```
 
 2. What happens if you include the name of a variable multiple times in a select() call?
@@ -206,7 +217,10 @@ select(flights, one_of(vars))
 
 ```{r}
 select(flights, contains("TIME"))
+select(flights, contains("TIME", ignore.case = FALSE))
 ```
+
+> surprise! because normaly R is sensetive to case.
 
 ## 5.5 Add new variables with mutate()
 
@@ -248,6 +262,9 @@ transmute(flights,
 (x <- 1:10)
 lag(x)
 lead(x)
+z <- c(2, 5, 9)
+lag(z)
+#shif one position
 
 x
 cumsum(x)
@@ -285,6 +302,18 @@ transmute(flights,
           air_time,
           new_air_time = arr_time - dep_time
 )
+
+#
+ggplot(flights, aes(x=air_time, y = (arr_time-dep_time))) + geom_point(alpha=.1)
+
+#
+flights2 <- transmute(flights, arr_time, dep_time, air_time, 
+                      arr_time2 = arr_time %/% 100 * 60 + arr_time %% 100,
+                      dep_time2 = dep_time %/% 100 * 60 + dep_time %% 100,
+          arr_dep_diff = ifelse(arr_time2 < dep_time2, arr_time2-dep_time2 + 1440, arr_time2-dep_time2))
+#if yes do one, if not do 2.
+flights2
+
 ```
 
 > I expect to see air_time and arr_time - dep_time are the same, but they are not the same. We can add a new `new_air_time = arr_time - dep_time`.
@@ -303,6 +332,18 @@ transmute(flights,
   dep_delay,
   new_dep_delay = dep_time_min - sched_dep_time_min
   )
+
+#
+flights3 <- transmute(flights,
+          dep_time, dep_time2 = dep_time %/% 100 * 60 + dep_time %% 100, 
+          sched_dep_time, sched_dep_time2 = sched_dep_time %/% 100 * 60 + sched_dep_time %% 100, dep_delay, 
+          dep_diff = ifelse(dep_time2+120 < sched_dep_time2, 
+                            dep_time2-sched_dep_time2 + 1440,
+                            dep_time2-sched_dep_time2
+                            ))
+flights3
+ggplot(flights3, aes(x=dep_delay, y = dep_time2 - sched_dep_time2)) + geom_point(alpha=0.1)
+ggplot(flights3, aes(x=dep_delay, y = dep_diff)) + geom_point(alpha=0.1)
 ```
 > dep_delay = dep_time_min - sched_dep_time_min
 
@@ -314,6 +355,8 @@ delayrank <- mutate(flights,
           )
 delayrank
 arrange(delayrank, rank_delay)
+
+flights %>% mutate(rank = min_rank(arr_delay)) %>% arrange(desc(rank)) %>% head(10)
 ```
 
 
@@ -324,6 +367,11 @@ arrange(delayrank, rank_delay)
 > Because longer object length is not a multiple of shorter object length.
 
 6.What trigonometric functions does R provide?
+
+```{r}
+help("Trig")
+```
+
 > cospi(x), sinpi(x), and tanpi(x), compute cos(pi*x), sin(pi*x), and tan(pi*x).
 cos(x)
 sin(x)
