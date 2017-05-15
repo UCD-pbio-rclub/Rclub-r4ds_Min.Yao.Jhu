@@ -1,0 +1,11 @@
+---
+title: "Data transformation- continued"
+author: "Min-Yao"
+date: "2017年5月14日"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+## 5.6 Grouped summaries with summarise()
+
