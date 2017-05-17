@@ -526,3 +526,432 @@ not_cancelled %>%
 ## # ... with 355 more rows
 ```
 
+### 5.6.5 Grouping by multiple variables
+
+
+```r
+daily <- group_by(flights, year, month, day)
+(per_day   <- summarise(daily, flights = n()))
+```
+
+```
+## Source: local data frame [365 x 4]
+## Groups: year, month [?]
+## 
+##     year month   day flights
+##    <int> <int> <int>   <int>
+## 1   2013     1     1     842
+## 2   2013     1     2     943
+## 3   2013     1     3     914
+## 4   2013     1     4     915
+## 5   2013     1     5     720
+## 6   2013     1     6     832
+## 7   2013     1     7     933
+## 8   2013     1     8     899
+## 9   2013     1     9     902
+## 10  2013     1    10     932
+## # ... with 355 more rows
+```
+
+```r
+(per_month <- summarise(per_day, flights = sum(flights)))
+```
+
+```
+## Source: local data frame [12 x 3]
+## Groups: year [?]
+## 
+##     year month flights
+##    <int> <int>   <int>
+## 1   2013     1   27004
+## 2   2013     2   24951
+## 3   2013     3   28834
+## 4   2013     4   28330
+## 5   2013     5   28796
+## 6   2013     6   28243
+## 7   2013     7   29425
+## 8   2013     8   29327
+## 9   2013     9   27574
+## 10  2013    10   28889
+## 11  2013    11   27268
+## 12  2013    12   28135
+```
+
+```r
+(per_year  <- summarise(per_month, flights = sum(flights)))
+```
+
+```
+## # A tibble: 1 × 2
+##    year flights
+##   <int>   <int>
+## 1  2013  336776
+```
+
+### 5.6.6 Ungrouping
+
+
+```r
+daily %>% 
+  ungroup() %>%             # no longer grouped by date
+  summarise(flights = n())  # all flights
+```
+
+```
+## # A tibble: 1 × 1
+##   flights
+##     <int>
+## 1  336776
+```
+
+### 5.6.7 Exercises
+
+1.
+
+```r
+#1.1 A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time
+not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+
+not_cancelled %>%
+  group_by(flight) %>%
+  summarize(early_15_min = mean(arr_delay <= -15), late_15_min = mean(arr_delay >= 15)) %>%
+  filter(early_15_min == 0.5, late_15_min == 0.5)
+```
+
+```
+## # A tibble: 21 × 3
+##    flight early_15_min late_15_min
+##     <int>        <dbl>       <dbl>
+## 1     107          0.5         0.5
+## 2    2072          0.5         0.5
+## 3    2366          0.5         0.5
+## 4    2500          0.5         0.5
+## 5    2552          0.5         0.5
+## 6    3495          0.5         0.5
+## 7    3505          0.5         0.5
+## 8    3518          0.5         0.5
+## 9    3544          0.5         0.5
+## 10   3651          0.5         0.5
+## # ... with 11 more rows
+```
+
+```r
+#1.2 A flight is always 10 minutes late.
+
+not_cancelled %>%
+  group_by(flight) %>%
+  summarize(late_10_min = mean(arr_delay == 10)) %>% 
+  filter(late_10_min == 1)
+```
+
+```
+## # A tibble: 5 × 2
+##   flight late_10_min
+##    <int>       <dbl>
+## 1   2254           1
+## 2   3656           1
+## 3   3785           1
+## 4   3880           1
+## 5   5854           1
+```
+
+```r
+#1.3 A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
+
+not_cancelled %>%
+  group_by(flight) %>%
+  summarize(early_30_min = mean(arr_delay <= -30),
+            late_30_min = mean(arr_delay >= 30)) %>%
+  filter(early_30_min == 0.5,
+         late_30_min == 0.5)
+```
+
+```
+## # A tibble: 3 × 3
+##   flight early_30_min late_30_min
+##    <int>        <dbl>       <dbl>
+## 1   3651          0.5         0.5
+## 2   3916          0.5         0.5
+## 3   3951          0.5         0.5
+```
+
+```r
+#1.4 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
+
+not_cancelled %>%
+  group_by(flight) %>%
+  summarize(on_time = mean(arr_delay == 0),
+            late_2_hr = mean(arr_delay >= 120)) %>%
+  filter(on_time == 0.99,
+         late_2_hr == 0.01)
+```
+
+```
+## # A tibble: 0 × 3
+## # ... with 3 variables: flight <int>, on_time <dbl>, late_2_hr <dbl>
+```
+
+2.Come up with another approach that will give you the same output as not_cancelled %>% count(dest) and not_cancelled %>% count(tailnum, wt = distance) (without using count()).
+
+```r
+not_cancelled %>% count(dest)
+```
+
+```
+## # A tibble: 104 × 2
+##     dest     n
+##    <chr> <int>
+## 1    ABQ   254
+## 2    ACK   264
+## 3    ALB   418
+## 4    ANC     8
+## 5    ATL 16837
+## 6    AUS  2411
+## 7    AVL   261
+## 8    BDL   412
+## 9    BGR   358
+## 10   BHM   269
+## # ... with 94 more rows
+```
+
+```r
+not_cancelled %>%
+  group_by(dest) %>%
+  summarise(n=n())
+```
+
+```
+## # A tibble: 104 × 2
+##     dest     n
+##    <chr> <int>
+## 1    ABQ   254
+## 2    ACK   264
+## 3    ALB   418
+## 4    ANC     8
+## 5    ATL 16837
+## 6    AUS  2411
+## 7    AVL   261
+## 8    BDL   412
+## 9    BGR   358
+## 10   BHM   269
+## # ... with 94 more rows
+```
+
+```r
+not_cancelled %>% count(tailnum, wt = distance)
+```
+
+```
+## # A tibble: 4,037 × 2
+##    tailnum      n
+##      <chr>  <dbl>
+## 1   D942DN   3418
+## 2   N0EGMQ 239143
+## 3   N10156 109664
+## 4   N102UW  25722
+## 5   N103US  24619
+## 6   N104UW  24616
+## 7   N10575 139903
+## 8   N105UW  23618
+## 9   N107US  21677
+## 10  N108UW  32070
+## # ... with 4,027 more rows
+```
+
+```r
+not_cancelled %>%
+  group_by(tailnum) %>%
+  summarise(n=n())
+```
+
+```
+## # A tibble: 4,037 × 2
+##    tailnum     n
+##      <chr> <int>
+## 1   D942DN     4
+## 2   N0EGMQ   352
+## 3   N10156   145
+## 4   N102UW    48
+## 5   N103US    46
+## 6   N104UW    46
+## 7   N10575   269
+## 8   N105UW    45
+## 9   N107US    41
+## 10  N108UW    60
+## # ... with 4,027 more rows
+```
+
+## 5.7 Grouped mutates (and filters)
+
+
+```r
+flights_sml <- select(flights, 
+  year:day, 
+  ends_with("delay"), 
+  distance, 
+  air_time
+)
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60
+)
+```
+
+```
+## # A tibble: 336,776 × 9
+##     year month   day dep_delay arr_delay distance air_time  gain    speed
+##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl> <dbl>    <dbl>
+## 1   2013     1     1         2        11     1400      227     9 370.0441
+## 2   2013     1     1         4        20     1416      227    16 374.2731
+## 3   2013     1     1         2        33     1089      160    31 408.3750
+## 4   2013     1     1        -1       -18     1576      183   -17 516.7213
+## 5   2013     1     1        -6       -25      762      116   -19 394.1379
+## 6   2013     1     1        -4        12      719      150    16 287.6000
+## 7   2013     1     1        -5        19     1065      158    24 404.4304
+## 8   2013     1     1        -3       -14      229       53   -11 259.2453
+## 9   2013     1     1        -3        -8      944      140    -5 404.5714
+## 10  2013     1     1        -2         8      733      138    10 318.6957
+## # ... with 336,766 more rows
+```
+
+```r
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+```
+## # A tibble: 336,776 × 10
+##     year month   day dep_delay arr_delay distance air_time  gain     hours
+##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl> <dbl>     <dbl>
+## 1   2013     1     1         2        11     1400      227     9 3.7833333
+## 2   2013     1     1         4        20     1416      227    16 3.7833333
+## 3   2013     1     1         2        33     1089      160    31 2.6666667
+## 4   2013     1     1        -1       -18     1576      183   -17 3.0500000
+## 5   2013     1     1        -6       -25      762      116   -19 1.9333333
+## 6   2013     1     1        -4        12      719      150    16 2.5000000
+## 7   2013     1     1        -5        19     1065      158    24 2.6333333
+## 8   2013     1     1        -3       -14      229       53   -11 0.8833333
+## 9   2013     1     1        -3        -8      944      140    -5 2.3333333
+## 10  2013     1     1        -2         8      733      138    10 2.3000000
+## # ... with 336,766 more rows, and 1 more variables: gain_per_hour <dbl>
+```
+
+```r
+flights_sml %>% 
+  group_by(year, month, day) %>%
+  filter(rank(desc(arr_delay)) < 10)
+```
+
+```
+## Source: local data frame [3,306 x 7]
+## Groups: year, month, day [365]
+## 
+##     year month   day dep_delay arr_delay distance air_time
+##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl>
+## 1   2013     1     1       853       851      184       41
+## 2   2013     1     1       290       338     1134      213
+## 3   2013     1     1       260       263      266       46
+## 4   2013     1     1       157       174      213       60
+## 5   2013     1     1       216       222      708      121
+## 6   2013     1     1       255       250      589      115
+## 7   2013     1     1       285       246     1085      146
+## 8   2013     1     1       192       191      199       44
+## 9   2013     1     1       379       456     1092      222
+## 10  2013     1     2       224       207      550       94
+## # ... with 3,296 more rows
+```
+
+
+```r
+popular_dests <- flights %>% 
+  group_by(dest) %>% 
+  filter(n() > 365)
+popular_dests
+```
+
+```
+## Source: local data frame [332,577 x 19]
+## Groups: dest [77]
+## 
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     1     1      517            515         2      830
+## 2   2013     1     1      533            529         4      850
+## 3   2013     1     1      542            540         2      923
+## 4   2013     1     1      544            545        -1     1004
+## 5   2013     1     1      554            600        -6      812
+## 6   2013     1     1      554            558        -4      740
+## 7   2013     1     1      555            600        -5      913
+## 8   2013     1     1      557            600        -3      709
+## 9   2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 332,567 more rows, and 12 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>
+```
+
+
+```r
+popular_dests %>% 
+  filter(arr_delay > 0) %>% 
+  mutate(prop_delay = arr_delay / sum(arr_delay)) %>% 
+  select(year:day, dest, arr_delay, prop_delay)
+```
+
+```
+## Source: local data frame [131,106 x 6]
+## Groups: dest [77]
+## 
+##     year month   day  dest arr_delay   prop_delay
+##    <int> <int> <int> <chr>     <dbl>        <dbl>
+## 1   2013     1     1   IAH        11 1.106740e-04
+## 2   2013     1     1   IAH        20 2.012255e-04
+## 3   2013     1     1   MIA        33 2.350026e-04
+## 4   2013     1     1   ORD        12 4.239594e-05
+## 5   2013     1     1   FLL        19 9.377853e-05
+## 6   2013     1     1   ORD         8 2.826396e-05
+## 7   2013     1     1   LAX         7 3.444441e-05
+## 8   2013     1     1   DFW        31 2.817951e-04
+## 9   2013     1     1   ATL        12 3.996017e-05
+## 10  2013     1     1   DTW        16 1.157257e-04
+## # ... with 131,096 more rows
+```
+
+### 5.7.1 Exercises
+
+2. Which plane (tailnum) has the worst on-time record? N384HA
+
+```r
+flights %>% 
+  group_by(tailnum) %>%
+  filter(rank(desc(arr_delay)) < 10) %>%
+  arrange(desc(arr_delay))
+```
+
+```
+## Source: local data frame [33,429 x 19]
+## Groups: tailnum [4,044]
+## 
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     1     9      641            900      1301     1242
+## 2   2013     6    15     1432           1935      1137     1607
+## 3   2013     1    10     1121           1635      1126     1239
+## 4   2013     9    20     1139           1845      1014     1457
+## 5   2013     7    22      845           1600      1005     1044
+## 6   2013     4    10     1100           1900       960     1342
+## 7   2013     3    17     2321            810       911      135
+## 8   2013     7    22     2257            759       898      121
+## 9   2013    12     5      756           1700       896     1058
+## 10  2013     5     3     1133           2055       878     1250
+## # ... with 33,419 more rows, and 12 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>
+```
+
