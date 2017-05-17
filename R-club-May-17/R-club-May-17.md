@@ -1117,16 +1117,97 @@ not_cancelled %>%
 4.For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.
 
 
+```r
+not_cancelled %>%
+  group_by(dest) %>%
+  mutate(total_flight_delay = sum(arr_delay), prop_delay = arr_delay/sum(arr_delay)) %>%
+  arrange(desc(prop_delay))
+```
+
+```
+## Source: local data frame [327,346 x 21]
+## Groups: dest [104]
+## 
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     3    30     1110            908       122     1346
+## 2   2013     7    27     1617           1615         2     1906
+## 3   2013    12    19      734           1725       849     1046
+## 4   2013     5    13     1801           1805        -4     2018
+## 5   2013     8    27     1817           1824        -7     2023
+## 6   2013     8    10     1613           1615        -2     1922
+## 7   2013     7    14     1822           1824        -2     2027
+## 8   2013    11    13     1805           1810        -5     2030
+## 9   2013     3    16      845            830        15     1154
+## 10  2013     1     3     1806           1810        -4     2036
+## # ... with 327,336 more rows, and 14 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>, total_flight_delay <dbl>,
+## #   prop_delay <dbl>
+```
 
 
 5.Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
 
 
+```r
+?flights
+
+not_cancelled %>%
+  group_by(origin, year, month, day) %>%
+  arrange(origin, year, month, day, hour, minute) %>%
+  mutate(preceding_flight_delay = lag(dep_delay)) %>%
+  ggplot(aes(x = preceding_flight_delay, y = dep_delay)) +
+  geom_point() + geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+```
+## Warning: Removed 1095 rows containing non-finite values (stat_smooth).
+```
+
+```
+## Warning: Removed 1095 rows containing missing values (geom_point).
+```
+
+![](R-club-May-17_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
 
 
 6.Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 
 
+```r
+not_cancelled %>%
+  group_by(dest) %>%
+  mutate(shortest_flight = min(air_time)) %>%
+  arrange(dest, air_time)
+```
+
+```
+## Source: local data frame [327,346 x 20]
+## Groups: dest [104]
+## 
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     7    15     2058           2007        51     2250
+## 2   2013     7    12     2005           2007        -2     2214
+## 3   2013     7    14     2111           2007        64     2304
+## 4   2013     8    29     2133           2007        86     2336
+## 5   2013     8    30     2014           2007         7     2224
+## 6   2013     8    26     2036           2007        29     2247
+## 7   2013     9     6     2031           2001        30     2239
+## 8   2013     9     7     1958           2001        -3     2205
+## 9   2013     8    27     1959           2007        -8     2208
+## 10  2013     9    29     2114           2001        73     2333
+## # ... with 327,336 more rows, and 13 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>, shortest_flight <dbl>
+```
 
 
 7.Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.

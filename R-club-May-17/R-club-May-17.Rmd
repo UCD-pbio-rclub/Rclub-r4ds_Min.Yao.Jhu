@@ -370,6 +370,11 @@ not_cancelled %>%
 4.For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.
 
 ```{r}
+not_cancelled %>%
+  group_by(dest) %>%
+  mutate(total_flight_delay = sum(arr_delay), prop_delay = arr_delay/sum(arr_delay)) %>%
+  arrange(desc(prop_delay))
+  
 
 ```
 
@@ -377,14 +382,24 @@ not_cancelled %>%
 5.Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
 
 ```{r}
+?flights
 
+not_cancelled %>%
+  group_by(origin, year, month, day) %>%
+  arrange(origin, year, month, day, hour, minute) %>%
+  mutate(preceding_flight_delay = lag(dep_delay)) %>%
+  ggplot(aes(x = preceding_flight_delay, y = dep_delay)) +
+  geom_point() + geom_smooth()
 ```
 
 
 6.Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 
 ```{r}
-
+not_cancelled %>%
+  group_by(dest) %>%
+  mutate(shortest_flight = min(air_time)) %>%
+  arrange(dest, air_time)
 ```
 
 
