@@ -1213,9 +1213,62 @@ not_cancelled %>%
 7.Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 
 
+```r
+not_cancelled %>%
+  group_by(dest, carrier) %>%
+  count(carrier) %>%
+  filter(n >= 2)
+```
+
+```
+## Source: local data frame [297 x 3]
+## Groups: dest [103]
+## 
+##     dest carrier     n
+##    <chr>   <chr> <int>
+## 1    ABQ      B6   254
+## 2    ACK      B6   264
+## 3    ALB      EV   418
+## 4    ANC      UA     8
+## 5    ATL      9E    56
+## 6    ATL      DL 10452
+## 7    ATL      EV  1656
+## 8    ATL      FL  2278
+## 9    ATL      MQ  2235
+## 10   ATL      UA   102
+## # ... with 287 more rows
+```
 
 
 8.For each plane, count the number of flights before the first delay of greater than 1 hour.
 
 
+```r
+flights %>%
+  group_by(tailnum) %>%
+  arrange(year, month, day) %>%
+  filter(arr_delay > 60)
+```
+
+```
+## Source: local data frame [27,789 x 19]
+## Groups: tailnum [3,371]
+## 
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+## 1   2013     1     1      811            630       101     1047
+## 2   2013     1     1      848           1835       853     1001
+## 3   2013     1     1      957            733       144     1056
+## 4   2013     1     1     1114            900       134     1447
+## 5   2013     1     1     1120            944        96     1331
+## 6   2013     1     1     1255           1200        55     1451
+## 7   2013     1     1     1301           1150        71     1518
+## 8   2013     1     1     1337           1220        77     1649
+## 9   2013     1     1     1342           1320        22     1617
+## 10  2013     1     1     1400           1250        70     1645
+## # ... with 27,779 more rows, and 12 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>
+```
 

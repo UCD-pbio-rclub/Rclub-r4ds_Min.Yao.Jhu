@@ -406,6 +406,10 @@ not_cancelled %>%
 7.Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 
 ```{r}
+not_cancelled %>%
+  group_by(dest, carrier) %>%
+  count(carrier) %>%
+  filter(n >= 2)
 
 ```
 
@@ -413,6 +417,9 @@ not_cancelled %>%
 8.For each plane, count the number of flights before the first delay of greater than 1 hour.
 
 ```{r}
-
+flights %>%
+  group_by(tailnum) %>%
+  arrange(year, month, day) %>%
+  filter(arr_delay > 60)
 ```
 
