@@ -661,10 +661,8 @@ not_cancelled %>%
 
 not_cancelled %>%
   group_by(flight) %>%
-  summarize(early_30_min = mean(arr_delay <= -30),
-            late_30_min = mean(arr_delay >= 30)) %>%
-  filter(early_30_min == 0.5,
-         late_30_min == 0.5)
+  summarize(early_30_min = mean(arr_delay <= -30), late_30_min = mean(arr_delay >= 30)) %>%
+  filter(early_30_min == 0.5, late_30_min == 0.5)
 ```
 
 ```
@@ -681,10 +679,8 @@ not_cancelled %>%
 
 not_cancelled %>%
   group_by(flight) %>%
-  summarize(on_time = mean(arr_delay == 0),
-            late_2_hr = mean(arr_delay >= 120)) %>%
-  filter(on_time == 0.99,
-         late_2_hr == 0.01)
+  summarize(on_time = mean(arr_delay == 0), late_2_hr = mean(arr_delay >= 120)) %>%
+  filter(on_time == 0.99, late_2_hr == 0.01)
 ```
 
 ```
@@ -762,25 +758,166 @@ not_cancelled %>% count(tailnum, wt = distance)
 ```r
 not_cancelled %>%
   group_by(tailnum) %>%
-  summarise(n=n())
+  summarize(n = sum(distance))
 ```
 
 ```
 ## # A tibble: 4,037 × 2
-##    tailnum     n
-##      <chr> <int>
-## 1   D942DN     4
-## 2   N0EGMQ   352
-## 3   N10156   145
-## 4   N102UW    48
-## 5   N103US    46
-## 6   N104UW    46
-## 7   N10575   269
-## 8   N105UW    45
-## 9   N107US    41
-## 10  N108UW    60
+##    tailnum      n
+##      <chr>  <dbl>
+## 1   D942DN   3418
+## 2   N0EGMQ 239143
+## 3   N10156 109664
+## 4   N102UW  25722
+## 5   N103US  24619
+## 6   N104UW  24616
+## 7   N10575 139903
+## 8   N105UW  23618
+## 9   N107US  21677
+## 10  N108UW  32070
 ## # ... with 4,027 more rows
 ```
+
+3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
+
+> For cancelled flights, dep_delay is the most important column.
+If there is a flight accident, we only have dep_delay but no arr_delay.
+
+4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+
+
+```r
+flights %>%
+  group_by(year, month, day) %>%
+  summarize(canceled_prop = mean(is.na(dep_delay)),
+            avg_delay = mean(dep_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_delay))
+```
+
+```
+## Source: local data frame [365 x 5]
+## Groups: year, month [12]
+## 
+##     year month   day canceled_prop avg_delay
+##    <int> <int> <int>         <dbl>     <dbl>
+## 1   2013     3     8    0.18386108  83.53692
+## 2   2013     7     1    0.08799172  56.23383
+## 3   2013     9     2    0.08934338  53.02955
+## 4   2013     7    10    0.12051793  52.86070
+## 5   2013    12     5    0.16305470  52.32799
+## 6   2013     5    23    0.22368421  51.14472
+## 7   2013     9    12    0.19354839  49.95875
+## 8   2013     6    28    0.12374245  48.82778
+## 9   2013     6    24    0.11167002  47.15742
+## 10  2013     7    22    0.12300000  46.66705
+## # ... with 355 more rows
+```
+
+5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
+
+
+```r
+not_cancelled %>%
+  group_by(carrier, dest) %>%
+  summarize(mean_delay = mean(arr_delay))%>%
+  arrange(desc(mean_delay))
+```
+
+```
+## Source: local data frame [312 x 3]
+## Groups: carrier [16]
+## 
+##    carrier  dest mean_delay
+##      <chr> <chr>      <dbl>
+## 1       UA   STL  110.00000
+## 2       OO   ORD  107.00000
+## 3       OO   DTW   68.50000
+## 4       UA   RDU   56.00000
+## 5       EV   CAE   42.80583
+## 6       EV   TYS   41.15016
+## 7       EV   PBI   40.66667
+## 8       EV   TUL   33.65986
+## 9       EV   OKC   30.61905
+## 10      UA   JAC   29.89474
+## # ... with 302 more rows
+```
+
+```r
+not_cancelled %>%
+  group_by(carrier) %>%
+  summarize(mean_delay = mean(arr_delay)) %>%
+  arrange(desc(mean_delay))
+```
+
+```
+## # A tibble: 16 × 2
+##    carrier mean_delay
+##      <chr>      <dbl>
+## 1       F9 21.9207048
+## 2       FL 20.1159055
+## 3       EV 15.7964311
+## 4       YV 15.5569853
+## 5       OO 11.9310345
+## 6       MQ 10.7747334
+## 7       WN  9.6491199
+## 8       B6  9.4579733
+## 9       9E  7.3796692
+## 10      UA  3.5580111
+## 11      US  2.1295951
+## 12      VX  1.7644644
+## 13      DL  1.6443409
+## 14      AA  0.3642909
+## 15      HA -6.9152047
+## 16      AS -9.9308886
+```
+
+```r
+not_cancelled %>%
+  group_by(dest) %>%
+  summarize(mean_delay = mean(arr_delay)) %>%
+  arrange(desc(mean_delay))
+```
+
+```
+## # A tibble: 104 × 2
+##     dest mean_delay
+##    <chr>      <dbl>
+## 1    CAE   41.76415
+## 2    TUL   33.65986
+## 3    OKC   30.61905
+## 4    JAC   28.09524
+## 5    TYS   24.06920
+## 6    MSN   20.19604
+## 7    RIC   20.11125
+## 8    CAK   19.69834
+## 9    DSM   19.00574
+## 10   GRR   18.18956
+## # ... with 94 more rows
+```
+
+
+6. What does the sort argument to count() do. When might you use it?
+
+
+```r
+?count()
+```
+
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
+
+```r
+?sort
+```
+
+> Sort (or order) a vector or factor (partially) into ascending or descending order. For ordering along more than one variable, e.g., for sorting data frames.
+
+
 
 ## 5.7 Grouped mutates (and filters)
 

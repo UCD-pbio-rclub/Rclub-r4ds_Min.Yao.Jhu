@@ -227,19 +227,15 @@ not_cancelled %>%
 
 not_cancelled %>%
   group_by(flight) %>%
-  summarize(early_30_min = mean(arr_delay <= -30),
-            late_30_min = mean(arr_delay >= 30)) %>%
-  filter(early_30_min == 0.5,
-         late_30_min == 0.5)
+  summarize(early_30_min = mean(arr_delay <= -30), late_30_min = mean(arr_delay >= 30)) %>%
+  filter(early_30_min == 0.5, late_30_min == 0.5)
 
 #1.4 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
 
 not_cancelled %>%
   group_by(flight) %>%
-  summarize(on_time = mean(arr_delay == 0),
-            late_2_hr = mean(arr_delay >= 120)) %>%
-  filter(on_time == 0.99,
-         late_2_hr == 0.01)
+  summarize(on_time = mean(arr_delay == 0), late_2_hr = mean(arr_delay >= 120)) %>%
+  filter(on_time == 0.99, late_2_hr == 0.01)
 
 ```
 
@@ -255,8 +251,55 @@ not_cancelled %>% count(tailnum, wt = distance)
 
 not_cancelled %>%
   group_by(tailnum) %>%
-  summarise(n=n())
+  summarize(n = sum(distance))
 ```
+
+3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
+
+> For cancelled flights, dep_delay is the most important column.
+If there is a flight accident, we only have dep_delay but no arr_delay.
+
+4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+
+```{r}
+flights %>%
+  group_by(year, month, day) %>%
+  summarize(canceled_prop = mean(is.na(dep_delay)),
+            avg_delay = mean(dep_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_delay))
+
+```
+
+5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
+
+```{r}
+not_cancelled %>%
+  group_by(carrier, dest) %>%
+  summarize(mean_delay = mean(arr_delay))%>%
+  arrange(desc(mean_delay))
+
+not_cancelled %>%
+  group_by(carrier) %>%
+  summarize(mean_delay = mean(arr_delay)) %>%
+  arrange(desc(mean_delay))
+
+not_cancelled %>%
+  group_by(dest) %>%
+  summarize(mean_delay = mean(arr_delay)) %>%
+  arrange(desc(mean_delay))
+```
+
+
+6. What does the sort argument to count() do. When might you use it?
+
+```{r}
+?count()
+?sort
+```
+
+> Sort (or order) a vector or factor (partially) into ascending or descending order. For ordering along more than one variable, e.g., for sorting data frames.
+
+
 
 ## 5.7 Grouped mutates (and filters)
 
