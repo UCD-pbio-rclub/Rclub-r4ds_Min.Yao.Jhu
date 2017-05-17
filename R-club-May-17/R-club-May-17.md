@@ -41,6 +41,14 @@ library(tidyverse)
 ## lag():    dplyr, stats
 ```
 
+```r
+library(Lahman)
+```
+
+```
+## Warning: package 'Lahman' was built under R version 3.3.3
+```
+
 ## 5.6 Grouped summaries with summarise()
 
 
@@ -238,14 +246,6 @@ delays %>%
 
 
 ```r
-library(Lahman)
-```
-
-```
-## Warning: package 'Lahman' was built under R version 3.3.3
-```
-
-```r
 batting <- as_tibble(Lahman::Batting)
 
 batters <- batting %>% 
@@ -293,4 +293,236 @@ batters %>%
 ### 5.6.4 Useful summary functions
 
 
+```r
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    avg_delay1 = mean(arr_delay),
+    avg_delay2 = mean(arr_delay[arr_delay > 0]) # the average positive delay
+  )
+```
+
+```
+## Source: local data frame [365 x 5]
+## Groups: year, month [?]
+## 
+##     year month   day avg_delay1 avg_delay2
+##    <int> <int> <int>      <dbl>      <dbl>
+## 1   2013     1     1 12.6510229   32.48156
+## 2   2013     1     2 12.6928879   32.02991
+## 3   2013     1     3  5.7333333   27.66087
+## 4   2013     1     4 -1.9328194   28.30976
+## 5   2013     1     5 -1.5258020   22.55882
+## 6   2013     1     6  4.2364294   24.37270
+## 7   2013     1     7 -4.9473118   27.76132
+## 8   2013     1     8 -3.2275785   20.78909
+## 9   2013     1     9 -0.2642777   25.63415
+## 10  2013     1    10 -5.8988159   27.34545
+## # ... with 355 more rows
+```
+
+
+```r
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(distance_sd = sd(distance)) %>% 
+  arrange(desc(distance_sd))
+```
+
+```
+## # A tibble: 104 × 2
+##     dest distance_sd
+##    <chr>       <dbl>
+## 1    EGE   10.542765
+## 2    SAN   10.350094
+## 3    SFO   10.216017
+## 4    HNL   10.004197
+## 5    SEA    9.977993
+## 6    LAS    9.907786
+## 7    PDX    9.873299
+## 8    PHX    9.862546
+## 9    LAX    9.657195
+## 10   IND    9.458066
+## # ... with 94 more rows
+```
+
+
+```r
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    first = min(dep_time),
+    last = max(dep_time)
+  )
+```
+
+```
+## Source: local data frame [365 x 5]
+## Groups: year, month [?]
+## 
+##     year month   day first  last
+##    <int> <int> <int> <int> <int>
+## 1   2013     1     1   517  2356
+## 2   2013     1     2    42  2354
+## 3   2013     1     3    32  2349
+## 4   2013     1     4    25  2358
+## 5   2013     1     5    14  2357
+## 6   2013     1     6    16  2355
+## 7   2013     1     7    49  2359
+## 8   2013     1     8   454  2351
+## 9   2013     1     9     2  2252
+## 10  2013     1    10     3  2320
+## # ... with 355 more rows
+```
+
+
+```r
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    first_dep = first(dep_time), 
+    last_dep = last(dep_time)
+  )
+```
+
+```
+## Source: local data frame [365 x 5]
+## Groups: year, month [?]
+## 
+##     year month   day first_dep last_dep
+##    <int> <int> <int>     <int>    <int>
+## 1   2013     1     1       517     2356
+## 2   2013     1     2        42     2354
+## 3   2013     1     3        32     2349
+## 4   2013     1     4        25     2358
+## 5   2013     1     5        14     2357
+## 6   2013     1     6        16     2355
+## 7   2013     1     7        49     2359
+## 8   2013     1     8       454     2351
+## 9   2013     1     9         2     2252
+## 10  2013     1    10         3     2320
+## # ... with 355 more rows
+```
+
+
+```r
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(carriers = n_distinct(carrier)) %>% 
+  arrange(desc(carriers))
+```
+
+```
+## # A tibble: 104 × 2
+##     dest carriers
+##    <chr>    <int>
+## 1    ATL        7
+## 2    BOS        7
+## 3    CLT        7
+## 4    ORD        7
+## 5    TPA        7
+## 6    AUS        6
+## 7    DCA        6
+## 8    DTW        6
+## 9    IAD        6
+## 10   MSP        6
+## # ... with 94 more rows
+```
+
+
+```r
+not_cancelled %>% 
+  count(dest)
+```
+
+```
+## # A tibble: 104 × 2
+##     dest     n
+##    <chr> <int>
+## 1    ABQ   254
+## 2    ACK   264
+## 3    ALB   418
+## 4    ANC     8
+## 5    ATL 16837
+## 6    AUS  2411
+## 7    AVL   261
+## 8    BDL   412
+## 9    BGR   358
+## 10   BHM   269
+## # ... with 94 more rows
+```
+
+```r
+not_cancelled %>%
+  group_by(dest) %>%
+  summarise(n=n())
+```
+
+```
+## # A tibble: 104 × 2
+##     dest     n
+##    <chr> <int>
+## 1    ABQ   254
+## 2    ACK   264
+## 3    ALB   418
+## 4    ANC     8
+## 5    ATL 16837
+## 6    AUS  2411
+## 7    AVL   261
+## 8    BDL   412
+## 9    BGR   358
+## 10   BHM   269
+## # ... with 94 more rows
+```
+
+
+```r
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(n_early = sum(dep_time < 500))
+```
+
+```
+## Source: local data frame [365 x 4]
+## Groups: year, month [?]
+## 
+##     year month   day n_early
+##    <int> <int> <int>   <int>
+## 1   2013     1     1       0
+## 2   2013     1     2       3
+## 3   2013     1     3       4
+## 4   2013     1     4       3
+## 5   2013     1     5       3
+## 6   2013     1     6       2
+## 7   2013     1     7       2
+## 8   2013     1     8       1
+## 9   2013     1     9       3
+## 10  2013     1    10       3
+## # ... with 355 more rows
+```
+
+```r
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(hour_perc = mean(arr_delay > 60))
+```
+
+```
+## Source: local data frame [365 x 4]
+## Groups: year, month [?]
+## 
+##     year month   day  hour_perc
+##    <int> <int> <int>      <dbl>
+## 1   2013     1     1 0.07220217
+## 2   2013     1     2 0.08512931
+## 3   2013     1     3 0.05666667
+## 4   2013     1     4 0.03964758
+## 5   2013     1     5 0.03486750
+## 6   2013     1     6 0.04704463
+## 7   2013     1     7 0.03333333
+## 8   2013     1     8 0.02130045
+## 9   2013     1     9 0.02015677
+## 10  2013     1    10 0.01829925
+## # ... with 355 more rows
+```
 
