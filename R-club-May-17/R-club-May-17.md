@@ -791,27 +791,12 @@ flights %>%
   group_by(year, month, day) %>%
   summarize(canceled_prop = mean(is.na(dep_delay)),
             avg_delay = mean(dep_delay, na.rm = TRUE)) %>%
-  arrange(desc(avg_delay))
+  arrange(desc(avg_delay)) %>%
+  ggplot(mapping = aes(x = canceled_prop, y = avg_delay)) +
+  geom_point(alpha = 0.3)
 ```
 
-```
-## Source: local data frame [365 x 5]
-## Groups: year, month [12]
-## 
-##     year month   day canceled_prop avg_delay
-##    <int> <int> <int>         <dbl>     <dbl>
-## 1   2013     3     8    0.18386108  83.53692
-## 2   2013     7     1    0.08799172  56.23383
-## 3   2013     9     2    0.08934338  53.02955
-## 4   2013     7    10    0.12051793  52.86070
-## 5   2013    12     5    0.16305470  52.32799
-## 6   2013     5    23    0.22368421  51.14472
-## 7   2013     9    12    0.19354839  49.95875
-## 8   2013     6    28    0.12374245  48.82778
-## 9   2013     6    24    0.11167002  47.15742
-## 10  2013     7    22    0.12300000  46.66705
-## # ... with 355 more rows
-```
+![](R-club-May-17_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
 
@@ -1147,6 +1132,38 @@ not_cancelled %>%
 ## #   prop_delay <dbl>
 ```
 
+```r
+##
+not_cancelled %>% group_by(dest) %>%
+  mutate(total_delay = sum(arr_delay)) %>%
+  group_by(flight, carrier) %>%
+  mutate(proportion_delay = arr_delay / total_delay) %>%
+  arrange(dest,desc(proportion_delay)) %>% select(dest,flight,total_delay, proportion_delay)
+```
+
+```
+## Adding missing grouping variables: `carrier`
+```
+
+```
+## Source: local data frame [327,346 x 5]
+## Groups: flight, carrier [5,706]
+## 
+##    carrier  dest flight total_delay proportion_delay
+##      <chr> <chr>  <int>       <dbl>            <dbl>
+## 1       B6   ABQ   1505        1113       0.13746631
+## 2       B6   ABQ     65        1113       0.13387242
+## 3       B6   ABQ     65        1113       0.12398922
+## 4       B6   ABQ   1505        1113       0.12309075
+## 5       B6   ABQ     65        1113       0.12219227
+## 6       B6   ABQ   1505        1113       0.11320755
+## 7       B6   ABQ   1505        1113       0.10601977
+## 8       B6   ABQ   1505        1113       0.10512129
+## 9       B6   ABQ     65        1113       0.10242588
+## 10      B6   ABQ   1505        1113       0.09793351
+## # ... with 327,336 more rows
+```
+
 
 5.Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
 
@@ -1244,31 +1261,30 @@ not_cancelled %>%
 
 
 ```r
-flights %>%
+not_cancelled %>%
   group_by(tailnum) %>%
-  arrange(year, month, day) %>%
-  filter(arr_delay > 60)
+  arrange(year, month, day, hour) %>%
+  summarise(less_one_late = sum(arr_delay < 60))
 ```
 
 ```
-## Source: local data frame [27,789 x 19]
-## Groups: tailnum [3,371]
-## 
-##     year month   day dep_time sched_dep_time dep_delay arr_time
-##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
-## 1   2013     1     1      811            630       101     1047
-## 2   2013     1     1      848           1835       853     1001
-## 3   2013     1     1      957            733       144     1056
-## 4   2013     1     1     1114            900       134     1447
-## 5   2013     1     1     1120            944        96     1331
-## 6   2013     1     1     1255           1200        55     1451
-## 7   2013     1     1     1301           1150        71     1518
-## 8   2013     1     1     1337           1220        77     1649
-## 9   2013     1     1     1342           1320        22     1617
-## 10  2013     1     1     1400           1250        70     1645
-## # ... with 27,779 more rows, and 12 more variables: sched_arr_time <int>,
-## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
-## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
-## #   minute <dbl>, time_hour <dttm>
+## # A tibble: 4,037 × 2
+##    tailnum less_one_late
+##      <chr>         <int>
+## 1   D942DN             3
+## 2   N0EGMQ           322
+## 3   N10156           130
+## 4   N102UW            46
+## 5   N103US            46
+## 6   N104UW            42
+## 7   N10575           219
+## 8   N105UW            44
+## 9   N107US            40
+## 10  N108UW            58
+## # ... with 4,027 more rows
 ```
 
+jrnold.github.io
+
+# ctrl+shift+M = %>%
+# n_distinct()

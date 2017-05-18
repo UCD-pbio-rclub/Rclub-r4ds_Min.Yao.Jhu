@@ -266,7 +266,9 @@ flights %>%
   group_by(year, month, day) %>%
   summarize(canceled_prop = mean(is.na(dep_delay)),
             avg_delay = mean(dep_delay, na.rm = TRUE)) %>%
-  arrange(desc(avg_delay))
+  arrange(desc(avg_delay)) %>%
+  ggplot(mapping = aes(x = canceled_prop, y = avg_delay)) +
+  geom_point(alpha = 0.3)
 
 ```
 
@@ -376,6 +378,13 @@ not_cancelled %>%
   arrange(desc(prop_delay))
   
 
+##
+not_cancelled %>% group_by(dest) %>%
+  mutate(total_delay = sum(arr_delay)) %>%
+  group_by(flight, carrier) %>%
+  mutate(proportion_delay = arr_delay / total_delay) %>%
+  arrange(dest,desc(proportion_delay)) %>% select(dest,flight,total_delay, proportion_delay)
+
 ```
 
 
@@ -417,9 +426,13 @@ not_cancelled %>%
 8.For each plane, count the number of flights before the first delay of greater than 1 hour.
 
 ```{r}
-flights %>%
+not_cancelled %>%
   group_by(tailnum) %>%
-  arrange(year, month, day) %>%
-  filter(arr_delay > 60)
+  arrange(year, month, day, hour) %>%
+  summarise(less_one_late = sum(arr_delay < 60))
 ```
 
+jrnold.github.io
+
+# ctrl+shift+M = %>%
+# n_distinct()
