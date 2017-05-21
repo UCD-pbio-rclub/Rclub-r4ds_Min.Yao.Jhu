@@ -5,3 +5,37 @@ Min-Yao
 # 7 Exploratory Data Analysis
 
 ## 7.1 Introduction
+
+### 7.1.1 Prerequisites
+
+## 7.2 Questions
+
+## 7.3 Variation
+
+### 7.3.1 Visualising distributions
+
+### 7.3.2 Typical values
+
+### 7.3.3 Unusual values
+
+### 7.3.4 Exercises
+
+## 7.4 Missing values
+
+### 7.4.1 Exercises
+
+## 7.5 Covariation
+
+### 7.5.1 A categorical and continuous variable
+
+#### 7.5.1.1 Exercises
+
+### 7.5.2 Two categorical variables
+
+#### 7.5.2.1 Exercises
+
+### 7.5.3 Two continuous variables
+
+#### 7.5.3.1 Exercises
+
+
