@@ -462,37 +462,372 @@ ggplot(data = mpg) +
 
 1.Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
 
+
+```r
+# original version
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+```r
+# improved version
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(x = sched_dep_time, y = ..density..)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-15-2.png)<!-- -->
+
+
 2.What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?
+
+
+```r
+#?diamonds
+#1
+ggplot(data = diamonds, mapping = aes(x = carat, y = price)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = x, y = price)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-2.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = y, y = price)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-3.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = z, y = price)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-4.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = depth, y = price)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-5.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = table, y = price)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+```
+## `geom_smooth()` using method = 'gam'
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-6.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-7.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = color, y = price)) + 
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-8.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = clarity, y = price)) + 
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-16-9.png)<!-- -->
+> Carat is most important for predicting the price of a diamond.
+
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = carat)) + 
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
+> In general, fair cut diamonds have higher carat than others. Therefore, the combination of carat and cut relationships lead to lower quality diamonds being more expensive.
 
 3.Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?
 
+
+```r
+library("ggplot2")
+
+# Vertical
+ggplot(mpg, aes(class, hwy, fill = factor(cyl))) +
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+
+```r
+# Horizontal with coord_flip()
+ggplot(mpg, aes(class, hwy, fill = factor(cyl))) +
+  geom_boxplot() +
+  coord_flip()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-18-2.png)<!-- -->
+
+```r
+#install.packages("ggstance")
+library("ggstance")
+```
+
+```
+## Warning: package 'ggstance' was built under R version 3.3.3
+```
+
+```
+## 
+## Attaching package: 'ggstance'
+```
+
+```
+## The following objects are masked from 'package:ggplot2':
+## 
+##     geom_errorbarh, GeomErrorbarh
+```
+
+```r
+# Horizontal with ggstance
+ggplot(mpg, aes(hwy, class, fill = factor(cyl))) +
+  geom_boxploth()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-18-3.png)<!-- -->
+> Horizontal Geoms draw horizontal legend keys to keep the appearance of your plots consistent.
+
 4.One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
+
+
+```r
+#install.packages("lvplot")
+library(lvplot)
+```
+
+```
+## Warning: package 'lvplot' was built under R version 3.3.3
+```
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+  geom_lv()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-19-2.png)<!-- -->
+
 
 5.Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?
 
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+  geom_violin()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(price, colour = cut)) + 
+  geom_freqpoly(binwidth = 100)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-20-2.png)<!-- -->
+
+```r
+ggplot(diamonds, aes(price, fill = cut)) +
+  geom_histogram(binwidth = 100)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-20-3.png)<!-- -->
+
+
 6.If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.
 
+
+```r
+library(ggbeeswarm)
+```
+
+```
+## Warning: package 'ggbeeswarm' was built under R version 3.3.3
+```
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+  geom_jitter()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+  geom_quasirandom()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-21-2.png)<!-- -->
+
+```r
+#ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
+#  geom_beeswarm()
+```
+
+> Beeswarm plots (aka column scatter plots or violin scatter plots) are a way of plotting points that would ordinarily overlap so that they fall next to each other instead. In addition to reducing overplotting, it helps visualize the density of the data at each point (similar to a violin plot), while still showing each data point individually.
+
+> ggbeeswarm provides two different methods to create beeswarm-style plots using ggplot2. It does this by adding two new ggplot geom objects:
+
+> geom_quasirandom: Uses a van der Corput sequence or Tukey texturing (Tukey and Tukey "Strips displaying empirical distributions: I. textured dot strips") to space the dots to avoid overplotting. This uses sherrillmix/vipor.
+
+> geom_beeswarm: Uses the beeswarm library to do point-size based offset.
+
+
 ### 7.5.2 Two categorical variables
+
+
+```r
+ggplot(data = diamonds) +
+  geom_count(mapping = aes(x = cut, y = color))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+
+```r
+diamonds %>% 
+  count(color, cut)
+```
+
+```
+## Source: local data frame [35 x 3]
+## Groups: color [?]
+## 
+##    color       cut     n
+##    <ord>     <ord> <int>
+## 1      D      Fair   163
+## 2      D      Good   662
+## 3      D Very Good  1513
+## 4      D   Premium  1603
+## 5      D     Ideal  2834
+## 6      E      Fair   224
+## 7      E      Good   933
+## 8      E Very Good  2400
+## 9      E   Premium  2337
+## 10     E     Ideal  3903
+## # ... with 25 more rows
+```
+
+```r
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+    geom_tile(mapping = aes(fill = n))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-22-2.png)<!-- -->
+
 
 #### 7.5.2.1 Exercises
 
 1.How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?
 
+
+
+
 2.Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
+
+
+
 
 3.Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
 
+
+
+
 ### 7.5.3 Two continuous variables
+
+
+
 
 #### 7.5.3.1 Exercises
 
 1.Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?
 
+
+
 2.Visualise the distribution of carat, partitioned by price.
+
+
 
 3.How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
+
+
 4.Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
+
+
+
 
 5.Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately.
 
@@ -503,6 +838,6 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
 
 Why is a scatterplot a better display than a binned plot for this case?
