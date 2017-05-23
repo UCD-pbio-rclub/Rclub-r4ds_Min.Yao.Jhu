@@ -181,21 +181,225 @@ unusual
 1.Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.
 
 
+```r
+?diamonds
+```
 
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = x), binwidth = 0.5)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = z), binwidth = 0.5)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
+
+> x=length in mm (0–10.74), y= width in mm (0–58.9), z= depth in mm (0–31.8)
 
 2.Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
 
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 100)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 100) +
+  coord_cartesian(ylim = c(0, 500))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
+
+> There is a sharply dropping at around $1300 
+
 3.How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
+
+
+```r
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = carat), binwidth = 0.01)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+```r
+diamonds %>% 
+  count(carat)
+```
+
+```
+## # A tibble: 273 × 2
+##    carat     n
+##    <dbl> <int>
+## 1   0.20    12
+## 2   0.21     9
+## 3   0.22     5
+## 4   0.23   293
+## 5   0.24   254
+## 6   0.25   212
+## 7   0.26   253
+## 8   0.27   233
+## 9   0.28   198
+## 10  0.29   130
+## # ... with 263 more rows
+```
+
+> 23 diamonds are 0.99 carat. 1558 diamonds are 1 carat. I think the cause of the difference is price because 1 carat diamonds are much more expensive than 0.99 carat.
 
 4.Compare and contrast coord_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?
 
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  ylim(0, 50)
+```
+
+```
+## Warning: Removed 11 rows containing missing values (geom_bar).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-8-2.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  xlim(0, 50)
+```
+
+```
+## Warning: Removed 1 rows containing non-finite values (stat_bin).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-8-3.png)<!-- -->
+
+> xlim() or ylim() removes data points outside of the given range
+
 ## 7.4 Missing values
+
+
+```r
+diamonds2 <- diamonds %>% 
+  filter(between(y, 3, 20))
+
+ggplot(data = diamonds2, mapping = aes(x = x, y = y)) + 
+  geom_point()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+```r
+diamonds2 <- diamonds %>% 
+  mutate(y = ifelse(y < 3 | y > 20, NA, y))
+
+ggplot(data = diamonds2, mapping = aes(x = x, y = y)) + 
+  geom_point()
+```
+
+```
+## Warning: Removed 9 rows containing missing values (geom_point).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-9-2.png)<!-- -->
+
+```r
+ggplot(data = diamonds2, mapping = aes(x = x, y = y)) + 
+  geom_point(na.rm = TRUE)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-9-3.png)<!-- -->
+
+
+```r
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
 
 ### 7.4.1 Exercises
 
 1.What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?
 
+
+```r
+diamonds2 <- diamonds %>% 
+  mutate(y = ifelse(y < 3 | y > 20, NA, y))
+
+ggplot(diamonds2) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5)
+```
+
+```
+## Warning: Removed 9 rows containing non-finite values (stat_bin).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+ggplot(diamonds2) +
+  geom_bar(mapping = aes(x = y))
+```
+
+```
+## Warning: Removed 9 rows containing non-finite values (stat_count).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-11-2.png)<!-- -->
+
+> ggplot2 doesn’t include them in the plot, but it does warn that they’ve been removed.
+
 2.What does na.rm = TRUE do in mean() and sum()?
+
+
+```r
+?mean
+?sum()
+```
+
+> `na.rm` a logical value indicating whether NA values should be stripped before the computation proceeds.
+> If na.rm is FALSE an NA or NaN value in any of the arguments will cause a value of NA or NaN to be returned, otherwise NA and NaN values are ignored.
+
 
 ## 7.5 Covariation
 
@@ -247,6 +451,6 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 Why is a scatterplot a better display than a binned plot for this case?
