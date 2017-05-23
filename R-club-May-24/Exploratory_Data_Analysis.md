@@ -406,6 +406,58 @@ ggplot(diamonds2) +
 ### 7.5.1 A categorical and continuous variable
 
 
+```r
+ggplot(data = diamonds, mapping = aes(x = price)) + 
+  geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-13-2.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) + 
+  geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-13-3.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-13-4.png)<!-- -->
+
+
+```r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+```r
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-14-2.png)<!-- -->
+
+```r
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
+  coord_flip()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-14-3.png)<!-- -->
+
+
 #### 7.5.1.1 Exercises
 
 1.Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
@@ -451,6 +503,6 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 Why is a scatterplot a better display than a binned plot for this case?
