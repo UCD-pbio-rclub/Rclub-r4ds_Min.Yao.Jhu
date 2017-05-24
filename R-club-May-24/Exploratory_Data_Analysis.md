@@ -182,18 +182,8 @@ unusual
 
 
 ```r
-?diamonds
-```
+#?diamonds
 
-```
-## starting httpd help server ...
-```
-
-```
-##  done
-```
-
-```r
 ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = x), binwidth = 0.5)
 ```
@@ -213,6 +203,37 @@ ggplot(diamonds) +
 ```
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
+
+```r
+summary(diamonds)
+```
+
+```
+##      carat               cut        color        clarity     
+##  Min.   :0.2000   Fair     : 1610   D: 6775   SI1    :13065  
+##  1st Qu.:0.4000   Good     : 4906   E: 9797   VS2    :12258  
+##  Median :0.7000   Very Good:12082   F: 9542   SI2    : 9194  
+##  Mean   :0.7979   Premium  :13791   G:11292   VS1    : 8171  
+##  3rd Qu.:1.0400   Ideal    :21551   H: 8304   VVS2   : 5066  
+##  Max.   :5.0100                     I: 5422   VVS1   : 3655  
+##                                     J: 2808   (Other): 2531  
+##      depth           table           price             x         
+##  Min.   :43.00   Min.   :43.00   Min.   :  326   Min.   : 0.000  
+##  1st Qu.:61.00   1st Qu.:56.00   1st Qu.:  950   1st Qu.: 4.710  
+##  Median :61.80   Median :57.00   Median : 2401   Median : 5.700  
+##  Mean   :61.75   Mean   :57.46   Mean   : 3933   Mean   : 5.731  
+##  3rd Qu.:62.50   3rd Qu.:59.00   3rd Qu.: 5324   3rd Qu.: 6.540  
+##  Max.   :79.00   Max.   :95.00   Max.   :18823   Max.   :10.740  
+##                                                                  
+##        y                z         
+##  Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 4.720   1st Qu.: 2.910  
+##  Median : 5.710   Median : 3.530  
+##  Mean   : 5.735   Mean   : 3.539  
+##  3rd Qu.: 6.540   3rd Qu.: 4.040  
+##  Max.   :58.900   Max.   :31.800  
+## 
+```
 
 > x=length in mm (0–10.74), y= width in mm (0–58.9), z= depth in mm (0–31.8)
 
@@ -234,7 +255,30 @@ ggplot(diamonds) +
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
 
-> There is a sharply dropping at around $1300 
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 50)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 50) +
+  coord_cartesian(ylim = c(0, 100))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
+
+```r
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 50) +
+  coord_cartesian(xlim = c(1400,1600))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-6-5.png)<!-- -->
+
+> There is no diamond's price at between $1475 and $1525.
 
 3.How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
 
@@ -305,7 +349,7 @@ ggplot(diamonds) +
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-8-3.png)<!-- -->
 
-> xlim() or ylim() removes data points outside of the given range
+> `coord_cartesian()` only zooms in on the certain part. `xlim()` or `ylim()` removes data points outside of the given range.
 
 ## 7.4 Missing values
 
@@ -393,8 +437,8 @@ ggplot(diamonds2) +
 
 
 ```r
-?mean
-?sum()
+#?mean
+#?sum()
 ```
 
 > `na.rm` a logical value indicating whether NA values should be stripped before the computation proceeds.
@@ -782,7 +826,7 @@ diamonds %>%
 diamonds %>% 
   count(color, cut) %>%  
   ggplot(mapping = aes(x = color, y = cut)) +
-    geom_tile(mapping = aes(fill = n))
+    geom_tile(mapping = aes(fill = n)) 
 ```
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-22-2.png)<!-- -->
@@ -793,39 +837,320 @@ diamonds %>%
 1.How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?
 
 
+```r
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+    geom_tile(mapping = aes(fill = n)) +
+    scale_fill_gradient2(low="red", mid="yellow", high="blue")
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
 
 
 2.Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
 
 
+```r
+library(dplyr)
+library(nycflights13)
+```
+
+```
+## Warning: package 'nycflights13' was built under R version 3.3.3
+```
+
+```r
+library(tidyverse)
+
+summary(flights)
+```
+
+```
+##       year          month             day           dep_time   
+##  Min.   :2013   Min.   : 1.000   Min.   : 1.00   Min.   :   1  
+##  1st Qu.:2013   1st Qu.: 4.000   1st Qu.: 8.00   1st Qu.: 907  
+##  Median :2013   Median : 7.000   Median :16.00   Median :1401  
+##  Mean   :2013   Mean   : 6.549   Mean   :15.71   Mean   :1349  
+##  3rd Qu.:2013   3rd Qu.:10.000   3rd Qu.:23.00   3rd Qu.:1744  
+##  Max.   :2013   Max.   :12.000   Max.   :31.00   Max.   :2400  
+##                                                  NA's   :8255  
+##  sched_dep_time   dep_delay          arr_time    sched_arr_time
+##  Min.   : 106   Min.   : -43.00   Min.   :   1   Min.   :   1  
+##  1st Qu.: 906   1st Qu.:  -5.00   1st Qu.:1104   1st Qu.:1124  
+##  Median :1359   Median :  -2.00   Median :1535   Median :1556  
+##  Mean   :1344   Mean   :  12.64   Mean   :1502   Mean   :1536  
+##  3rd Qu.:1729   3rd Qu.:  11.00   3rd Qu.:1940   3rd Qu.:1945  
+##  Max.   :2359   Max.   :1301.00   Max.   :2400   Max.   :2359  
+##                 NA's   :8255      NA's   :8713                 
+##    arr_delay          carrier              flight       tailnum         
+##  Min.   : -86.000   Length:336776      Min.   :   1   Length:336776     
+##  1st Qu.: -17.000   Class :character   1st Qu.: 553   Class :character  
+##  Median :  -5.000   Mode  :character   Median :1496   Mode  :character  
+##  Mean   :   6.895                      Mean   :1972                     
+##  3rd Qu.:  14.000                      3rd Qu.:3465                     
+##  Max.   :1272.000                      Max.   :8500                     
+##  NA's   :9430                                                           
+##     origin              dest              air_time        distance   
+##  Length:336776      Length:336776      Min.   : 20.0   Min.   :  17  
+##  Class :character   Class :character   1st Qu.: 82.0   1st Qu.: 502  
+##  Mode  :character   Mode  :character   Median :129.0   Median : 872  
+##                                        Mean   :150.7   Mean   :1040  
+##                                        3rd Qu.:192.0   3rd Qu.:1389  
+##                                        Max.   :695.0   Max.   :4983  
+##                                        NA's   :9430                  
+##       hour           minute        time_hour                  
+##  Min.   : 1.00   Min.   : 0.00   Min.   :2013-01-01 05:00:00  
+##  1st Qu.: 9.00   1st Qu.: 8.00   1st Qu.:2013-04-04 13:00:00  
+##  Median :13.00   Median :29.00   Median :2013-07-03 10:00:00  
+##  Mean   :13.18   Mean   :26.23   Mean   :2013-07-03 05:02:36  
+##  3rd Qu.:17.00   3rd Qu.:44.00   3rd Qu.:2013-10-01 07:00:00  
+##  Max.   :23.00   Max.   :59.00   Max.   :2013-12-31 23:00:00  
+## 
+```
+
+```r
+flights %>% 
+  count(arr_delay, dest) %>%  
+  ggplot(mapping = aes(x = arr_delay, y = dest)) +
+    geom_tile(mapping = aes(fill = n))
+```
+
+```
+## Warning: Removed 100 rows containing missing values (geom_tile).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+
+```r
+flights %>% 
+  count(arr_delay, month) %>%  
+  ggplot(mapping = aes(x = arr_delay, y = month)) +
+    geom_tile(mapping = aes(fill = n))
+```
+
+```
+## Warning: Removed 12 rows containing missing values (geom_tile).
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-24-2.png)<!-- -->
+
+```r
+flights %>%
+  group_by(dest, month) %>%
+  summarise(arr_delay_mean = mean(arr_delay, na.rm = TRUE)) %>%
+  ggplot(aes(x = dest, y = month, fill = arr_delay_mean)) +
+  geom_tile() 
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-24-3.png)<!-- -->
 
 
 3.Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
 
 
+```r
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+    geom_tile(mapping = aes(fill = n))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
+
+```r
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = cut, y = color)) +
+    geom_tile(mapping = aes(fill = n))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-25-2.png)<!-- -->
 
 
 ### 7.5.3 Two continuous variables
 
 
+```r
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = carat, y = price))
+```
 
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds) + 
+  geom_point(mapping = aes(x = carat, y = price), alpha = 1 / 100)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-2.png)<!-- -->
+
+```r
+ggplot(data = smaller) +
+  geom_bin2d(mapping = aes(x = carat, y = price))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-3.png)<!-- -->
+
+```r
+#install.packages("hexbin")
+library(hexbin)
+```
+
+```
+## Warning: package 'hexbin' was built under R version 3.3.3
+```
+
+```r
+ggplot(data = smaller) +
+  geom_hex(mapping = aes(x = carat, y = price))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-4.png)<!-- -->
+
+```r
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+  geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-5.png)<!-- -->
+
+```r
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+  geom_boxplot(mapping = aes(group = cut_number(carat, 20)))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-6.png)<!-- -->
 
 #### 7.5.3.1 Exercises
 
 1.Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?
 
 
+```r
+ggplot(data = diamonds, mapping = aes(x = price, colour = cut_width(carat, 0.1))) +
+  geom_freqpoly()
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds, mapping = aes(x = price, colour = cut_number(carat, 20))) +
+  geom_freqpoly()
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-27-2.png)<!-- -->
+
 
 2.Visualise the distribution of carat, partitioned by price.
 
+
+```r
+summary(diamonds)
+```
+
+```
+##      carat               cut        color        clarity     
+##  Min.   :0.2000   Fair     : 1610   D: 6775   SI1    :13065  
+##  1st Qu.:0.4000   Good     : 4906   E: 9797   VS2    :12258  
+##  Median :0.7000   Very Good:12082   F: 9542   SI2    : 9194  
+##  Mean   :0.7979   Premium  :13791   G:11292   VS1    : 8171  
+##  3rd Qu.:1.0400   Ideal    :21551   H: 8304   VVS2   : 5066  
+##  Max.   :5.0100                     I: 5422   VVS1   : 3655  
+##                                     J: 2808   (Other): 2531  
+##      depth           table           price             x         
+##  Min.   :43.00   Min.   :43.00   Min.   :  326   Min.   : 0.000  
+##  1st Qu.:61.00   1st Qu.:56.00   1st Qu.:  950   1st Qu.: 4.710  
+##  Median :61.80   Median :57.00   Median : 2401   Median : 5.700  
+##  Mean   :61.75   Mean   :57.46   Mean   : 3933   Mean   : 5.731  
+##  3rd Qu.:62.50   3rd Qu.:59.00   3rd Qu.: 5324   3rd Qu.: 6.540  
+##  Max.   :79.00   Max.   :95.00   Max.   :18823   Max.   :10.740  
+##                                                                  
+##        y                z         
+##  Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 4.720   1st Qu.: 2.910  
+##  Median : 5.710   Median : 3.530  
+##  Mean   : 5.735   Mean   : 3.539  
+##  3rd Qu.: 6.540   3rd Qu.: 4.040  
+##  Max.   :58.900   Max.   :31.800  
+## 
+```
+
+```r
+ggplot(data = diamonds, aes(x = cut_width(price, 5000), y = carat)) +
+  geom_boxplot(varwidth = TRUE)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds, aes(x = cut_number(price, 5), y = carat)) +
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-28-2.png)<!-- -->
 
 
 3.How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
 
+```r
+summary(diamonds)
+```
+
+```
+##      carat               cut        color        clarity     
+##  Min.   :0.2000   Fair     : 1610   D: 6775   SI1    :13065  
+##  1st Qu.:0.4000   Good     : 4906   E: 9797   VS2    :12258  
+##  Median :0.7000   Very Good:12082   F: 9542   SI2    : 9194  
+##  Mean   :0.7979   Premium  :13791   G:11292   VS1    : 8171  
+##  3rd Qu.:1.0400   Ideal    :21551   H: 8304   VVS2   : 5066  
+##  Max.   :5.0100                     I: 5422   VVS1   : 3655  
+##                                     J: 2808   (Other): 2531  
+##      depth           table           price             x         
+##  Min.   :43.00   Min.   :43.00   Min.   :  326   Min.   : 0.000  
+##  1st Qu.:61.00   1st Qu.:56.00   1st Qu.:  950   1st Qu.: 4.710  
+##  Median :61.80   Median :57.00   Median : 2401   Median : 5.700  
+##  Mean   :61.75   Mean   :57.46   Mean   : 3933   Mean   : 5.731  
+##  3rd Qu.:62.50   3rd Qu.:59.00   3rd Qu.: 5324   3rd Qu.: 6.540  
+##  Max.   :79.00   Max.   :95.00   Max.   :18823   Max.   :10.740  
+##                                                                  
+##        y                z         
+##  Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 4.720   1st Qu.: 2.910  
+##  Median : 5.710   Median : 3.530  
+##  Mean   : 5.735   Mean   : 3.539  
+##  3rd Qu.: 6.540   3rd Qu.: 4.040  
+##  Max.   :58.900   Max.   :31.800  
+## 
+```
+
+```r
+ggplot(data = diamonds, aes(x = cut_width(carat, 0.5), y = price)) +
+  geom_boxplot(varwidth = TRUE)
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+
+
 
 4.Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
 
+
+```r
+ggplot(data = diamonds, aes(x = cut_width(price, 5000), y = carat, color = cut)) +
+  geom_boxplot()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
 
 
 
@@ -838,6 +1163,25 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
 
 Why is a scatterplot a better display than a binned plot for this case?
+
+
+```r
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = cut_width(x, 2), y = y)) +
+  coord_cartesian()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-32-1.png)<!-- -->
+
+```r
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = cut_width(y, 2), y = x)) +
+  coord_cartesian()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-32-2.png)<!-- -->
+
+> their x and y values appear normal when examined separately.

@@ -95,6 +95,8 @@ ggplot(diamonds) +
 
 ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = z), binwidth = 0.5)
+
+summary(diamonds)
 ```
 
 > x=length in mm (0–10.74), y= width in mm (0–58.9), z= depth in mm (0–31.8)
@@ -108,9 +110,21 @@ ggplot(diamonds) +
 ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = price), binwidth = 100) +
   coord_cartesian(ylim = c(0, 500))
+
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 50)
+
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 50) +
+  coord_cartesian(ylim = c(0, 100))
+
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = price), binwidth = 50) +
+  coord_cartesian(xlim = c(1400,1600))
+
 ```
 
-> There is a sharply dropping at around $1300 
+> There is no diamond's price at between $1475 and $1525.
 
 3.How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
 
@@ -140,7 +154,7 @@ ggplot(diamonds) +
   xlim(0, 50)
 ```
 
-> xlim() or ylim() removes data points outside of the given range
+> `coord_cartesian()` only zooms in on the certain part. `xlim()` or `ylim()` removes data points outside of the given range.
 
 ## 7.4 Missing values
 
@@ -403,7 +417,8 @@ diamonds %>%
 diamonds %>% 
   count(color, cut) %>%  
   ggplot(mapping = aes(x = color, y = cut)) +
-    geom_tile(mapping = aes(fill = n))
+    geom_tile(mapping = aes(fill = n)) 
+  
 ```
 
 
@@ -412,6 +427,11 @@ diamonds %>%
 1.How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?
 
 ```{r}
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+    geom_tile(mapping = aes(fill = n)) +
+    scale_fill_gradient2(low="red", mid="yellow", high="blue")
 
 ```
 
@@ -419,6 +439,27 @@ diamonds %>%
 2.Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
 
 ```{r}
+library(dplyr)
+library(nycflights13)
+library(tidyverse)
+
+summary(flights)
+
+flights %>% 
+  count(arr_delay, dest) %>%  
+  ggplot(mapping = aes(x = arr_delay, y = dest)) +
+    geom_tile(mapping = aes(fill = n))
+
+flights %>% 
+  count(arr_delay, month) %>%  
+  ggplot(mapping = aes(x = arr_delay, y = month)) +
+    geom_tile(mapping = aes(fill = n))
+
+flights %>%
+  group_by(dest, month) %>%
+  summarise(arr_delay_mean = mean(arr_delay, na.rm = TRUE)) %>%
+  ggplot(aes(x = dest, y = month, fill = arr_delay_mean)) +
+  geom_tile() 
 
 ```
 
@@ -441,7 +482,25 @@ diamonds %>%
 ### 7.5.3 Two continuous variables
 
 ```{r}
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = carat, y = price))
 
+ggplot(data = diamonds) + 
+  geom_point(mapping = aes(x = carat, y = price), alpha = 1 / 100)
+
+ggplot(data = smaller) +
+  geom_bin2d(mapping = aes(x = carat, y = price))
+
+#install.packages("hexbin")
+library(hexbin)
+ggplot(data = smaller) +
+  geom_hex(mapping = aes(x = carat, y = price))
+
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+  geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)))
+
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+  geom_boxplot(mapping = aes(group = cut_number(carat, 20)))
 ```
 
 #### 7.5.3.1 Exercises
@@ -449,28 +508,43 @@ diamonds %>%
 1.Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?
 
 ```{r}
+ggplot(data = diamonds, mapping = aes(x = price, colour = cut_width(carat, 0.1))) +
+  geom_freqpoly()
 
+ggplot(data = diamonds, mapping = aes(x = price, colour = cut_number(carat, 20))) +
+  geom_freqpoly()
 ```
 
 
 2.Visualise the distribution of carat, partitioned by price.
 
 ```{r}
+summary(diamonds)
 
+ggplot(data = diamonds, aes(x = cut_width(price, 5000), y = carat)) +
+  geom_boxplot(varwidth = TRUE)
+
+ggplot(data = diamonds, aes(x = cut_number(price, 5), y = carat)) +
+  geom_boxplot()
 ```
 
 
 3.How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
 ```{r}
+summary(diamonds)
 
+ggplot(data = diamonds, aes(x = cut_width(carat, 0.5), y = price)) +
+  geom_boxplot(varwidth = TRUE)
 ```
+
 
 
 4.Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
 
 ```{r}
-
+ggplot(data = diamonds, aes(x = cut_width(price, 5000), y = carat, color = cut)) +
+  geom_boxplot()
 ```
 
 
@@ -486,6 +560,13 @@ ggplot(data = diamonds) +
 Why is a scatterplot a better display than a binned plot for this case?
 
 ```{r}
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = cut_width(x, 2), y = y)) +
+  coord_cartesian()
 
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = cut_width(y, 2), y = x)) +
+  coord_cartesian()
 ```
 
+> their x and y values appear normal when examined separately.
