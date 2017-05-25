@@ -100,6 +100,7 @@ summary(diamonds)
 ```
 
 > x=length in mm (0–10.74), y= width in mm (0–58.9), z= depth in mm (0–31.8)
+> most are square, so 
 
 2.Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
 
@@ -133,6 +134,11 @@ ggplot(data = diamonds) +
   geom_histogram(mapping = aes(x = carat), binwidth = 0.01)
 
 diamonds %>% 
+  count(carat)
+
+##
+diamonds %>%
+  filter(carat >= 0.99, carat <= 1) %>%
   count(carat)
 ```
 
@@ -202,6 +208,12 @@ ggplot(diamonds2) +
 ggplot(diamonds2) +
   geom_bar(mapping = aes(x = y))
 
+### notes
+diamonds2 <- diamonds %>% 
+  mutate(cut = ifelse(price < 500 | price > 20000, NA, as.character(cut)))
+ggplot(data = diamonds2, mapping = aes(x = cut)) + 
+  geom_bar()
+# to new catories
 ```
 
 > ggplot2 doesn’t include them in the plot, but it does warn that they’ve been removed.
@@ -246,6 +258,8 @@ ggplot(data = mpg) +
 ggplot(data = mpg) +
   geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
   coord_flip()
+
+?scale_x_discrete()
 ```
 
 
@@ -362,6 +376,9 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
 
 ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
   geom_lv()
+
+ggplot(diamonds, mapping = aes(x = cut, y = price)) +
+  geom_lv(aes(fill=..LV..))
 ```
 
 
@@ -376,6 +393,12 @@ ggplot(data = diamonds, mapping = aes(price, colour = cut)) +
 
 ggplot(diamonds, aes(price, fill = cut)) +
   geom_histogram(binwidth = 100)
+
+##
+ggplot(data = diamonds, aes(x = price, y = ..density..)) +
+  facet_wrap(~cut, nrow = 1) +
+  geom_histogram()
+
 ```
 
 
@@ -394,6 +417,15 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
 #ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
 #  geom_beeswarm()
 
+##
+ggplot(mpg, mapping = aes(x = class, y = hwy)) +
+  geom_jitter()
+
+ggplot(mpg, mapping = aes(x = class, y = hwy)) +
+  geom_beeswarm()
+
+ggplot(mpg, mapping = aes(x = class, y = hwy)) +
+  geom_quasirandom()
 ```
 
 > Beeswarm plots (aka column scatter plots or violin scatter plots) are a way of plotting points that would ordinarily overlap so that they fall next to each other instead. In addition to reducing overplotting, it helps visualize the density of the data at each point (similar to a violin plot), while still showing each data point individually.
@@ -460,7 +492,20 @@ flights %>%
   summarise(arr_delay_mean = mean(arr_delay, na.rm = TRUE)) %>%
   ggplot(aes(x = dest, y = month, fill = arr_delay_mean)) +
   geom_tile() 
+##
+#library(forcats)
 
+#flights %>%
+#  group_by(month, dest) %>%
+#  summarise(dep_delay = mean(dep_delay, na.rm = TRUE)) %>%
+#  group_by(dest) %>%
+#  filter(n() == 12) %>%  # why do this? why not >= 12?
+#  ungroup() %>%  #1008 rows
+#  mutate(dest = fct_reorder(dest, dep_delay)) %>%
+#  ggplot(aes(x = factor(month), y = dest, fill = dep_delay)) +
+#  geom_tile() +
+#  scale_fill_viridis() +
+#  labs(x = "Month", y = "Destination", fill = "Departure Delay")
 ```
 
 
@@ -567,6 +612,21 @@ ggplot(data = diamonds) +
 ggplot(data = diamonds) +
   geom_boxplot(mapping = aes(x = cut_width(y, 2), y = x)) +
   coord_cartesian()
+
+
+###
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = x, y = y, cut_number(x, 30))) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
+
+###
+ggplot(data = diamonds, mapping = aes(x = x, y = y)) +
+  geom_boxplot(mapping = aes(group = cut_width(x, .5))) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
 > their x and y values appear normal when examined separately.
+
+
+> forcats
+

@@ -236,6 +236,7 @@ summary(diamonds)
 ```
 
 > x=length in mm (0–10.74), y= width in mm (0–58.9), z= depth in mm (0–31.8)
+> most are square, so 
 
 2.Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
 
@@ -310,6 +311,21 @@ diamonds %>%
 ## 9   0.28   198
 ## 10  0.29   130
 ## # ... with 263 more rows
+```
+
+```r
+##
+diamonds %>%
+  filter(carat >= 0.99, carat <= 1) %>%
+  count(carat)
+```
+
+```
+## # A tibble: 2 × 2
+##   carat     n
+##   <dbl> <int>
+## 1  0.99    23
+## 2  1.00  1558
 ```
 
 > 23 diamonds are 0.99 carat. 1558 diamonds are 1 carat. I think the cause of the difference is price because 1 carat diamonds are much more expensive than 0.99 carat.
@@ -431,6 +447,20 @@ ggplot(diamonds2) +
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-11-2.png)<!-- -->
 
+```r
+### notes
+diamonds2 <- diamonds %>% 
+  mutate(cut = ifelse(price < 500 | price > 20000, NA, as.character(cut)))
+ggplot(data = diamonds2, mapping = aes(x = cut)) + 
+  geom_bar()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-11-3.png)<!-- -->
+
+```r
+# to new catories
+```
+
 > ggplot2 doesn’t include them in the plot, but it does warn that they’ve been removed.
 
 2.What does na.rm = TRUE do in mean() and sum()?
@@ -500,6 +530,18 @@ ggplot(data = mpg) +
 ```
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-14-3.png)<!-- -->
+
+```r
+?scale_x_discrete()
+```
+
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
 
 
 #### 7.5.1.1 Exercises
@@ -723,6 +765,13 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-19-2.png)<!-- -->
 
+```r
+ggplot(diamonds, mapping = aes(x = cut, y = price)) +
+  geom_lv(aes(fill=..LV..))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-19-3.png)<!-- -->
+
 
 5.Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?
 
@@ -747,6 +796,19 @@ ggplot(diamonds, aes(price, fill = cut)) +
 ```
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-20-3.png)<!-- -->
+
+```r
+##
+ggplot(data = diamonds, aes(x = price, y = ..density..)) +
+  facet_wrap(~cut, nrow = 1) +
+  geom_histogram()
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-20-4.png)<!-- -->
 
 
 6.If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.
@@ -777,7 +839,27 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
 ```r
 #ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + 
 #  geom_beeswarm()
+
+##
+ggplot(mpg, mapping = aes(x = class, y = hwy)) +
+  geom_jitter()
 ```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-21-3.png)<!-- -->
+
+```r
+ggplot(mpg, mapping = aes(x = class, y = hwy)) +
+  geom_beeswarm()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-21-4.png)<!-- -->
+
+```r
+ggplot(mpg, mapping = aes(x = class, y = hwy)) +
+  geom_quasirandom()
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-21-5.png)<!-- -->
 
 > Beeswarm plots (aka column scatter plots or violin scatter plots) are a way of plotting points that would ordinarily overlap so that they fall next to each other instead. In addition to reducing overplotting, it helps visualize the density of the data at each point (similar to a violin plot), while still showing each data point individually.
 
@@ -944,6 +1026,23 @@ flights %>%
 ```
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-24-3.png)<!-- -->
+
+```r
+##
+#library(forcats)
+
+#flights %>%
+#  group_by(month, dest) %>%
+#  summarise(dep_delay = mean(dep_delay, na.rm = TRUE)) %>%
+#  group_by(dest) %>%
+#  filter(n() == 12) %>%  # why do this? why not >= 12?
+#  ungroup() %>%  #1008 rows
+#  mutate(dest = fct_reorder(dest, dep_delay)) %>%
+#  ggplot(aes(x = factor(month), y = dest, fill = dep_delay)) +
+#  geom_tile() +
+#  scale_fill_viridis() +
+#  labs(x = "Month", y = "Destination", fill = "Departure Delay")
+```
 
 
 3.Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
@@ -1184,4 +1283,30 @@ ggplot(data = diamonds) +
 
 ![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-32-2.png)<!-- -->
 
+```r
+###
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = x, y = y, cut_number(x, 30))) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
+```
+
+```
+## Warning: Ignoring unknown aesthetics:
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-32-3.png)<!-- -->
+
+```r
+###
+ggplot(data = diamonds, mapping = aes(x = x, y = y)) +
+  geom_boxplot(mapping = aes(group = cut_width(x, .5))) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
+```
+
+![](Exploratory_Data_Analysis_files/figure-html/unnamed-chunk-32-4.png)<!-- -->
+
 > their x and y values appear normal when examined separately.
+
+
+> forcats
+
