@@ -59,15 +59,201 @@ write_csv(diamonds, "diamonds.csv")
 
 ### 10.1.1 Prerequisites
 
+```{r}
+library(tidyverse)
+
+```
+
+
 ## 10.2 Creating tibbles
+
+```{r}
+as_tibble(iris)
+
+tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)
+
+tb <- tibble(
+  `:)` = "smile", 
+  ` ` = "space",
+  `2000` = "number"
+)
+tb
+
+tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  "a", 2, 3.6,
+  "b", 1, 8.5
+)
+
+```
 
 ## 10.3 Tibbles vs. data.frame
 
 ### 10.3.1 Printing
 
+```{r}
+
+library(lubridate)
+
+newtibble <- tibble(
+  a = lubridate::now() + runif(1e3) * 86400,
+  b = lubridate::today() + runif(1e3) * 30,
+  c = 1:1e3,
+  d = runif(1e3),
+  e = sample(letters, 1e3, replace = TRUE)
+)
+newtibble
+
+nycflights13::flights %>% 
+  print(n = 10, width = Inf)
+
+nycflights13::flights %>% 
+  View()
+```
+
+
 ### 10.3.2 Subsetting
+
+```{r}
+df <- tibble(
+  x = runif(5),
+  y = rnorm(5)
+)
+
+df$x
+
+df[["x"]]
+
+df[[1]]
+
+df %>% .$x
+
+df %>% .[["x"]]
+
+```
+
 
 ## 10.4 Interacting with older code
 
+```{r}
+class(as.data.frame(tb))
+
+```
+
+
 ## 10.5 Exercises
 
+1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).
+```{r}
+
+mtcars
+as_tibble(mtcars)
+
+```
+
+2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?
+
+```{r}
+df <- data.frame(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+
+df2 <- tibble(abc = 1, xyz = "a")
+df2$x
+df2[, "xyz"]
+df2[, c("abc", "xyz")]
+```
+
+
+3. If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+
+```{r}
+mpg
+
+
+
+
+```
+
+
+4. Practice referring to non-syntactic names in the following data frame by:
+
+```{r}
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+```
+
+
+Extracting the variable called 1.
+```{r}
+annoying$`1`
+```
+
+
+Plotting a scatterplot of 1 vs 2.
+```{r}
+ggplot(annoying, aes(x=`1`, y=`2`)) +
+    geom_point() 
+
+```
+
+Creating a new column called 3 which is 2 divided by 1.
+
+```{r}
+annoying2 <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`)),
+  `3` = `2` / `1`
+)
+annoying2
+```
+
+
+Renaming the columns to one, two and three.
+
+```{r}
+annoying3 <- tibble(
+  one = 1:10,
+  two = one * 2 + rnorm(length(one)),
+  three = two / one
+)
+annoying3
+```
+
+
+5. What does tibble::enframe() do? When might you use it?
+
+```{r}
+?enframe()
+enframe(1:3)
+enframe(c(a = 5, b = 7))
+```
+
+> A helper function that converts named atomic vectors or lists to two-column data frames. For unnamed vectors, the natural sequence is used as name column.
+> enframe(x, name = "name", value = "value")
+
+6. What option controls how many additional column names are printed at the footer of a tibble?
+
+```{r}
+package?tibble
+```
+
+tibble.print_max
+Row number threshold: Maximum number of rows printed. Set to Inf to always print all rows. Default: 20.
+
+tibble.print_min
+Number of rows printed if row number threshold is exceeded. Default: 10.
+
+tibble.width
+Output width. Default: NULL (use width option).
+
+tibble.max_extra_cols
+Number of extra columns printed in reduced form. Default: 100.

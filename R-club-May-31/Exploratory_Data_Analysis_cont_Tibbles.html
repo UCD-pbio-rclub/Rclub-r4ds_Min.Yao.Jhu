@@ -139,12 +139,33 @@ $(document).ready(function () {
 </div>
 <div id="where-does-your-analysis-live" class="section level2">
 <h2>8.2 Where does your analysis live?</h2>
+<pre class="r"><code>getwd()</code></pre>
+<pre><code>## [1] &quot;D:/2017SQ/R club/Rclub-r4ds_Min.Yao.Jhu/R-club-May-31&quot;</code></pre>
 </div>
 <div id="paths-and-directories" class="section level2">
 <h2>8.3 Paths and directories</h2>
 </div>
 <div id="rstudio-projects" class="section level2">
 <h2>8.4 RStudio projects</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## Warning: package 'tidyverse' was built under R version 3.3.3</code></pre>
+<pre><code>## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr</code></pre>
+<pre><code>## Warning: package 'purrr' was built under R version 3.3.3</code></pre>
+<pre><code>## Conflicts with tidy packages ----------------------------------------------</code></pre>
+<pre><code>## filter(): dplyr, stats
+## lag():    dplyr, stats</code></pre>
+<pre class="r"><code>ggplot(diamonds, aes(carat, price)) + 
+  geom_hex()</code></pre>
+<pre><code>## Warning: package 'hexbin' was built under R version 3.3.3</code></pre>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre class="r"><code>ggsave(&quot;diamonds.pdf&quot;)</code></pre>
+<pre><code>## Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>write_csv(diamonds, &quot;diamonds.csv&quot;)</code></pre>
 </div>
 <div id="summary" class="section level2">
 <h2>8.5 Summary</h2>
@@ -156,25 +177,344 @@ $(document).ready(function () {
 <h2>10.1 Introduction</h2>
 <div id="prerequisites" class="section level3">
 <h3>10.1.1 Prerequisites</h3>
+<pre class="r"><code>library(tidyverse)</code></pre>
 </div>
 </div>
 <div id="creating-tibbles" class="section level2">
 <h2>10.2 Creating tibbles</h2>
+<pre class="r"><code>as_tibble(iris)</code></pre>
+<pre><code>## # A tibble: 150 × 5
+##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
+## 1           5.1         3.5          1.4         0.2  setosa
+## 2           4.9         3.0          1.4         0.2  setosa
+## 3           4.7         3.2          1.3         0.2  setosa
+## 4           4.6         3.1          1.5         0.2  setosa
+## 5           5.0         3.6          1.4         0.2  setosa
+## 6           5.4         3.9          1.7         0.4  setosa
+## 7           4.6         3.4          1.4         0.3  setosa
+## 8           5.0         3.4          1.5         0.2  setosa
+## 9           4.4         2.9          1.4         0.2  setosa
+## 10          4.9         3.1          1.5         0.1  setosa
+## # ... with 140 more rows</code></pre>
+<pre class="r"><code>tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)</code></pre>
+<pre><code>## # A tibble: 5 × 3
+##       x     y     z
+##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     1     2
+## 2     2     1     5
+## 3     3     1    10
+## 4     4     1    17
+## 5     5     1    26</code></pre>
+<pre class="r"><code>tb &lt;- tibble(
+  `:)` = &quot;smile&quot;, 
+  ` ` = &quot;space&quot;,
+  `2000` = &quot;number&quot;
+)
+tb</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##    `:)`   ` ` `2000`
+##   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;
+## 1 smile space number</code></pre>
+<pre class="r"><code>tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  &quot;a&quot;, 2, 3.6,
+  &quot;b&quot;, 1, 8.5
+)</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##       x     y     z
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     a     2   3.6
+## 2     b     1   8.5</code></pre>
 </div>
 <div id="tibbles-vs.data.frame" class="section level2">
 <h2>10.3 Tibbles vs. data.frame</h2>
 <div id="printing" class="section level3">
 <h3>10.3.1 Printing</h3>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## Warning: package 'lubridate' was built under R version 3.3.3</code></pre>
+<pre><code>## 
+## Attaching package: 'lubridate'</code></pre>
+<pre><code>## The following object is masked from 'package:base':
+## 
+##     date</code></pre>
+<pre class="r"><code>newtibble &lt;- tibble(
+  a = lubridate::now() + runif(1e3) * 86400,
+  b = lubridate::today() + runif(1e3) * 30,
+  c = 1:1e3,
+  d = runif(1e3),
+  e = sample(letters, 1e3, replace = TRUE)
+)
+newtibble</code></pre>
+<pre><code>## # A tibble: 1,000 × 5
+##                      a          b     c         d     e
+##                 &lt;dttm&gt;     &lt;date&gt; &lt;int&gt;     &lt;dbl&gt; &lt;chr&gt;
+## 1  2017-05-30 12:48:51 2017-05-29     1 0.4430248     a
+## 2  2017-05-29 22:23:23 2017-06-13     2 0.9256173     u
+## 3  2017-05-30 00:51:40 2017-06-25     3 0.4501180     i
+## 4  2017-05-29 23:27:22 2017-05-31     4 0.9809327     d
+## 5  2017-05-30 04:53:55 2017-06-11     5 0.2300678     j
+## 6  2017-05-29 17:42:16 2017-06-18     6 0.6975973     t
+## 7  2017-05-30 14:56:41 2017-05-29     7 0.2852085     c
+## 8  2017-05-30 06:48:17 2017-06-26     8 0.8937396     r
+## 9  2017-05-30 10:06:55 2017-06-24     9 0.9135054     b
+## 10 2017-05-30 08:06:56 2017-06-24    10 0.6430005     c
+## # ... with 990 more rows</code></pre>
+<pre class="r"><code>nycflights13::flights %&gt;% 
+  print(n = 10, width = Inf)</code></pre>
+<pre><code>## # A tibble: 336,776 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+## 1   2013     1     1      517            515         2      830
+## 2   2013     1     1      533            529         4      850
+## 3   2013     1     1      542            540         2      923
+## 4   2013     1     1      544            545        -1     1004
+## 5   2013     1     1      554            600        -6      812
+## 6   2013     1     1      554            558        -4      740
+## 7   2013     1     1      555            600        -5      913
+## 8   2013     1     1      557            600        -3      709
+## 9   2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+##    sched_arr_time arr_delay carrier flight tailnum origin  dest air_time
+##             &lt;int&gt;     &lt;dbl&gt;   &lt;chr&gt;  &lt;int&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;
+## 1             819        11      UA   1545  N14228    EWR   IAH      227
+## 2             830        20      UA   1714  N24211    LGA   IAH      227
+## 3             850        33      AA   1141  N619AA    JFK   MIA      160
+## 4            1022       -18      B6    725  N804JB    JFK   BQN      183
+## 5             837       -25      DL    461  N668DN    LGA   ATL      116
+## 6             728        12      UA   1696  N39463    EWR   ORD      150
+## 7             854        19      B6    507  N516JB    EWR   FLL      158
+## 8             723       -14      EV   5708  N829AS    LGA   IAD       53
+## 9             846        -8      B6     79  N593JB    JFK   MCO      140
+## 10            745         8      AA    301  N3ALAA    LGA   ORD      138
+##    distance  hour minute           time_hour
+##       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;              &lt;dttm&gt;
+## 1      1400     5     15 2013-01-01 05:00:00
+## 2      1416     5     29 2013-01-01 05:00:00
+## 3      1089     5     40 2013-01-01 05:00:00
+## 4      1576     5     45 2013-01-01 05:00:00
+## 5       762     6      0 2013-01-01 06:00:00
+## 6       719     5     58 2013-01-01 05:00:00
+## 7      1065     6      0 2013-01-01 06:00:00
+## 8       229     6      0 2013-01-01 06:00:00
+## 9       944     6      0 2013-01-01 06:00:00
+## 10      733     6      0 2013-01-01 06:00:00
+## # ... with 3.368e+05 more rows</code></pre>
+<pre class="r"><code>nycflights13::flights %&gt;% 
+  View()</code></pre>
 </div>
 <div id="subsetting" class="section level3">
 <h3>10.3.2 Subsetting</h3>
+<pre class="r"><code>df &lt;- tibble(
+  x = runif(5),
+  y = rnorm(5)
+)
+
+df$x</code></pre>
+<pre><code>## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190</code></pre>
+<pre class="r"><code>df[[&quot;x&quot;]]</code></pre>
+<pre><code>## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190</code></pre>
+<pre class="r"><code>df[[1]]</code></pre>
+<pre><code>## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190</code></pre>
+<pre class="r"><code>df %&gt;% .$x</code></pre>
+<pre><code>## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190</code></pre>
+<pre class="r"><code>df %&gt;% .[[&quot;x&quot;]]</code></pre>
+<pre><code>## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190</code></pre>
 </div>
 </div>
 <div id="interacting-with-older-code" class="section level2">
 <h2>10.4 Interacting with older code</h2>
+<pre class="r"><code>class(as.data.frame(tb))</code></pre>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
 </div>
 <div id="exercises" class="section level2">
 <h2>10.5 Exercises</h2>
+<ol style="list-style-type: decimal">
+<li>How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).</li>
+</ol>
+<pre class="r"><code>mtcars</code></pre>
+<pre><code>##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+## Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+## Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+## Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+## Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+## Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+## Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+## Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+## Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+## AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+## Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+## Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+## Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+## Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+<pre class="r"><code>as_tibble(mtcars)</code></pre>
+<pre><code>## # A tibble: 32 × 11
+##      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb
+## *  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1   21.0     6 160.0   110  3.90 2.620 16.46     0     1     4     4
+## 2   21.0     6 160.0   110  3.90 2.875 17.02     0     1     4     4
+## 3   22.8     4 108.0    93  3.85 2.320 18.61     1     1     4     1
+## 4   21.4     6 258.0   110  3.08 3.215 19.44     1     0     3     1
+## 5   18.7     8 360.0   175  3.15 3.440 17.02     0     0     3     2
+## 6   18.1     6 225.0   105  2.76 3.460 20.22     1     0     3     1
+## 7   14.3     8 360.0   245  3.21 3.570 15.84     0     0     3     4
+## 8   24.4     4 146.7    62  3.69 3.190 20.00     1     0     4     2
+## 9   22.8     4 140.8    95  3.92 3.150 22.90     1     0     4     2
+## 10  19.2     6 167.6   123  3.92 3.440 18.30     1     0     4     4
+## # ... with 22 more rows</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?</li>
+</ol>
+<pre class="r"><code>df &lt;- data.frame(abc = 1, xyz = &quot;a&quot;)
+df$x</code></pre>
+<pre><code>## [1] a
+## Levels: a</code></pre>
+<pre class="r"><code>df[, &quot;xyz&quot;]</code></pre>
+<pre><code>## [1] a
+## Levels: a</code></pre>
+<pre class="r"><code>df[, c(&quot;abc&quot;, &quot;xyz&quot;)]</code></pre>
+<pre><code>##   abc xyz
+## 1   1   a</code></pre>
+<pre class="r"><code>df2 &lt;- tibble(abc = 1, xyz = &quot;a&quot;)
+df2$x</code></pre>
+<pre><code>## Warning: Unknown column 'x'</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>df2[, &quot;xyz&quot;]</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##     xyz
+##   &lt;chr&gt;
+## 1     a</code></pre>
+<pre class="r"><code>df2[, c(&quot;abc&quot;, &quot;xyz&quot;)]</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##     abc   xyz
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1     1     a</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>If you have the name of a variable stored in an object, e.g. var &lt;- “mpg”, how can you extract the reference variable from a tibble?</li>
+</ol>
+<pre class="r"><code>mpg</code></pre>
+<pre><code>## # A tibble: 234 × 11
+##    manufacturer      model displ  year   cyl      trans   drv   cty   hwy
+##           &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;      &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt;
+## 1          audi         a4   1.8  1999     4   auto(l5)     f    18    29
+## 2          audi         a4   1.8  1999     4 manual(m5)     f    21    29
+## 3          audi         a4   2.0  2008     4 manual(m6)     f    20    31
+## 4          audi         a4   2.0  2008     4   auto(av)     f    21    30
+## 5          audi         a4   2.8  1999     6   auto(l5)     f    16    26
+## 6          audi         a4   2.8  1999     6 manual(m5)     f    18    26
+## 7          audi         a4   3.1  2008     6   auto(av)     f    18    27
+## 8          audi a4 quattro   1.8  1999     4 manual(m5)     4    18    26
+## 9          audi a4 quattro   1.8  1999     4   auto(l5)     4    16    25
+## 10         audi a4 quattro   2.0  2008     4 manual(m6)     4    20    28
+## # ... with 224 more rows, and 2 more variables: fl &lt;chr&gt;, class &lt;chr&gt;</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Practice referring to non-syntactic names in the following data frame by:</li>
+</ol>
+<pre class="r"><code>annoying &lt;- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)</code></pre>
+<p>Extracting the variable called 1.</p>
+<pre class="r"><code>annoying$`1`</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<p>Plotting a scatterplot of 1 vs 2.</p>
+<pre class="r"><code>ggplot(annoying, aes(x=`1`, y=`2`)) +
+    geom_point() </code></pre>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Creating a new column called 3 which is 2 divided by 1.</p>
+<pre class="r"><code>annoying2 &lt;- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`)),
+  `3` = `2` / `1`
+)
+annoying2</code></pre>
+<pre><code>## # A tibble: 10 × 3
+##      `1`       `2`      `3`
+##    &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  2.844275 2.844275
+## 2      2  4.994922 2.497461
+## 3      3  6.578258 2.192753
+## 4      4  7.092239 1.773060
+## 5      5 12.336350 2.467270
+## 6      6 11.053124 1.842187
+## 7      7 12.092954 1.727565
+## 8      8 15.384802 1.923100
+## 9      9 18.631017 2.070113
+## 10    10 20.080625 2.008062</code></pre>
+<p>Renaming the columns to one, two and three.</p>
+<pre class="r"><code>annoying3 &lt;- tibble(
+  one = 1:10,
+  two = one * 2 + rnorm(length(one)),
+  three = two / one
+)
+annoying3</code></pre>
+<pre><code>## # A tibble: 10 × 3
+##      one        two     three
+##    &lt;int&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1      1  0.4448261 0.4448261
+## 2      2  3.7962237 1.8981118
+## 3      3  5.8065809 1.9355270
+## 4      4  8.5921934 2.1480484
+## 5      5  8.6323778 1.7264756
+## 6      6 13.3883677 2.2313946
+## 7      7 15.1735395 2.1676485
+## 8      8 15.0775640 1.8846955
+## 9      9 19.3697425 2.1521936
+## 10    10 19.6629452 1.9662945</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>What does tibble::enframe() do? When might you use it?</li>
+</ol>
+<pre class="r"><code>?enframe()</code></pre>
+<pre><code>## starting httpd help server ...</code></pre>
+<pre><code>##  done</code></pre>
+<pre class="r"><code>enframe(1:3)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##    name value
+##   &lt;int&gt; &lt;int&gt;
+## 1     1     1
+## 2     2     2
+## 3     3     3</code></pre>
+<pre class="r"><code>enframe(c(a = 5, b = 7))</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##    name value
+##   &lt;chr&gt; &lt;dbl&gt;
+## 1     a     5
+## 2     b     7</code></pre>
+<blockquote>
+<p>A helper function that converts named atomic vectors or lists to two-column data frames. For unnamed vectors, the natural sequence is used as name column. enframe(x, name = “name”, value = “value”)</p>
+</blockquote>
+<ol start="6" style="list-style-type: decimal">
+<li>What option controls how many additional column names are printed at the footer of a tibble?</li>
+</ol>
+<pre class="r"><code>package?tibble</code></pre>
+<p>tibble.print_max Row number threshold: Maximum number of rows printed. Set to Inf to always print all rows. Default: 20.</p>
+<p>tibble.print_min Number of rows printed if row number threshold is exceeded. Default: 10.</p>
+<p>tibble.width Output width. Default: NULL (use width option).</p>
+<p>tibble.max_extra_cols Number of extra columns printed in reduced form. Default: 100.</p>
 </div>
 </div>
 
