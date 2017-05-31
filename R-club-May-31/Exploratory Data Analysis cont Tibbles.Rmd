@@ -130,14 +130,13 @@ tribble(
 
 library(lubridate)
 
-newtibble <- tibble(
+tibble(
   a = lubridate::now() + runif(1e3) * 86400,
   b = lubridate::today() + runif(1e3) * 30,
   c = 1:1e3,
   d = runif(1e3),
   e = sample(letters, 1e3, replace = TRUE)
 )
-newtibble
 
 nycflights13::flights %>% 
   print(n = 10, width = Inf)
@@ -184,6 +183,8 @@ class(as.data.frame(tb))
 mtcars
 as_tibble(mtcars)
 
+class(mtcars)
+class(as_tibble(mtcars))
 ```
 
 2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?
