@@ -2,17 +2,106 @@
 Min-Yao  
 2017年5月29日  
 
+
+```r
+library(ggplot2)
+library(tidyverse)
+```
+
+```
+## Warning: package 'tidyverse' was built under R version 3.3.3
+```
+
+```
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+```
+
+```
+## Warning: package 'purrr' was built under R version 3.3.3
+```
+
+```
+## Conflicts with tidy packages ----------------------------------------------
+```
+
+```
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+```
+
+```r
+library(modelr)
+```
+
+```
+## Warning: package 'modelr' was built under R version 3.3.3
+```
+
+
 ## 7.6 Patterns and models
 
 
+```r
+ggplot(data = faithful) + 
+  geom_point(mapping = aes(x = eruptions, y = waiting))
+```
+
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
+#library(modelr)
+
+mod <- lm(log(price) ~ log(carat), data = diamonds)
+
+diamonds2 <- diamonds %>% 
+  add_residuals(mod) %>% 
+  mutate(resid = exp(resid))
+
+ggplot(data = diamonds2) + 
+  geom_point(mapping = aes(x = carat, y = resid))
+```
+
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-2-2.png)<!-- -->
+
+```r
+ggplot(data = diamonds2) + 
+  geom_boxplot(mapping = aes(x = cut, y = resid))
+```
+
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-2-3.png)<!-- -->
 
 
 ## 7.7 ggplot2 calls
 
 
+```r
+ggplot(data = faithful, mapping = aes(x = eruptions)) + 
+  geom_freqpoly(binwidth = 0.25)
+```
+
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+```r
+ggplot(faithful, aes(eruptions)) + 
+  geom_freqpoly(binwidth = 0.25)
+```
+
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
+
+```r
+diamonds %>% 
+  count(cut, clarity) %>% 
+  ggplot(aes(clarity, cut, fill = n)) + 
+    geom_tile()
+```
+
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
 
 ## 7.8 Learning more
-
 
 
 # 8 Workflow: projects
@@ -39,35 +128,7 @@ getwd()
 
 ```r
 library(tidyverse)
-```
 
-```
-## Warning: package 'tidyverse' was built under R version 3.3.3
-```
-
-```
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-```
-
-```
-## Warning: package 'purrr' was built under R version 3.3.3
-```
-
-```
-## Conflicts with tidy packages ----------------------------------------------
-```
-
-```
-## filter(): dplyr, stats
-## lag():    dplyr, stats
-```
-
-```r
 ggplot(diamonds, aes(carat, price)) + 
   geom_hex()
 ```
@@ -76,7 +137,7 @@ ggplot(diamonds, aes(carat, price)) +
 ## Warning: package 'hexbin' was built under R version 3.3.3
 ```
 
-![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ```r
 ggsave("diamonds.pdf")
@@ -220,16 +281,16 @@ newtibble
 ## # A tibble: 1,000 × 5
 ##                      a          b     c         d     e
 ##                 <dttm>     <date> <int>     <dbl> <chr>
-## 1  2017-05-30 12:48:51 2017-05-29     1 0.4430248     a
-## 2  2017-05-29 22:23:23 2017-06-13     2 0.9256173     u
-## 3  2017-05-30 00:51:40 2017-06-25     3 0.4501180     i
-## 4  2017-05-29 23:27:22 2017-05-31     4 0.9809327     d
-## 5  2017-05-30 04:53:55 2017-06-11     5 0.2300678     j
-## 6  2017-05-29 17:42:16 2017-06-18     6 0.6975973     t
-## 7  2017-05-30 14:56:41 2017-05-29     7 0.2852085     c
-## 8  2017-05-30 06:48:17 2017-06-26     8 0.8937396     r
-## 9  2017-05-30 10:06:55 2017-06-24     9 0.9135054     b
-## 10 2017-05-30 08:06:56 2017-06-24    10 0.6430005     c
+## 1  2017-05-31 10:14:09 2017-06-21     1 0.6937209     t
+## 2  2017-05-31 21:18:09 2017-06-19     2 0.6296338     x
+## 3  2017-06-01 02:58:05 2017-06-24     3 0.7261290     j
+## 4  2017-05-31 22:43:51 2017-06-09     4 0.2822393     h
+## 5  2017-06-01 07:21:29 2017-06-27     5 0.1007722     s
+## 6  2017-05-31 13:36:04 2017-06-03     6 0.4758818     t
+## 7  2017-05-31 22:27:51 2017-06-10     7 0.5230659     q
+## 8  2017-06-01 07:10:47 2017-06-28     8 0.7052651     v
+## 9  2017-05-31 22:17:54 2017-06-24     9 0.5878212     o
+## 10 2017-06-01 07:21:25 2017-06-05    10 0.6848565     n
 ## # ... with 990 more rows
 ```
 
@@ -298,7 +359,7 @@ df$x
 ```
 
 ```
-## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190
+## [1] 0.9412920 0.6893223 0.6156841 0.9493802 0.5594461
 ```
 
 ```r
@@ -306,7 +367,7 @@ df[["x"]]
 ```
 
 ```
-## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190
+## [1] 0.9412920 0.6893223 0.6156841 0.9493802 0.5594461
 ```
 
 ```r
@@ -314,7 +375,7 @@ df[[1]]
 ```
 
 ```
-## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190
+## [1] 0.9412920 0.6893223 0.6156841 0.9493802 0.5594461
 ```
 
 ```r
@@ -322,7 +383,7 @@ df %>% .$x
 ```
 
 ```
-## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190
+## [1] 0.9412920 0.6893223 0.6156841 0.9493802 0.5594461
 ```
 
 ```r
@@ -330,7 +391,7 @@ df %>% .[["x"]]
 ```
 
 ```
-## [1] 0.3284541 0.9730902 0.8856468 0.2955235 0.1488190
+## [1] 0.9412920 0.6893223 0.6156841 0.9493802 0.5594461
 ```
 
 
@@ -532,7 +593,7 @@ ggplot(annoying, aes(x=`1`, y=`2`)) +
     geom_point() 
 ```
 
-![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](Exploratory_Data_Analysis_cont_Tibbles_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 Creating a new column called 3 which is 2 divided by 1.
 
@@ -550,16 +611,16 @@ annoying2
 ## # A tibble: 10 × 3
 ##      `1`       `2`      `3`
 ##    <int>     <dbl>    <dbl>
-## 1      1  2.844275 2.844275
-## 2      2  4.994922 2.497461
-## 3      3  6.578258 2.192753
-## 4      4  7.092239 1.773060
-## 5      5 12.336350 2.467270
-## 6      6 11.053124 1.842187
-## 7      7 12.092954 1.727565
-## 8      8 15.384802 1.923100
-## 9      9 18.631017 2.070113
-## 10    10 20.080625 2.008062
+## 1      1  1.422958 1.422958
+## 2      2  5.674054 2.837027
+## 3      3  6.561451 2.187150
+## 4      4  7.574442 1.893611
+## 5      5 11.176102 2.235220
+## 6      6 11.271480 1.878580
+## 7      7 13.784534 1.969219
+## 8      8 16.127574 2.015947
+## 9      9 16.786311 1.865146
+## 10    10 19.292637 1.929264
 ```
 
 
@@ -577,18 +638,18 @@ annoying3
 
 ```
 ## # A tibble: 10 × 3
-##      one        two     three
-##    <int>      <dbl>     <dbl>
-## 1      1  0.4448261 0.4448261
-## 2      2  3.7962237 1.8981118
-## 3      3  5.8065809 1.9355270
-## 4      4  8.5921934 2.1480484
-## 5      5  8.6323778 1.7264756
-## 6      6 13.3883677 2.2313946
-## 7      7 15.1735395 2.1676485
-## 8      8 15.0775640 1.8846955
-## 9      9 19.3697425 2.1521936
-## 10    10 19.6629452 1.9662945
+##      one       two    three
+##    <int>     <dbl>    <dbl>
+## 1      1  3.200485 3.200485
+## 2      2  2.745180 1.372590
+## 3      3  7.795254 2.598418
+## 4      4  8.475865 2.118966
+## 5      5 11.080216 2.216043
+## 6      6 11.033669 1.838945
+## 7      7 12.354145 1.764878
+## 8      8 15.577152 1.947144
+## 9      9 17.201872 1.911319
+## 10    10 19.691313 1.969131
 ```
 
 
