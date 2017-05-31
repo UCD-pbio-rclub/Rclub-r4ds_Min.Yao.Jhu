@@ -200,14 +200,14 @@ df2$x
 df2[, "xyz"]
 df2[, c("abc", "xyz")]
 ```
+> partial matching doesn't work
 
 
 3. If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
 
 ```{r}
 mpg
-
-
+var <- "mpg"
 
 
 ```
@@ -220,6 +220,7 @@ annoying <- tibble(
   `1` = 1:10,
   `2` = `1` * 2 + rnorm(length(`1`))
 )
+annoying
 ```
 
 
@@ -245,6 +246,11 @@ annoying2 <- tibble(
   `3` = `2` / `1`
 )
 annoying2
+
+# another method
+annoying <- annoying %>%
+  mutate(`3` = `2` / `1`)
+annoying
 ```
 
 
@@ -257,6 +263,10 @@ annoying3 <- tibble(
   three = two / one
 )
 annoying3
+
+# another method
+annoying3.1 <- rename(annoying, one = `1`, two = `2`, three = `3`)
+annoying3.1
 ```
 
 
