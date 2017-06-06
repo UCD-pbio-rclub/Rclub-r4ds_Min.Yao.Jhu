@@ -1,11 +1,6 @@
----
-title: "R-club-June-7"
-author: "Min-Yao"
-date: "2017年6月6日"
-output: 
-  html_document: 
-    keep_md: yes
----
+# R-club-June-7
+Min-Yao  
+2017年6月6日  
 
 # 11 Data import
 
