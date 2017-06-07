@@ -13,7 +13,34 @@ output:
 
 ### 11.1.1 Prerequisites
 
+```{r}
+library(tidyverse)
+```
+
+
 ## 11.2 Getting started
+
+```{r}
+read_csv("a,b,c
+1,2,3
+4,5,6")
+
+#1
+read_csv("The first line of metadata
+  The second line of metadata
+  x,y,z
+  1,2,3", skip = 2)
+
+read_csv("# A comment I want to skip
+  x,y,z
+  1,2,3", comment = "#")
+
+#2
+read_csv("1,2,3\n4,5,6", col_names = FALSE)
+
+read_csv("1,2,3\n4,5,6", col_names = c("x", "y", "z"))
+```
+
 
 ### 11.2.1 Compared to base R
 
