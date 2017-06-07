@@ -111,11 +111,253 @@ read_csv("1,2,3\n4,5,6", col_names = c("x", "y", "z"))
 ```
 
 
+```r
+read_csv("a,b,c\n1,2,.", na = ".")
+```
+
+```
+## # A tibble: 1 × 3
+##       a     b     c
+##   <int> <int> <chr>
+## 1     1     2  <NA>
+```
+
+
 ### 11.2.1 Compared to base R
 
 ### 11.2.2 Exercises
 
+1.What function would you use to read a file where fields were separated with
+“|”?
+
+```r
+#?read_delim()
+
+read_delim ("1|2|3\n4|5|6", delim = "|", col_names = c("x", "y", "z"))
+```
+
+```
+## # A tibble: 2 × 3
+##       x     y     z
+##   <int> <int> <int>
+## 1     1     2     3
+## 2     4     5     6
+```
+
+2.Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?
+
+
+```r
+?read_csv()
+```
+
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
+
+```r
+?read_tsv()
+```
+
+> read_csv2(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  comment = "", trim_ws = TRUE, skip = 0, n_max = Inf,
+  guess_max = min(1000, n_max), progress = interactive())
+
+> read_tsv(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  comment = "", trim_ws = TRUE, skip = 0, n_max = Inf,
+  guess_max = min(1000, n_max), progress = interactive())
+
+3.What are the most important arguments to read_fwf()?
+
+
+```r
+?read_fwf
+```
+
+> read_fwf(file, col_positions, col_types = NULL, locale = default_locale(),
+  na = c("", "NA"), comment = "", skip = 0, n_max = Inf,
+  guess_max = min(n_max, 1000), progress = interactive())
+
+> fwf_empty(file, skip = 0, col_names = NULL, comment = "")
+
+> fwf_widths(widths, col_names = NULL)
+
+> fwf_positions(start, end, col_names = NULL)
+
+
+4.Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like " or '. By convention, read_csv() assumes that the quoting character will be ", and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame?
+
+
+```r
+read_delim ("x,y\n1,'a,b'",quote = "'", delim = ",")
+```
+
+```
+## # A tibble: 1 × 2
+##       x     y
+##   <int> <chr>
+## 1     1   a,b
+```
+
+```r
+read_delim ("1,2,3\n'4,a','5,2','6,!'", quote = "'", delim = ",", col_names = c("x", "y", "z"))
+```
+
+```
+## # A tibble: 2 × 3
+##       x     y     z
+##   <chr> <dbl> <chr>
+## 1     1     2     3
+## 2   4,a    52   6,!
+```
+
+
+5.Identify what is wrong with each of the following inline CSV files. What happens when you run the code?
+
+
+```r
+read_csv("a,b\n1,2,3\n4,5,6")
+```
+
+```
+## Warning: 2 parsing failures.
+## row col  expected    actual
+##   1  -- 2 columns 3 columns
+##   2  -- 2 columns 3 columns
+```
+
+```
+## # A tibble: 2 × 2
+##       a     b
+##   <int> <int>
+## 1     1     2
+## 2     4     5
+```
+
+> There are 2 columns in the first row, but 3 columns in the second and third rows.
+
+
+```r
+read_csv("a,b,c\n1,2\n1,2,3,4")
+```
+
+```
+## Warning: 2 parsing failures.
+## row col  expected    actual
+##   1  -- 3 columns 2 columns
+##   2  -- 3 columns 4 columns
+```
+
+```
+## # A tibble: 2 × 3
+##       a     b     c
+##   <int> <int> <int>
+## 1     1     2    NA
+## 2     1     2     3
+```
+
+> There are 2 columns in the second row, but 3 columns in the first and 4 columns in the third rows.
+
+
+```r
+read_csv("a,b\n\"1")
+```
+
+```
+## Warning: 2 parsing failures.
+## row col                     expected    actual
+##   1  a  closing quote at end of file          
+##   1  -- 2 columns                    1 columns
+```
+
+```
+## # A tibble: 1 × 2
+##       a     b
+##   <int> <chr>
+## 1     1  <NA>
+```
+
+> `\` need to be quoted
+
+
+```r
+read_csv("a,b\n1,2\na,b")
+```
+
+```
+## # A tibble: 2 × 2
+##       a     b
+##   <chr> <chr>
+## 1     1     2
+## 2     a     b
+```
+
+> `1` and `2` are characters.
+
+
+```r
+read_csv("a;b\n1;3")
+```
+
+```
+## # A tibble: 1 × 1
+##   `a;b`
+##   <chr>
+## 1   1;3
+```
+
+```r
+read_csv2("a;b\n1;3")
+```
+
+```
+## # A tibble: 1 × 2
+##       a     b
+##   <int> <int>
+## 1     1     3
+```
+
+
+
 ## 11.3 Parsing a vector
+
+```r
+str(parse_logical(c("TRUE", "FALSE", "NA")))
+```
+
+```
+##  logi [1:3] TRUE FALSE NA
+```
+
+```r
+str(parse_integer(c("1", "2", "3")))
+```
+
+```
+##  int [1:3] 1 2 3
+```
+
+```r
+str(parse_date(c("2010-01-01", "1979-10-14")))
+```
+
+```
+##  Date[1:2], format: "2010-01-01" "1979-10-14"
+```
+
+```r
+str(parse_date(c("2010-01-01", "1979-10-14")))
+```
+
+```
+##  Date[1:2], format: "2010-01-01" "1979-10-14"
+```
 
 ### 11.3.1 Numbers
 
