@@ -166,7 +166,29 @@ parse_datetime(), parse_date(), and parse_time() allow you to parse various date
 
 ### 11.3.1 Numbers
 
+```{r}
+parse_double("1.23")
+parse_double("1,23", locale = locale(decimal_mark = ","))
+
+parse_number("$100")
+parse_number("20%")
+parse_number("It cost $123.45")
+
+# Used in America
+parse_number("$123,456,789")
+# Used in many parts of Europe
+parse_number("123.456.789", locale = locale(grouping_mark = "."))
+# Used in Switzerland
+parse_number("123'456'789", locale = locale(grouping_mark = "'"))
+```
+
+
 ### 11.3.2 Strings
+
+```{r}
+
+```
+
 
 ### 11.3.3 Factors
 
