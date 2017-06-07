@@ -186,11 +186,30 @@ parse_number("123'456'789", locale = locale(grouping_mark = "'"))
 ### 11.3.2 Strings
 
 ```{r}
+charToRaw("Hadley")
+
+x1 <- "El Ni\xf1o was particularly bad this year"
+x2 <- "\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd"
+x1
+x2
+
+parse_character(x1, locale = locale(encoding = "Latin1"))
+parse_character(x2, locale = locale(encoding = "Shift-JIS"))
+
+guess_encoding(charToRaw(x1))
+guess_encoding(charToRaw(x2))
 
 ```
 
 
 ### 11.3.3 Factors
+
+```{r}
+fruit <- c("apple", "banana")
+parse_factor(c("apple", "banana", "bananana"), levels = fruit)
+
+```
+
 
 ### 11.3.4 Dates, date-times, and times
 
