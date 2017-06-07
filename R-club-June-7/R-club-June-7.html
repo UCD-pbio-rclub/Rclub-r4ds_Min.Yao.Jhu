@@ -447,20 +447,82 @@ parse_double(&quot;1000,001&quot;, locale = locale(decimal_mark = &quot;,&quot;)
 </ol>
 </blockquote>
 <blockquote>
-<ol start="2" style="list-style-type: decimal">
-<li></li>
+<ol start="3" style="list-style-type: decimal">
+<li>when I set the grouping_mark to <code>.</code>, the default value of decimal_mark become <code>,</code></li>
 </ol>
-</blockquote>
-<blockquote>
-<p>3.when I set the grouping_mark to <code>.</code>, the default value of decimal_mark become <code>,</code></p>
 </blockquote>
 <ol start="3" style="list-style-type: decimal">
-<li><p>I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.</p></li>
-<li><p>If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.</p></li>
-<li><p>What’s the difference between read_csv() and read_csv2()?</p></li>
-<li><p>What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.</p></li>
-<li><p>Generate the correct format string to parse each of the following dates and times:</p></li>
+<li>I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.</li>
 </ol>
+<pre class="r"><code>#?locale()
+
+parse_date(&quot;2015-01-02&quot;)</code></pre>
+<pre><code>## [1] &quot;2015-01-02&quot;</code></pre>
+<pre class="r"><code>parse_date(&quot;01-02-15&quot;, locale=locale(date_format = &quot;%m-%d-%y&quot;))</code></pre>
+<pre><code>## [1] &quot;2015-01-02&quot;</code></pre>
+<pre class="r"><code>parse_date(&quot;01-02-15&quot;, locale=locale(date_format = &quot;%y-%m-%d&quot;))</code></pre>
+<pre><code>## [1] &quot;2001-02-15&quot;</code></pre>
+<pre class="r"><code>library(hms)
+parse_time(&quot;20:10:01&quot;)</code></pre>
+<pre><code>## 20:10:01</code></pre>
+<pre class="r"><code>parse_time(&quot;20:10:01&quot;, locale=locale(time_format = &quot;%S:%M:%H&quot;))</code></pre>
+<pre><code>## 01:10:20</code></pre>
+<blockquote>
+<p>Usage locale(date_names = “en”, date_format = “%AD”, time_format = “%AT”, decimal_mark = “.”, grouping_mark = “,”, tz = “UTC”, encoding = “UTF-8”, asciify = FALSE)</p>
+</blockquote>
+<ol start="4" style="list-style-type: decimal">
+<li>If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.</li>
+</ol>
+<blockquote>
+<p>If I lived in Taiwan, locale = locale(date_names = “zh”, date_format = “%y-%m-%d”, tz = “Asia/Taipei”, encoding = “zh_TW.UTF-8”)</p>
+</blockquote>
+<pre class="r"><code>date_names_lang(&quot;zh&quot;)</code></pre>
+<pre><code>## &lt;date_names&gt;
+## Days:   星期日 (周日), 星期一 (周一), 星期二 (周二), 星期三 (周三), 星期四
+##         (周四), 星期五 (周五), 星期六 (周六)
+## Months: 一月 (1月), 二月 (2月), 三月 (3月), 四月 (4月), 五月 (5月), 六月
+##         (6月), 七月 (7月), 八月 (8月), 九月 (9月), 十月 (10月),
+##         十一月 (11月), 十二月 (12月)
+## AM/PM:  上午/下午</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>What’s the difference between read_csv() and read_csv2()?</li>
+</ol>
+<blockquote>
+<p>read_csv() reads comma delimited files, read_csv2() reads semicolon separated files (common in countries where <code>,</code> is used as the decimal place)</p>
+</blockquote>
+<ol start="6" style="list-style-type: decimal">
+<li>What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.</li>
+</ol>
+<blockquote>
+<p>ISO 8859: ISO 8859-1 Western Europe ISO 8859-2 Western and Central Europe ISO 8859-3 Western Europe and South European (Turkish, Maltese plus Esperanto) ISO 8859-4 Western Europe and Baltic countries (Lithuania, Estonia, Latvia and Lapp)</p>
+</blockquote>
+<blockquote>
+<p>Taiwan Big5 (a more famous variant is Microsoft Code page 950) Chinese Guobiao GB 2312 GBK (Microsoft Code page 936) GB 18030 JIS X 0208 is a widely deployed standard for Japanese character encoding that has several encoding forms. Korean KS X 1001 is a Korean double-byte character encoding standard</p>
+</blockquote>
+<ol start="7" style="list-style-type: decimal">
+<li>Generate the correct format string to parse each of the following dates and times:</li>
+</ol>
+<pre class="r"><code>d1 &lt;- &quot;January 1, 2010&quot;
+parse_date(d1, &quot;%B %d, %Y&quot;, locale = locale(&quot;en&quot;))</code></pre>
+<pre><code>## [1] &quot;2010-01-01&quot;</code></pre>
+<pre class="r"><code>d2 &lt;- &quot;2015-Mar-07&quot;
+parse_date(d2, &quot;%Y-%b-%d&quot;, locale = locale(&quot;en&quot;))</code></pre>
+<pre><code>## [1] &quot;2015-03-07&quot;</code></pre>
+<pre class="r"><code>d3 &lt;- &quot;06-Jun-2017&quot;
+parse_date(d3, &quot;%d-%b-%Y&quot;, locale = locale(&quot;en&quot;))</code></pre>
+<pre><code>## [1] &quot;2017-06-06&quot;</code></pre>
+<pre class="r"><code>d4 &lt;- c(&quot;August 19 (2015)&quot;, &quot;July 1 (2015)&quot;)
+parse_date(d4, &quot;%B %d (%Y)&quot;, locale = locale(&quot;en&quot;))</code></pre>
+<pre><code>## [1] &quot;2015-08-19&quot; &quot;2015-07-01&quot;</code></pre>
+<pre class="r"><code>d5 &lt;- &quot;12/30/14&quot; # Dec 30, 2014
+parse_date(d5, &quot;%m/%d/%y&quot;, locale = locale(&quot;en&quot;))</code></pre>
+<pre><code>## [1] &quot;2014-12-30&quot;</code></pre>
+<pre class="r"><code>t1 &lt;- &quot;1705&quot;
+parse_time(t1, &quot;%H%M&quot;)</code></pre>
+<pre><code>## 17:05:00</code></pre>
+<pre class="r"><code>t2 &lt;- &quot;11:15:10.12 PM&quot;
+parse_time(t2, &quot;%I:%M:%OS %p&quot;)</code></pre>
+<pre><code>## 23:15:10.12</code></pre>
 </div>
 </div>
 <div id="parsing-a-file" class="section level2">

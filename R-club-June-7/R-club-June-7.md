@@ -694,19 +694,167 @@ parse_number("1.000,001", locale = locale(grouping_mark = "."))
 ```
 > 1. Error: `decimal_mark` and `grouping_mark` must be different
 
-> 2. 
-
-> 3.when I set the grouping_mark to `.`, the default value of decimal_mark become `,`
+> 3. when I set the grouping_mark to `.`, the default value of decimal_mark become `,`
 
 3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.
 
+
+```r
+#?locale()
+
+parse_date("2015-01-02")
+```
+
+```
+## [1] "2015-01-02"
+```
+
+```r
+parse_date("01-02-15", locale=locale(date_format = "%m-%d-%y"))
+```
+
+```
+## [1] "2015-01-02"
+```
+
+```r
+parse_date("01-02-15", locale=locale(date_format = "%y-%m-%d"))
+```
+
+```
+## [1] "2001-02-15"
+```
+
+```r
+library(hms)
+parse_time("20:10:01")
+```
+
+```
+## 20:10:01
+```
+
+```r
+parse_time("20:10:01", locale=locale(time_format = "%S:%M:%H"))
+```
+
+```
+## 01:10:20
+```
+
+> Usage
+locale(date_names = "en", date_format = "%AD", time_format = "%AT",
+  decimal_mark = ".", grouping_mark = ",", tz = "UTC",
+  encoding = "UTF-8", asciify = FALSE)
+
 4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
+
+> If I lived in Taiwan, 
+locale = locale(date_names = "zh", date_format = "%y-%m-%d", tz = "Asia/Taipei", encoding = "zh_TW.UTF-8")
+
+
+```r
+date_names_lang("zh")
+```
+
+```
+## <date_names>
+## Days:   星期日 (周日), 星期一 (周一), 星期二 (周二), 星期三 (周三), 星期四
+##         (周四), 星期五 (周五), 星期六 (周六)
+## Months: 一月 (1月), 二月 (2月), 三月 (3月), 四月 (4月), 五月 (5月), 六月
+##         (6月), 七月 (7月), 八月 (8月), 九月 (9月), 十月 (10月),
+##         十一月 (11月), 十二月 (12月)
+## AM/PM:  上午/下午
+```
+
 
 5. What’s the difference between read_csv() and read_csv2()?
 
+> read_csv() reads comma delimited files, read_csv2() reads semicolon separated files (common in countries where `,` is used as the decimal place)
+
 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
 
+> ISO 8859:
+ISO 8859-1 Western Europe
+ISO 8859-2 Western and Central Europe
+ISO 8859-3 Western Europe and South European (Turkish, Maltese plus Esperanto)
+ISO 8859-4 Western Europe and Baltic countries (Lithuania, Estonia, Latvia and Lapp)
+
+> Taiwan Big5 (a more famous variant is Microsoft Code page 950)
+> Chinese Guobiao
+GB 2312
+GBK (Microsoft Code page 936)
+GB 18030
+> JIS X 0208 is a widely deployed standard for Japanese character encoding that has several encoding forms.
+> Korean
+KS X 1001 is a Korean double-byte character encoding standard
+
 7. Generate the correct format string to parse each of the following dates and times:
+
+
+```r
+d1 <- "January 1, 2010"
+parse_date(d1, "%B %d, %Y", locale = locale("en"))
+```
+
+```
+## [1] "2010-01-01"
+```
+
+```r
+d2 <- "2015-Mar-07"
+parse_date(d2, "%Y-%b-%d", locale = locale("en"))
+```
+
+```
+## [1] "2015-03-07"
+```
+
+```r
+d3 <- "06-Jun-2017"
+parse_date(d3, "%d-%b-%Y", locale = locale("en"))
+```
+
+```
+## [1] "2017-06-06"
+```
+
+```r
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+parse_date(d4, "%B %d (%Y)", locale = locale("en"))
+```
+
+```
+## [1] "2015-08-19" "2015-07-01"
+```
+
+```r
+d5 <- "12/30/14" # Dec 30, 2014
+parse_date(d5, "%m/%d/%y", locale = locale("en"))
+```
+
+```
+## [1] "2014-12-30"
+```
+
+```r
+t1 <- "1705"
+parse_time(t1, "%H%M")
+```
+
+```
+## 17:05:00
+```
+
+```r
+t2 <- "11:15:10.12 PM"
+parse_time(t2, "%I:%M:%OS %p")
+```
+
+```
+## 23:15:10.12
+```
+
 
 ## 11.4 Parsing a file
 
