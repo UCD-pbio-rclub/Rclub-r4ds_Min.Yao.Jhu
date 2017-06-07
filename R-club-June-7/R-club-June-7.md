@@ -408,13 +408,305 @@ parse_datetime(), parse_date(), and parse_time() allow you to parse various date
 
 ### 11.3.1 Numbers
 
+
+```r
+parse_double("1.23")
+```
+
+```
+## [1] 1.23
+```
+
+```r
+parse_double("1,23", locale = locale(decimal_mark = ","))
+```
+
+```
+## [1] 1.23
+```
+
+```r
+parse_number("$100")
+```
+
+```
+## [1] 100
+```
+
+```r
+parse_number("20%")
+```
+
+```
+## [1] 20
+```
+
+```r
+parse_number("It cost $123.45")
+```
+
+```
+## [1] 123.45
+```
+
+```r
+# Used in America
+parse_number("$123,456,789")
+```
+
+```
+## [1] 123456789
+```
+
+```r
+# Used in many parts of Europe
+parse_number("123.456.789", locale = locale(grouping_mark = "."))
+```
+
+```
+## [1] 123456789
+```
+
+```r
+# Used in Switzerland
+parse_number("123'456'789", locale = locale(grouping_mark = "'"))
+```
+
+```
+## [1] 123456789
+```
+
+
 ### 11.3.2 Strings
+
+
+```r
+charToRaw("Hadley")
+```
+
+```
+## [1] 48 61 64 6c 65 79
+```
+
+```r
+x1 <- "El Ni\xf1o was particularly bad this year"
+x2 <- "\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd"
+x1
+```
+
+```
+## [1] "El Ni隳 was particularly bad this year"
+```
+
+```r
+x2
+```
+
+```
+## [1] ""
+```
+
+```r
+parse_character(x1, locale = locale(encoding = "Latin1"))
+```
+
+```
+## [1] "El Nino was particularly bad this year"
+```
+
+```r
+parse_character(x2, locale = locale(encoding = "Shift-JIS"))
+```
+
+```
+## [1] "<U+3053><U+3093><U+306B><U+3061><U+306F>"
+```
+
+```r
+guess_encoding(charToRaw(x1))
+```
+
+```
+##     encoding confidence
+## 1 ISO-8859-1       0.46
+## 2 ISO-8859-9       0.23
+```
+
+```r
+guess_encoding(charToRaw(x2))
+```
+
+```
+##   encoding confidence
+## 1   KOI8-R       0.42
+```
+
 
 ### 11.3.3 Factors
 
+
+```r
+fruit <- c("apple", "banana")
+parse_factor(c("apple", "banana", "bananana"), levels = fruit)
+```
+
+```
+## Warning: 1 parsing failure.
+## row col           expected   actual
+##   3  -- value in level set bananana
+```
+
+```
+## [1] apple  banana <NA>  
+## attr(,"problems")
+## # A tibble: 1 × 4
+##     row   col           expected   actual
+##   <int> <int>              <chr>    <chr>
+## 1     3    NA value in level set bananana
+## Levels: apple banana
+```
+
+
 ### 11.3.4 Dates, date-times, and times
 
+
+```r
+parse_datetime("2010-10-01T2010")
+```
+
+```
+## [1] "2010-10-01 20:10:00 UTC"
+```
+
+```r
+parse_datetime("20101010")
+```
+
+```
+## [1] "2010-10-10 UTC"
+```
+
+```r
+parse_date("2010-10-01")
+```
+
+```
+## [1] "2010-10-01"
+```
+
+```r
+library(hms)
+parse_time("01:10 am")
+```
+
+```
+## 01:10:00
+```
+
+```r
+parse_time("20:10:01")
+```
+
+```
+## 20:10:01
+```
+
+```r
+parse_date("01/02/15", "%m/%d/%y")
+```
+
+```
+## [1] "2015-01-02"
+```
+
+```r
+parse_date("01/02/15", "%d/%m/%y")
+```
+
+```
+## [1] "2015-02-01"
+```
+
+```r
+parse_date("01/02/15", "%y/%m/%d")
+```
+
+```
+## [1] "2001-02-15"
+```
+
+```r
+parse_date("1 janvier 2015", "%d %B %Y", locale = locale("fr"))
+```
+
+```
+## [1] "2015-01-01"
+```
+
+
 ### 11.3.5 Exercises
+
+1. What are the most important arguments to locale()?
+
+
+```r
+#?locale()
+```
+
+> A locale object tries to capture all the defaults that can vary between countries. You set the locale in once, and the details are automatically passed on down to the columns parsers. The defaults have been chosen to match R (i.e. US English) as closely as possible.
+
+> locale(date_names = "en", date_format = "%AD", time_format = "%AT",
+  decimal_mark = ".", grouping_mark = ",", tz = "UTC",
+  encoding = "UTF-8", asciify = FALSE)
+  
+> date_names	
+Character representations of day and month names. Either the language code as string (passed on to date_names_lang) or an object created by date_names.
+
+
+2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?
+
+
+```r
+# parse_double("1,000,001", locale = locale(decimal_mark = "," , grouping_mark = ","))
+# Error: `decimal_mark` and `grouping_mark` must be different
+
+parse_double("1000,001", locale = locale(decimal_mark = ","))
+```
+
+```
+## [1] 1000.001
+```
+
+```r
+parse_number("1.000.001", locale = locale(grouping_mark = "."))
+```
+
+```
+## [1] 1000001
+```
+
+```r
+parse_number("1.000,001", locale = locale(grouping_mark = "."))
+```
+
+```
+## [1] 1000.001
+```
+> 1. Error: `decimal_mark` and `grouping_mark` must be different
+
+> 2. 
+
+> 3.when I set the grouping_mark to `.`, the default value of decimal_mark become `,`
+
+3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.
+
+4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
+
+5. What’s the difference between read_csv() and read_csv2()?
+
+6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
+
+7. Generate the correct format string to parse each of the following dates and times:
 
 ## 11.4 Parsing a file
 

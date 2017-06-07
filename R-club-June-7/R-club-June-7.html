@@ -334,18 +334,133 @@ read_delim (&quot;1|2|3\n4|5|6&quot;, delim = &quot;|&quot;, col_names = c(&quot
 <p>parse_datetime(), parse_date(), and parse_time() allow you to parse various date &amp; time specifications. These are the most complicated because there are so many different ways of writing dates.</p>
 <div id="numbers" class="section level3">
 <h3>11.3.1 Numbers</h3>
+<pre class="r"><code>parse_double(&quot;1.23&quot;)</code></pre>
+<pre><code>## [1] 1.23</code></pre>
+<pre class="r"><code>parse_double(&quot;1,23&quot;, locale = locale(decimal_mark = &quot;,&quot;))</code></pre>
+<pre><code>## [1] 1.23</code></pre>
+<pre class="r"><code>parse_number(&quot;$100&quot;)</code></pre>
+<pre><code>## [1] 100</code></pre>
+<pre class="r"><code>parse_number(&quot;20%&quot;)</code></pre>
+<pre><code>## [1] 20</code></pre>
+<pre class="r"><code>parse_number(&quot;It cost $123.45&quot;)</code></pre>
+<pre><code>## [1] 123.45</code></pre>
+<pre class="r"><code># Used in America
+parse_number(&quot;$123,456,789&quot;)</code></pre>
+<pre><code>## [1] 123456789</code></pre>
+<pre class="r"><code># Used in many parts of Europe
+parse_number(&quot;123.456.789&quot;, locale = locale(grouping_mark = &quot;.&quot;))</code></pre>
+<pre><code>## [1] 123456789</code></pre>
+<pre class="r"><code># Used in Switzerland
+parse_number(&quot;123'456'789&quot;, locale = locale(grouping_mark = &quot;'&quot;))</code></pre>
+<pre><code>## [1] 123456789</code></pre>
 </div>
 <div id="strings" class="section level3">
 <h3>11.3.2 Strings</h3>
+<pre class="r"><code>charToRaw(&quot;Hadley&quot;)</code></pre>
+<pre><code>## [1] 48 61 64 6c 65 79</code></pre>
+<pre class="r"><code>x1 &lt;- &quot;El Ni\xf1o was particularly bad this year&quot;
+x2 &lt;- &quot;\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd&quot;
+x1</code></pre>
+<pre><code>## [1] &quot;El Ni隳 was particularly bad this year&quot;</code></pre>
+<pre class="r"><code>x2</code></pre>
+<pre><code>## [1] &quot;&quot;</code></pre>
+<pre class="r"><code>parse_character(x1, locale = locale(encoding = &quot;Latin1&quot;))</code></pre>
+<pre><code>## [1] &quot;El Nino was particularly bad this year&quot;</code></pre>
+<pre class="r"><code>parse_character(x2, locale = locale(encoding = &quot;Shift-JIS&quot;))</code></pre>
+<pre><code>## [1] &quot;&lt;U+3053&gt;&lt;U+3093&gt;&lt;U+306B&gt;&lt;U+3061&gt;&lt;U+306F&gt;&quot;</code></pre>
+<pre class="r"><code>guess_encoding(charToRaw(x1))</code></pre>
+<pre><code>##     encoding confidence
+## 1 ISO-8859-1       0.46
+## 2 ISO-8859-9       0.23</code></pre>
+<pre class="r"><code>guess_encoding(charToRaw(x2))</code></pre>
+<pre><code>##   encoding confidence
+## 1   KOI8-R       0.42</code></pre>
 </div>
 <div id="factors" class="section level3">
 <h3>11.3.3 Factors</h3>
+<pre class="r"><code>fruit &lt;- c(&quot;apple&quot;, &quot;banana&quot;)
+parse_factor(c(&quot;apple&quot;, &quot;banana&quot;, &quot;bananana&quot;), levels = fruit)</code></pre>
+<pre><code>## Warning: 1 parsing failure.
+## row col           expected   actual
+##   3  -- value in level set bananana</code></pre>
+<pre><code>## [1] apple  banana &lt;NA&gt;  
+## attr(,&quot;problems&quot;)
+## # A tibble: 1 × 4
+##     row   col           expected   actual
+##   &lt;int&gt; &lt;int&gt;              &lt;chr&gt;    &lt;chr&gt;
+## 1     3    NA value in level set bananana
+## Levels: apple banana</code></pre>
 </div>
 <div id="dates-date-times-and-times" class="section level3">
 <h3>11.3.4 Dates, date-times, and times</h3>
+<pre class="r"><code>parse_datetime(&quot;2010-10-01T2010&quot;)</code></pre>
+<pre><code>## [1] &quot;2010-10-01 20:10:00 UTC&quot;</code></pre>
+<pre class="r"><code>parse_datetime(&quot;20101010&quot;)</code></pre>
+<pre><code>## [1] &quot;2010-10-10 UTC&quot;</code></pre>
+<pre class="r"><code>parse_date(&quot;2010-10-01&quot;)</code></pre>
+<pre><code>## [1] &quot;2010-10-01&quot;</code></pre>
+<pre class="r"><code>library(hms)
+parse_time(&quot;01:10 am&quot;)</code></pre>
+<pre><code>## 01:10:00</code></pre>
+<pre class="r"><code>parse_time(&quot;20:10:01&quot;)</code></pre>
+<pre><code>## 20:10:01</code></pre>
+<pre class="r"><code>parse_date(&quot;01/02/15&quot;, &quot;%m/%d/%y&quot;)</code></pre>
+<pre><code>## [1] &quot;2015-01-02&quot;</code></pre>
+<pre class="r"><code>parse_date(&quot;01/02/15&quot;, &quot;%d/%m/%y&quot;)</code></pre>
+<pre><code>## [1] &quot;2015-02-01&quot;</code></pre>
+<pre class="r"><code>parse_date(&quot;01/02/15&quot;, &quot;%y/%m/%d&quot;)</code></pre>
+<pre><code>## [1] &quot;2001-02-15&quot;</code></pre>
+<pre class="r"><code>parse_date(&quot;1 janvier 2015&quot;, &quot;%d %B %Y&quot;, locale = locale(&quot;fr&quot;))</code></pre>
+<pre><code>## [1] &quot;2015-01-01&quot;</code></pre>
 </div>
 <div id="exercises-1" class="section level3">
 <h3>11.3.5 Exercises</h3>
+<ol style="list-style-type: decimal">
+<li>What are the most important arguments to locale()?</li>
+</ol>
+<pre class="r"><code>#?locale()</code></pre>
+<blockquote>
+<p>A locale object tries to capture all the defaults that can vary between countries. You set the locale in once, and the details are automatically passed on down to the columns parsers. The defaults have been chosen to match R (i.e. US English) as closely as possible.</p>
+</blockquote>
+<blockquote>
+<p>locale(date_names = “en”, date_format = “%AD”, time_format = “%AT”, decimal_mark = “.”, grouping_mark = “,”, tz = “UTC”, encoding = “UTF-8”, asciify = FALSE)</p>
+</blockquote>
+<blockquote>
+<p>date_names<br />
+Character representations of day and month names. Either the language code as string (passed on to date_names_lang) or an object created by date_names.</p>
+</blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li>What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?</li>
+</ol>
+<pre class="r"><code># parse_double(&quot;1,000,001&quot;, locale = locale(decimal_mark = &quot;,&quot; , grouping_mark = &quot;,&quot;))
+# Error: `decimal_mark` and `grouping_mark` must be different
+
+parse_double(&quot;1000,001&quot;, locale = locale(decimal_mark = &quot;,&quot;))</code></pre>
+<pre><code>## [1] 1000.001</code></pre>
+<pre class="r"><code>parse_number(&quot;1.000.001&quot;, locale = locale(grouping_mark = &quot;.&quot;))</code></pre>
+<pre><code>## [1] 1000001</code></pre>
+<pre class="r"><code>parse_number(&quot;1.000,001&quot;, locale = locale(grouping_mark = &quot;.&quot;))</code></pre>
+<pre><code>## [1] 1000.001</code></pre>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Error: <code>decimal_mark</code> and <code>grouping_mark</code> must be different</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+</blockquote>
+<blockquote>
+<p>3.when I set the grouping_mark to <code>.</code>, the default value of decimal_mark become <code>,</code></p>
+</blockquote>
+<ol start="3" style="list-style-type: decimal">
+<li><p>I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.</p></li>
+<li><p>If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.</p></li>
+<li><p>What’s the difference between read_csv() and read_csv2()?</p></li>
+<li><p>What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.</p></li>
+<li><p>Generate the correct format string to parse each of the following dates and times:</p></li>
+</ol>
 </div>
 </div>
 <div id="parsing-a-file" class="section level2">

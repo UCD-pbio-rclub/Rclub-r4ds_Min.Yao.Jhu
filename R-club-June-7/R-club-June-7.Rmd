@@ -232,6 +232,70 @@ parse_date("1 janvier 2015", "%d %B %Y", locale = locale("fr"))
 
 ### 11.3.5 Exercises
 
+1. What are the most important arguments to locale()?
+
+```{r}
+#?locale()
+```
+
+> A locale object tries to capture all the defaults that can vary between countries. You set the locale in once, and the details are automatically passed on down to the columns parsers. The defaults have been chosen to match R (i.e. US English) as closely as possible.
+
+> locale(date_names = "en", date_format = "%AD", time_format = "%AT",
+  decimal_mark = ".", grouping_mark = ",", tz = "UTC",
+  encoding = "UTF-8", asciify = FALSE)
+  
+> date_names	
+Character representations of day and month names. Either the language code as string (passed on to date_names_lang) or an object created by date_names.
+
+
+2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?
+
+```{r}
+# parse_double("1,000,001", locale = locale(decimal_mark = "," , grouping_mark = ","))
+# Error: `decimal_mark` and `grouping_mark` must be different
+
+parse_double("1000,001", locale = locale(decimal_mark = ","))
+
+parse_number("1.000.001", locale = locale(grouping_mark = "."))
+parse_number("1.000,001", locale = locale(grouping_mark = "."))
+
+```
+> 1. Error: `decimal_mark` and `grouping_mark` must be different
+
+> 3. when I set the grouping_mark to `.`, the default value of decimal_mark become `,`
+
+3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.
+
+```{r}
+#?locale()
+
+parse_date("2015-01-02")
+parse_date("01-02-15", locale=locale(date_format = "%m-%d-%y"))
+parse_date("01-02-15", locale=locale(date_format = "%y-%m-%d"))
+
+library(hms)
+parse_time("20:10:01")
+parse_time("20:10:01", locale=locale(time_format = "%S:%M:%H"))
+```
+
+> Usage
+locale(date_names = "en", date_format = "%AD", time_format = "%AT",
+  decimal_mark = ".", grouping_mark = ",", tz = "UTC",
+  encoding = "UTF-8", asciify = FALSE)
+
+4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
+
+```{r}
+
+```
+
+
+5. What’s the difference between read_csv() and read_csv2()?
+
+6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
+
+7. Generate the correct format string to parse each of the following dates and times:
+
 ## 11.4 Parsing a file
 
 ### 11.4.1 Strategy
