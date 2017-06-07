@@ -146,11 +146,23 @@ str(parse_integer(c("1", "2", "3")))
 
 str(parse_date(c("2010-01-01", "1979-10-14")))
 
-str(parse_date(c("2010-01-01", "1979-10-14")))
+parse_integer(c("1", "231", ".", "456"), na = ".")
 
-
+x <- parse_integer(c("123", "345", "abc", "123.45"))
+x
+problems(x)
 
 ```
+
+parse_logical() and parse_integer() parse logicals and integers respectively. There’s basically nothing that can go wrong with these parsers so I won’t describe them here further.
+
+parse_double() is a strict numeric parser, and parse_number() is a flexible numeric parser. These are more complicated than you might expect because different parts of the world write numbers in different ways.
+
+parse_character() seems so simple that it shouldn’t be necessary. But one complication makes it quite important: character encodings.
+
+parse_factor() create factors, the data structure that R uses to represent categorical variables with fixed and known values.
+
+parse_datetime(), parse_date(), and parse_time() allow you to parse various date & time specifications. These are the most complicated because there are so many different ways of writing dates.
 
 ### 11.3.1 Numbers
 
