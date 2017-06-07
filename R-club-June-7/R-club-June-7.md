@@ -148,19 +148,8 @@ read_delim ("1|2|3\n4|5|6", delim = "|", col_names = c("x", "y", "z"))
 
 
 ```r
-?read_csv()
-```
-
-```
-## starting httpd help server ...
-```
-
-```
-##  done
-```
-
-```r
-?read_tsv()
+#?read_csv()
+#?read_tsv()
 ```
 
 > read_csv2(file, col_names = TRUE, col_types = NULL,
@@ -177,7 +166,7 @@ read_delim ("1|2|3\n4|5|6", delim = "|", col_names = c("x", "y", "z"))
 
 
 ```r
-?read_fwf
+#?read_fwf
 ```
 
 > read_fwf(file, col_positions, col_types = NULL, locale = default_locale(),
@@ -860,11 +849,379 @@ parse_time(t2, "%I:%M:%OS %p")
 
 ### 11.4.1 Strategy
 
+```r
+guess_parser("2010-10-01")
+```
+
+```
+## [1] "date"
+```
+
+```r
+guess_parser("15:01")
+```
+
+```
+## [1] "time"
+```
+
+```r
+guess_parser(c("TRUE", "FALSE"))
+```
+
+```
+## [1] "logical"
+```
+
+```r
+guess_parser(c("1", "5", "9"))
+```
+
+```
+## [1] "integer"
+```
+
+```r
+guess_parser(c("12,352,561"))
+```
+
+```
+## [1] "number"
+```
+
+```r
+str(parse_guess("2010-10-10"))
+```
+
+```
+##  Date[1:1], format: "2010-10-10"
+```
+
 ### 11.4.2 Problems
+
+
+```r
+challenge <- read_csv(readr_example("challenge.csv"))
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   x = col_integer(),
+##   y = col_character()
+## )
+```
+
+```
+## Warning: 1000 parsing failures.
+##  row col               expected             actual
+## 1001   x no trailing characters .23837975086644292
+## 1002   x no trailing characters .41167997173033655
+## 1003   x no trailing characters .7460716762579978 
+## 1004   x no trailing characters .723450553836301  
+## 1005   x no trailing characters .614524137461558  
+## .... ... ...................... ..................
+## See problems(...) for more details.
+```
+
+```r
+problems(challenge)
+```
+
+```
+## # A tibble: 1,000 × 4
+##      row   col               expected             actual
+##    <int> <chr>                  <chr>              <chr>
+## 1   1001     x no trailing characters .23837975086644292
+## 2   1002     x no trailing characters .41167997173033655
+## 3   1003     x no trailing characters  .7460716762579978
+## 4   1004     x no trailing characters   .723450553836301
+## 5   1005     x no trailing characters   .614524137461558
+## 6   1006     x no trailing characters   .473980569280684
+## 7   1007     x no trailing characters  .5784610391128808
+## 8   1008     x no trailing characters  .2415937229525298
+## 9   1009     x no trailing characters .11437866208143532
+## 10  1010     x no trailing characters  .2983446326106787
+## # ... with 990 more rows
+```
+
+```r
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_integer(),
+    y = col_character()
+  )
+)
+```
+
+```
+## Warning: 1000 parsing failures.
+##  row col               expected             actual
+## 1001   x no trailing characters .23837975086644292
+## 1002   x no trailing characters .41167997173033655
+## 1003   x no trailing characters .7460716762579978 
+## 1004   x no trailing characters .723450553836301  
+## 1005   x no trailing characters .614524137461558  
+## .... ... ...................... ..................
+## See problems(...) for more details.
+```
+
+```r
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_double(),
+    y = col_character()
+  )
+)
+tail(challenge)
+```
+
+```
+## # A tibble: 6 × 2
+##           x          y
+##       <dbl>      <chr>
+## 1 0.8052743 2019-11-21
+## 2 0.1635163 2018-03-29
+## 3 0.4719390 2014-08-04
+## 4 0.7183186 2015-08-16
+## 5 0.2698786 2020-02-04
+## 6 0.6082372 2019-01-06
+```
+
+```r
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_double(),
+    y = col_date()
+  )
+)
+tail(challenge)
+```
+
+```
+## # A tibble: 6 × 2
+##           x          y
+##       <dbl>     <date>
+## 1 0.8052743 2019-11-21
+## 2 0.1635163 2018-03-29
+## 3 0.4719390 2014-08-04
+## 4 0.7183186 2015-08-16
+## 5 0.2698786 2020-02-04
+## 6 0.6082372 2019-01-06
+```
+
 
 ### 11.4.3 Other strategies
 
+
+```r
+challenge2 <- read_csv(readr_example("challenge.csv"), guess_max = 1001)
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   x = col_double(),
+##   y = col_date(format = "")
+## )
+```
+
+```r
+challenge2
+```
+
+```
+## # A tibble: 2,000 × 2
+##        x      y
+##    <dbl> <date>
+## 1    404   <NA>
+## 2   4172   <NA>
+## 3   3004   <NA>
+## 4    787   <NA>
+## 5     37   <NA>
+## 6   2332   <NA>
+## 7   2489   <NA>
+## 8   1449   <NA>
+## 9   3665   <NA>
+## 10  3863   <NA>
+## # ... with 1,990 more rows
+```
+
+```r
+challenge2 <- read_csv(readr_example("challenge.csv"), 
+  col_types = cols(.default = col_character())
+)
+challenge2
+```
+
+```
+## # A tibble: 2,000 × 2
+##        x     y
+##    <chr> <chr>
+## 1    404  <NA>
+## 2   4172  <NA>
+## 3   3004  <NA>
+## 4    787  <NA>
+## 5     37  <NA>
+## 6   2332  <NA>
+## 7   2489  <NA>
+## 8   1449  <NA>
+## 9   3665  <NA>
+## 10  3863  <NA>
+## # ... with 1,990 more rows
+```
+
+```r
+df <- tribble(
+  ~x,  ~y,
+  "1", "1.21",
+  "2", "2.32",
+  "3", "4.56"
+)
+df
+```
+
+```
+## # A tibble: 3 × 2
+##       x     y
+##   <chr> <chr>
+## 1     1  1.21
+## 2     2  2.32
+## 3     3  4.56
+```
+
+```r
+type_convert(df)
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   x = col_integer(),
+##   y = col_double()
+## )
+```
+
+```
+## # A tibble: 3 × 2
+##       x     y
+##   <int> <dbl>
+## 1     1  1.21
+## 2     2  2.32
+## 3     3  4.56
+```
+
+
 ## 11.5 Writing to a file
+
+
+```r
+write_csv(challenge, "challenge.csv")
+challenge
+```
+
+```
+## # A tibble: 2,000 × 2
+##        x      y
+##    <dbl> <date>
+## 1    404   <NA>
+## 2   4172   <NA>
+## 3   3004   <NA>
+## 4    787   <NA>
+## 5     37   <NA>
+## 6   2332   <NA>
+## 7   2489   <NA>
+## 8   1449   <NA>
+## 9   3665   <NA>
+## 10  3863   <NA>
+## # ... with 1,990 more rows
+```
+
+```r
+write_csv(challenge, "challenge-2.csv")
+read_csv("challenge-2.csv")
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   x = col_double(),
+##   y = col_character()
+## )
+```
+
+```
+## # A tibble: 2,000 × 2
+##        x     y
+##    <dbl> <chr>
+## 1    404  <NA>
+## 2   4172  <NA>
+## 3   3004  <NA>
+## 4    787  <NA>
+## 5     37  <NA>
+## 6   2332  <NA>
+## 7   2489  <NA>
+## 8   1449  <NA>
+## 9   3665  <NA>
+## 10  3863  <NA>
+## # ... with 1,990 more rows
+```
+
+```r
+write_rds(challenge, "challenge.rds")
+read_rds("challenge.rds")
+```
+
+```
+## # A tibble: 2,000 × 2
+##        x      y
+##    <dbl> <date>
+## 1    404   <NA>
+## 2   4172   <NA>
+## 3   3004   <NA>
+## 4    787   <NA>
+## 5     37   <NA>
+## 6   2332   <NA>
+## 7   2489   <NA>
+## 8   1449   <NA>
+## 9   3665   <NA>
+## 10  3863   <NA>
+## # ... with 1,990 more rows
+```
+
+```r
+library(feather)
+```
+
+```
+## Warning: package 'feather' was built under R version 3.3.3
+```
+
+```r
+write_feather(challenge, "challenge.feather")
+read_feather("challenge.feather")
+```
+
+```
+## # A tibble: 2,000 × 2
+##        x      y
+##    <dbl> <date>
+## 1    404   <NA>
+## 2   4172   <NA>
+## 3   3004   <NA>
+## 4    787   <NA>
+## 5     37   <NA>
+## 6   2332   <NA>
+## 7   2489   <NA>
+## 8   1449   <NA>
+## 9   3665   <NA>
+## 10  3863   <NA>
+## # ... with 1,990 more rows
+```
+
 
 ## 11.6 Other types of data
 

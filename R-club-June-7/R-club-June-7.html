@@ -202,10 +202,8 @@ read_delim (&quot;1|2|3\n4|5|6&quot;, delim = &quot;|&quot;, col_names = c(&quot
 ## 1     1     2     3
 ## 2     4     5     6</code></pre>
 <p>2.Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?</p>
-<pre class="r"><code>?read_csv()</code></pre>
-<pre><code>## starting httpd help server ...</code></pre>
-<pre><code>##  done</code></pre>
-<pre class="r"><code>?read_tsv()</code></pre>
+<pre class="r"><code>#?read_csv()
+#?read_tsv()</code></pre>
 <blockquote>
 <p>read_csv2(file, col_names = TRUE, col_types = NULL, locale = default_locale(), na = c(“”, “NA”), quoted_na = TRUE, comment = “”, trim_ws = TRUE, skip = 0, n_max = Inf, guess_max = min(1000, n_max), progress = interactive())</p>
 </blockquote>
@@ -213,7 +211,7 @@ read_delim (&quot;1|2|3\n4|5|6&quot;, delim = &quot;|&quot;, col_names = c(&quot
 <p>read_tsv(file, col_names = TRUE, col_types = NULL, locale = default_locale(), na = c(“”, “NA”), quoted_na = TRUE, comment = “”, trim_ws = TRUE, skip = 0, n_max = Inf, guess_max = min(1000, n_max), progress = interactive())</p>
 </blockquote>
 <p>3.What are the most important arguments to read_fwf()?</p>
-<pre class="r"><code>?read_fwf</code></pre>
+<pre class="r"><code>#?read_fwf</code></pre>
 <blockquote>
 <p>read_fwf(file, col_positions, col_types = NULL, locale = default_locale(), na = c(“”, “NA”), comment = “”, skip = 0, n_max = Inf, guess_max = min(n_max, 1000), progress = interactive())</p>
 </blockquote>
@@ -529,16 +527,243 @@ parse_time(t2, &quot;%I:%M:%OS %p&quot;)</code></pre>
 <h2>11.4 Parsing a file</h2>
 <div id="strategy" class="section level3">
 <h3>11.4.1 Strategy</h3>
+<pre class="r"><code>guess_parser(&quot;2010-10-01&quot;)</code></pre>
+<pre><code>## [1] &quot;date&quot;</code></pre>
+<pre class="r"><code>guess_parser(&quot;15:01&quot;)</code></pre>
+<pre><code>## [1] &quot;time&quot;</code></pre>
+<pre class="r"><code>guess_parser(c(&quot;TRUE&quot;, &quot;FALSE&quot;))</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>guess_parser(c(&quot;1&quot;, &quot;5&quot;, &quot;9&quot;))</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>guess_parser(c(&quot;12,352,561&quot;))</code></pre>
+<pre><code>## [1] &quot;number&quot;</code></pre>
+<pre class="r"><code>str(parse_guess(&quot;2010-10-10&quot;))</code></pre>
+<pre><code>##  Date[1:1], format: &quot;2010-10-10&quot;</code></pre>
 </div>
 <div id="problems" class="section level3">
 <h3>11.4.2 Problems</h3>
+<pre class="r"><code>challenge &lt;- read_csv(readr_example(&quot;challenge.csv&quot;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   x = col_integer(),
+##   y = col_character()
+## )</code></pre>
+<pre><code>## Warning: 1000 parsing failures.
+##  row col               expected             actual
+## 1001   x no trailing characters .23837975086644292
+## 1002   x no trailing characters .41167997173033655
+## 1003   x no trailing characters .7460716762579978 
+## 1004   x no trailing characters .723450553836301  
+## 1005   x no trailing characters .614524137461558  
+## .... ... ...................... ..................
+## See problems(...) for more details.</code></pre>
+<pre class="r"><code>problems(challenge)</code></pre>
+<pre><code>## # A tibble: 1,000 × 4
+##      row   col               expected             actual
+##    &lt;int&gt; &lt;chr&gt;                  &lt;chr&gt;              &lt;chr&gt;
+## 1   1001     x no trailing characters .23837975086644292
+## 2   1002     x no trailing characters .41167997173033655
+## 3   1003     x no trailing characters  .7460716762579978
+## 4   1004     x no trailing characters   .723450553836301
+## 5   1005     x no trailing characters   .614524137461558
+## 6   1006     x no trailing characters   .473980569280684
+## 7   1007     x no trailing characters  .5784610391128808
+## 8   1008     x no trailing characters  .2415937229525298
+## 9   1009     x no trailing characters .11437866208143532
+## 10  1010     x no trailing characters  .2983446326106787
+## # ... with 990 more rows</code></pre>
+<pre class="r"><code>challenge &lt;- read_csv(
+  readr_example(&quot;challenge.csv&quot;), 
+  col_types = cols(
+    x = col_integer(),
+    y = col_character()
+  )
+)</code></pre>
+<pre><code>## Warning: 1000 parsing failures.
+##  row col               expected             actual
+## 1001   x no trailing characters .23837975086644292
+## 1002   x no trailing characters .41167997173033655
+## 1003   x no trailing characters .7460716762579978 
+## 1004   x no trailing characters .723450553836301  
+## 1005   x no trailing characters .614524137461558  
+## .... ... ...................... ..................
+## See problems(...) for more details.</code></pre>
+<pre class="r"><code>challenge &lt;- read_csv(
+  readr_example(&quot;challenge.csv&quot;), 
+  col_types = cols(
+    x = col_double(),
+    y = col_character()
+  )
+)
+tail(challenge)</code></pre>
+<pre><code>## # A tibble: 6 × 2
+##           x          y
+##       &lt;dbl&gt;      &lt;chr&gt;
+## 1 0.8052743 2019-11-21
+## 2 0.1635163 2018-03-29
+## 3 0.4719390 2014-08-04
+## 4 0.7183186 2015-08-16
+## 5 0.2698786 2020-02-04
+## 6 0.6082372 2019-01-06</code></pre>
+<pre class="r"><code>challenge &lt;- read_csv(
+  readr_example(&quot;challenge.csv&quot;), 
+  col_types = cols(
+    x = col_double(),
+    y = col_date()
+  )
+)
+tail(challenge)</code></pre>
+<pre><code>## # A tibble: 6 × 2
+##           x          y
+##       &lt;dbl&gt;     &lt;date&gt;
+## 1 0.8052743 2019-11-21
+## 2 0.1635163 2018-03-29
+## 3 0.4719390 2014-08-04
+## 4 0.7183186 2015-08-16
+## 5 0.2698786 2020-02-04
+## 6 0.6082372 2019-01-06</code></pre>
 </div>
 <div id="other-strategies" class="section level3">
 <h3>11.4.3 Other strategies</h3>
+<pre class="r"><code>challenge2 &lt;- read_csv(readr_example(&quot;challenge.csv&quot;), guess_max = 1001)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   x = col_double(),
+##   y = col_date(format = &quot;&quot;)
+## )</code></pre>
+<pre class="r"><code>challenge2</code></pre>
+<pre><code>## # A tibble: 2,000 × 2
+##        x      y
+##    &lt;dbl&gt; &lt;date&gt;
+## 1    404   &lt;NA&gt;
+## 2   4172   &lt;NA&gt;
+## 3   3004   &lt;NA&gt;
+## 4    787   &lt;NA&gt;
+## 5     37   &lt;NA&gt;
+## 6   2332   &lt;NA&gt;
+## 7   2489   &lt;NA&gt;
+## 8   1449   &lt;NA&gt;
+## 9   3665   &lt;NA&gt;
+## 10  3863   &lt;NA&gt;
+## # ... with 1,990 more rows</code></pre>
+<pre class="r"><code>challenge2 &lt;- read_csv(readr_example(&quot;challenge.csv&quot;), 
+  col_types = cols(.default = col_character())
+)
+challenge2</code></pre>
+<pre><code>## # A tibble: 2,000 × 2
+##        x     y
+##    &lt;chr&gt; &lt;chr&gt;
+## 1    404  &lt;NA&gt;
+## 2   4172  &lt;NA&gt;
+## 3   3004  &lt;NA&gt;
+## 4    787  &lt;NA&gt;
+## 5     37  &lt;NA&gt;
+## 6   2332  &lt;NA&gt;
+## 7   2489  &lt;NA&gt;
+## 8   1449  &lt;NA&gt;
+## 9   3665  &lt;NA&gt;
+## 10  3863  &lt;NA&gt;
+## # ... with 1,990 more rows</code></pre>
+<pre class="r"><code>df &lt;- tribble(
+  ~x,  ~y,
+  &quot;1&quot;, &quot;1.21&quot;,
+  &quot;2&quot;, &quot;2.32&quot;,
+  &quot;3&quot;, &quot;4.56&quot;
+)
+df</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##       x     y
+##   &lt;chr&gt; &lt;chr&gt;
+## 1     1  1.21
+## 2     2  2.32
+## 3     3  4.56</code></pre>
+<pre class="r"><code>type_convert(df)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   x = col_integer(),
+##   y = col_double()
+## )</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##       x     y
+##   &lt;int&gt; &lt;dbl&gt;
+## 1     1  1.21
+## 2     2  2.32
+## 3     3  4.56</code></pre>
 </div>
 </div>
 <div id="writing-to-a-file" class="section level2">
 <h2>11.5 Writing to a file</h2>
+<pre class="r"><code>write_csv(challenge, &quot;challenge.csv&quot;)
+challenge</code></pre>
+<pre><code>## # A tibble: 2,000 × 2
+##        x      y
+##    &lt;dbl&gt; &lt;date&gt;
+## 1    404   &lt;NA&gt;
+## 2   4172   &lt;NA&gt;
+## 3   3004   &lt;NA&gt;
+## 4    787   &lt;NA&gt;
+## 5     37   &lt;NA&gt;
+## 6   2332   &lt;NA&gt;
+## 7   2489   &lt;NA&gt;
+## 8   1449   &lt;NA&gt;
+## 9   3665   &lt;NA&gt;
+## 10  3863   &lt;NA&gt;
+## # ... with 1,990 more rows</code></pre>
+<pre class="r"><code>write_csv(challenge, &quot;challenge-2.csv&quot;)
+read_csv(&quot;challenge-2.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   x = col_double(),
+##   y = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 2,000 × 2
+##        x     y
+##    &lt;dbl&gt; &lt;chr&gt;
+## 1    404  &lt;NA&gt;
+## 2   4172  &lt;NA&gt;
+## 3   3004  &lt;NA&gt;
+## 4    787  &lt;NA&gt;
+## 5     37  &lt;NA&gt;
+## 6   2332  &lt;NA&gt;
+## 7   2489  &lt;NA&gt;
+## 8   1449  &lt;NA&gt;
+## 9   3665  &lt;NA&gt;
+## 10  3863  &lt;NA&gt;
+## # ... with 1,990 more rows</code></pre>
+<pre class="r"><code>write_rds(challenge, &quot;challenge.rds&quot;)
+read_rds(&quot;challenge.rds&quot;)</code></pre>
+<pre><code>## # A tibble: 2,000 × 2
+##        x      y
+##    &lt;dbl&gt; &lt;date&gt;
+## 1    404   &lt;NA&gt;
+## 2   4172   &lt;NA&gt;
+## 3   3004   &lt;NA&gt;
+## 4    787   &lt;NA&gt;
+## 5     37   &lt;NA&gt;
+## 6   2332   &lt;NA&gt;
+## 7   2489   &lt;NA&gt;
+## 8   1449   &lt;NA&gt;
+## 9   3665   &lt;NA&gt;
+## 10  3863   &lt;NA&gt;
+## # ... with 1,990 more rows</code></pre>
+<pre class="r"><code>library(feather)</code></pre>
+<pre><code>## Warning: package 'feather' was built under R version 3.3.3</code></pre>
+<pre class="r"><code>write_feather(challenge, &quot;challenge.feather&quot;)
+read_feather(&quot;challenge.feather&quot;)</code></pre>
+<pre><code>## # A tibble: 2,000 × 2
+##        x      y
+##    &lt;dbl&gt; &lt;date&gt;
+## 1    404   &lt;NA&gt;
+## 2   4172   &lt;NA&gt;
+## 3   3004   &lt;NA&gt;
+## 4    787   &lt;NA&gt;
+## 5     37   &lt;NA&gt;
+## 6   2332   &lt;NA&gt;
+## 7   2489   &lt;NA&gt;
+## 8   1449   &lt;NA&gt;
+## 9   3665   &lt;NA&gt;
+## 10  3863   &lt;NA&gt;
+## # ... with 1,990 more rows</code></pre>
 </div>
 <div id="other-types-of-data" class="section level2">
 <h2>11.6 Other types of data</h2>

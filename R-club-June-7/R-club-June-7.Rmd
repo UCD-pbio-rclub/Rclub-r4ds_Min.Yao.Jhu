@@ -62,8 +62,8 @@ read_delim ("1|2|3\n4|5|6", delim = "|", col_names = c("x", "y", "z"))
 2.Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?
 
 ```{r}
-?read_csv()
-?read_tsv()
+#?read_csv()
+#?read_tsv()
 ```
 
 > read_csv2(file, col_names = TRUE, col_types = NULL,
@@ -79,7 +79,7 @@ read_delim ("1|2|3\n4|5|6", delim = "|", col_names = c("x", "y", "z"))
 3.What are the most important arguments to read_fwf()?
 
 ```{r}
-?read_fwf
+#?read_fwf
 ```
 
 > read_fwf(file, col_positions, col_types = NULL, locale = default_locale(),
@@ -344,12 +344,94 @@ parse_time(t2, "%I:%M:%OS %p")
 ## 11.4 Parsing a file
 
 ### 11.4.1 Strategy
+```{r}
+guess_parser("2010-10-01")
+guess_parser("15:01")
+guess_parser(c("TRUE", "FALSE"))
+guess_parser(c("1", "5", "9"))
+guess_parser(c("12,352,561"))
+str(parse_guess("2010-10-10"))
+
+```
 
 ### 11.4.2 Problems
 
+```{r}
+challenge <- read_csv(readr_example("challenge.csv"))
+problems(challenge)
+
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_integer(),
+    y = col_character()
+  )
+)
+
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_double(),
+    y = col_character()
+  )
+)
+tail(challenge)
+
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_double(),
+    y = col_date()
+  )
+)
+tail(challenge)
+
+```
+
+
 ### 11.4.3 Other strategies
 
+```{r}
+challenge2 <- read_csv(readr_example("challenge.csv"), guess_max = 1001)
+challenge2
+
+challenge2 <- read_csv(readr_example("challenge.csv"), 
+  col_types = cols(.default = col_character())
+)
+challenge2
+
+df <- tribble(
+  ~x,  ~y,
+  "1", "1.21",
+  "2", "2.32",
+  "3", "4.56"
+)
+df
+
+type_convert(df)
+
+```
+
+
 ## 11.5 Writing to a file
+
+```{r}
+write_csv(challenge, "challenge.csv")
+challenge
+
+write_csv(challenge, "challenge-2.csv")
+read_csv("challenge-2.csv")
+
+write_rds(challenge, "challenge.rds")
+read_rds("challenge.rds")
+
+library(feather)
+write_feather(challenge, "challenge.feather")
+read_feather("challenge.feather")
+
+
+```
+
 
 ## 11.6 Other types of data
 
