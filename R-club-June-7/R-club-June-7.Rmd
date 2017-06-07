@@ -213,6 +213,23 @@ parse_factor(c("apple", "banana", "bananana"), levels = fruit)
 
 ### 11.3.4 Dates, date-times, and times
 
+```{r}
+parse_datetime("2010-10-01T2010")
+parse_datetime("20101010")
+parse_date("2010-10-01")
+
+library(hms)
+parse_time("01:10 am")
+parse_time("20:10:01")
+
+parse_date("01/02/15", "%m/%d/%y")
+parse_date("01/02/15", "%d/%m/%y")
+parse_date("01/02/15", "%y/%m/%d")
+
+parse_date("1 janvier 2015", "%d %B %Y", locale = locale("fr"))
+```
+
+
 ### 11.3.5 Exercises
 
 ## 11.4 Parsing a file
