@@ -236,6 +236,12 @@ read_delim (&quot;1|2|3\n4|5|6&quot;, delim = &quot;|&quot;, col_names = c(&quot
 ##   &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;
 ## 1     1     2     3
 ## 2   4,a    52   6,!</code></pre>
+<pre class="r"><code>read_delim (&quot;1,2,3\n'4,a','5*2','6,!'&quot;, quote = &quot;'&quot;, delim = &quot;,&quot;, col_names = c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;))</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##       x     y     z
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1     1     2     3
+## 2   4,a   5*2   6,!</code></pre>
 <p>5.Identify what is wrong with each of the following inline CSV files. What happens when you run the code?</p>
 <pre class="r"><code>read_csv(&quot;a,b\n1,2,3\n4,5,6&quot;)</code></pre>
 <pre><code>## Warning: 2 parsing failures.
@@ -491,6 +497,9 @@ parse_time(&quot;20:10:01&quot;)</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li>What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.</li>
 </ol>
+<blockquote>
+<p><a href="https://support.sas.com/documentation/cdl/en/nlsref/69741/HTML/default/viewer.htm#n0882t2muy4l94n19cno6z40xmuz.htm" class="uri">https://support.sas.com/documentation/cdl/en/nlsref/69741/HTML/default/viewer.htm#n0882t2muy4l94n19cno6z40xmuz.htm</a></p>
+</blockquote>
 <blockquote>
 <p>ISO 8859: ISO 8859-1 Western Europe ISO 8859-2 Western and Central Europe ISO 8859-3 Western Europe and South European (Turkish, Maltese plus Esperanto) ISO 8859-4 Western Europe and Baltic countries (Lithuania, Estonia, Latvia and Lapp)</p>
 </blockquote>

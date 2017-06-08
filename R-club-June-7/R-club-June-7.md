@@ -206,6 +206,18 @@ read_delim ("1,2,3\n'4,a','5,2','6,!'", quote = "'", delim = ",", col_names = c(
 ## 2   4,a    52   6,!
 ```
 
+```r
+read_delim ("1,2,3\n'4,a','5*2','6,!'", quote = "'", delim = ",", col_names = c("x", "y", "z"))
+```
+
+```
+## # A tibble: 2 × 3
+##       x     y     z
+##   <chr> <chr> <chr>
+## 1     1     2     3
+## 2   4,a   5*2   6,!
+```
+
 
 5.Identify what is wrong with each of the following inline CSV files. What happens when you run the code?
 
@@ -762,6 +774,9 @@ date_names_lang("zh")
 > read_csv() reads comma delimited files, read_csv2() reads semicolon separated files (common in countries where `,` is used as the decimal place)
 
 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
+
+> https://support.sas.com/documentation/cdl/en/nlsref/69741/HTML/default/viewer.htm#n0882t2muy4l94n19cno6z40xmuz.htm
+
 
 > ISO 8859:
 ISO 8859-1 Western Europe
