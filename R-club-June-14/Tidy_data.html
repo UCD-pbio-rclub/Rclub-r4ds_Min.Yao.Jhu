@@ -372,12 +372,172 @@ T2cases</code></pre>
 <h2>12.3 Spreading and gathering</h2>
 <div id="gathering" class="section level3">
 <h3>12.3.1 Gathering</h3>
+<pre class="r"><code>table4a %&gt;% 
+  gather(`1999`, `2000`, key = &quot;year&quot;, value = &quot;cases&quot;)</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##       country  year  cases
+##         &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan  1999    745
+## 2      Brazil  1999  37737
+## 3       China  1999 212258
+## 4 Afghanistan  2000   2666
+## 5      Brazil  2000  80488
+## 6       China  2000 213766</code></pre>
+<pre class="r"><code>table4b %&gt;% 
+  gather(`1999`, `2000`, key = &quot;year&quot;, value = &quot;population&quot;)</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##       country  year population
+##         &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;
+## 1 Afghanistan  1999   19987071
+## 2      Brazil  1999  172006362
+## 3       China  1999 1272915272
+## 4 Afghanistan  2000   20595360
+## 5      Brazil  2000  174504898
+## 6       China  2000 1280428583</code></pre>
+<pre class="r"><code>tidy4a &lt;- table4a %&gt;% 
+  gather(`1999`, `2000`, key = &quot;year&quot;, value = &quot;cases&quot;)
+tidy4b &lt;- table4b %&gt;% 
+  gather(`1999`, `2000`, key = &quot;year&quot;, value = &quot;population&quot;)
+left_join(tidy4a, tidy4b)</code></pre>
+<pre><code>## Joining, by = c(&quot;country&quot;, &quot;year&quot;)</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##       country  year  cases population
+##         &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2      Brazil  1999  37737  172006362
+## 3       China  1999 212258 1272915272
+## 4 Afghanistan  2000   2666   20595360
+## 5      Brazil  2000  80488  174504898
+## 6       China  2000 213766 1280428583</code></pre>
 </div>
 <div id="spreading" class="section level3">
 <h3>12.3.2 Spreading</h3>
+<pre class="r"><code>table2</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##        country  year       type      count
+##          &lt;chr&gt; &lt;int&gt;      &lt;chr&gt;      &lt;int&gt;
+## 1  Afghanistan  1999      cases        745
+## 2  Afghanistan  1999 population   19987071
+## 3  Afghanistan  2000      cases       2666
+## 4  Afghanistan  2000 population   20595360
+## 5       Brazil  1999      cases      37737
+## 6       Brazil  1999 population  172006362
+## 7       Brazil  2000      cases      80488
+## 8       Brazil  2000 population  174504898
+## 9        China  1999      cases     212258
+## 10       China  1999 population 1272915272
+## 11       China  2000      cases     213766
+## 12       China  2000 population 1280428583</code></pre>
+<pre class="r"><code>spread(table2, key = type, value = count)</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##       country  year  cases population
+## *       &lt;chr&gt; &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3      Brazil  1999  37737  172006362
+## 4      Brazil  2000  80488  174504898
+## 5       China  1999 212258 1272915272
+## 6       China  2000 213766 1280428583</code></pre>
 </div>
 <div id="exercises-1" class="section level3">
 <h3>12.3.3 Exercises</h3>
+<p>1.Why are gather() and spread() not perfectly symmetrical? Carefully consider the following example:</p>
+<pre class="r"><code>stocks &lt;- tibble(
+  year   = c(2015, 2015, 2016, 2016),
+  half  = c(   1,    2,     1,    2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+stocks</code></pre>
+<pre><code>## # A tibble: 4 × 3
+##    year  half return
+##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1  2015     1   1.88
+## 2  2015     2   0.59
+## 3  2016     1   0.92
+## 4  2016     2   0.17</code></pre>
+<pre class="r"><code>stocks %&gt;% 
+  spread(year, return) %&gt;% 
+  gather(&quot;year&quot;, &quot;return&quot;, `2015`:`2016`)</code></pre>
+<pre><code>## # A tibble: 4 × 3
+##    half  year return
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1  2015   1.88
+## 2     2  2015   0.59
+## 3     1  2016   0.92
+## 4     2  2016   0.17</code></pre>
+<p>(Hint: look at the variable types and think about column names.)</p>
+<blockquote>
+<p>column type information of <code>year</code> change from <dbl> to <chr></p>
+</blockquote>
+<p>Both spread() and gather() have a convert argument. What does it do?</p>
+<pre class="r"><code>#?spread
+#?gather</code></pre>
+<blockquote>
+<p>spread {tidyr} convert<br />
+If TRUE, type.convert with asis = TRUE will be run on each of the new columns. This is useful if the value column was a mix of variables that was coerced to a string. If the class of the value column was factor or date, note that will not be true of the new columns that are produced, which are coerced to character before type conversion.</p>
+</blockquote>
+<blockquote>
+<p>gather {tidyr} convert<br />
+If TRUE will automatically run type.convert on the key column. This is useful if the column names are actually numeric, integer, or logical.</p>
+</blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li>Why does this code fail?</li>
+</ol>
+<pre class="r"><code>table4a</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##       country `1999` `2000`
+## *       &lt;chr&gt;  &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2      Brazil  37737  80488
+## 3       China 212258 213766</code></pre>
+<pre class="r"><code>#table4a %&gt;% 
+#  gather(1999, 2000, key = &quot;year&quot;, value = &quot;cases&quot;)
+
+#&gt; Error in combine_vars(vars, ind_list): Position must be between 0 and n
+
+table4a %&gt;% 
+  gather(`1999`, `2000`, key = &quot;year&quot;, value = &quot;cases&quot;)</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##       country  year  cases
+##         &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan  1999    745
+## 2      Brazil  1999  37737
+## 3       China  1999 212258
+## 4 Afghanistan  2000   2666
+## 5      Brazil  2000  80488
+## 6       China  2000 213766</code></pre>
+<blockquote>
+<p>“1999” and “2000” are non-syntactic names (because they don’t start with a letter) so we have to surround them in backticks.</p>
+</blockquote>
+<ol start="3" style="list-style-type: decimal">
+<li>Why does spreading this tibble fail? How could you add a new column to fix the problem?</li>
+</ol>
+<pre class="r"><code>people &lt;- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  &quot;Phillip Woods&quot;,   &quot;age&quot;,       45,
+  &quot;Phillip Woods&quot;,   &quot;height&quot;,   186,
+  &quot;Phillip Woods&quot;,   &quot;age&quot;,       50,
+  &quot;Jessica Cordero&quot;, &quot;age&quot;,       37,
+  &quot;Jessica Cordero&quot;, &quot;height&quot;,   156
+)
+people</code></pre>
+<pre><code>## # A tibble: 5 × 3
+##              name    key value
+##             &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+## 1   Phillip Woods    age    45
+## 2   Phillip Woods height   186
+## 3   Phillip Woods    age    50
+## 4 Jessica Cordero    age    37
+## 5 Jessica Cordero height   156</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?</li>
+</ol>
+<pre class="r"><code>preg &lt;- tribble(
+  ~pregnant, ~male, ~female,
+  &quot;yes&quot;,     NA,    10,
+  &quot;no&quot;,      20,    12
+)</code></pre>
 </div>
 </div>
 <div id="separating-and-uniting" class="section level2">
