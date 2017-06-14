@@ -612,6 +612,48 @@ people
 ## 5 Jessica Cordero height   156
 ```
 
+```r
+#spread(people, key, value)
+
+people2 <- tribble(
+  ~name,             ~key,    ~value, ~rep,
+  #-----------------|--------|------|------
+  "Phillip Woods",   "age",       45, 1,
+  "Phillip Woods",   "height",   186, 1,
+  "Phillip Woods",   "age",       50, 2,
+  "Jessica Cordero", "age",       37, 1,
+  "Jessica Cordero", "height",   156, 1
+)
+people2
+```
+
+```
+## # A tibble: 5 × 4
+##              name    key value   rep
+##             <chr>  <chr> <dbl> <dbl>
+## 1   Phillip Woods    age    45     1
+## 2   Phillip Woods height   186     1
+## 3   Phillip Woods    age    50     2
+## 4 Jessica Cordero    age    37     1
+## 5 Jessica Cordero height   156     1
+```
+
+```r
+spread(people2, key, value)
+```
+
+```
+## # A tibble: 3 × 4
+##              name   rep   age height
+## *           <chr> <dbl> <dbl>  <dbl>
+## 1 Jessica Cordero     1    37    156
+## 2   Phillip Woods     1    45    186
+## 3   Phillip Woods     2    50     NA
+```
+
+> Error: Duplicate identifiers for rows (1, 3)
+
+
 4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?
 
 
@@ -621,6 +663,29 @@ preg <- tribble(
   "yes",     NA,    10,
   "no",      20,    12
 )
+preg
+```
+
+```
+## # A tibble: 2 × 3
+##   pregnant  male female
+##      <chr> <dbl>  <dbl>
+## 1      yes    NA     10
+## 2       no    20     12
+```
+
+```r
+gather(preg, male, female, key = "gender", value = "number")
+```
+
+```
+## # A tibble: 4 × 3
+##   pregnant gender number
+##      <chr>  <chr>  <dbl>
+## 1      yes   male     NA
+## 2       no   male     20
+## 3      yes female     10
+## 4       no female     12
 ```
 
 
@@ -628,7 +693,360 @@ preg <- tribble(
 
 ### 12.4.1 Separate
 
+
+```r
+table3
+```
+
+```
+## # A tibble: 6 × 3
+##       country  year              rate
+## *       <chr> <int>             <chr>
+## 1 Afghanistan  1999      745/19987071
+## 2 Afghanistan  2000     2666/20595360
+## 3      Brazil  1999   37737/172006362
+## 4      Brazil  2000   80488/174504898
+## 5       China  1999 212258/1272915272
+## 6       China  2000 213766/1280428583
+```
+
+```r
+table3 %>% 
+  separate(rate, into = c("cases", "population"))
+```
+
+```
+## # A tibble: 6 × 4
+##       country  year  cases population
+## *       <chr> <int>  <chr>      <chr>
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3      Brazil  1999  37737  172006362
+## 4      Brazil  2000  80488  174504898
+## 5       China  1999 212258 1272915272
+## 6       China  2000 213766 1280428583
+```
+
+```r
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/")
+```
+
+```
+## # A tibble: 6 × 4
+##       country  year  cases population
+## *       <chr> <int>  <chr>      <chr>
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3      Brazil  1999  37737  172006362
+## 4      Brazil  2000  80488  174504898
+## 5       China  1999 212258 1272915272
+## 6       China  2000 213766 1280428583
+```
+
+```r
+table3 %>% 
+  separate(rate, into = c("cases", "population"), convert = TRUE)
+```
+
+```
+## # A tibble: 6 × 4
+##       country  year  cases population
+## *       <chr> <int>  <int>      <int>
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3      Brazil  1999  37737  172006362
+## 4      Brazil  2000  80488  174504898
+## 5       China  1999 212258 1272915272
+## 6       China  2000 213766 1280428583
+```
+
+```r
+table3 %>% 
+  separate(year, into = c("century", "year"), sep = 2)
+```
+
+```
+## # A tibble: 6 × 4
+##       country century  year              rate
+## *       <chr>   <chr> <chr>             <chr>
+## 1 Afghanistan      19    99      745/19987071
+## 2 Afghanistan      20    00     2666/20595360
+## 3      Brazil      19    99   37737/172006362
+## 4      Brazil      20    00   80488/174504898
+## 5       China      19    99 212258/1272915272
+## 6       China      20    00 213766/1280428583
+```
+
 ### 12.4.2 Unite
 
+
+```r
+table5
+```
+
+```
+## # A tibble: 6 × 4
+##       country century  year              rate
+## *       <chr>   <chr> <chr>             <chr>
+## 1 Afghanistan      19    99      745/19987071
+## 2 Afghanistan      20    00     2666/20595360
+## 3      Brazil      19    99   37737/172006362
+## 4      Brazil      20    00   80488/174504898
+## 5       China      19    99 212258/1272915272
+## 6       China      20    00 213766/1280428583
+```
+
+```r
+table5 %>% 
+  unite(new, century, year)
+```
+
+```
+## # A tibble: 6 × 3
+##       country   new              rate
+## *       <chr> <chr>             <chr>
+## 1 Afghanistan 19_99      745/19987071
+## 2 Afghanistan 20_00     2666/20595360
+## 3      Brazil 19_99   37737/172006362
+## 4      Brazil 20_00   80488/174504898
+## 5       China 19_99 212258/1272915272
+## 6       China 20_00 213766/1280428583
+```
+
+```r
+table5 %>% 
+  unite(new, century, year, sep = "")
+```
+
+```
+## # A tibble: 6 × 3
+##       country   new              rate
+## *       <chr> <chr>             <chr>
+## 1 Afghanistan  1999      745/19987071
+## 2 Afghanistan  2000     2666/20595360
+## 3      Brazil  1999   37737/172006362
+## 4      Brazil  2000   80488/174504898
+## 5       China  1999 212258/1272915272
+## 6       China  2000 213766/1280428583
+```
+
+
 ### 12.4.3 Exercises
+
+1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.
+
+
+```r
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"))
+```
+
+```
+## Warning: Too many values at 1 locations: 2
+```
+
+```
+## # A tibble: 3 × 3
+##     one   two three
+## * <chr> <chr> <chr>
+## 1     a     b     c
+## 2     d     e     f
+## 3     h     i     j
+```
+
+```r
+#Too many values at 1 locations: 2
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"))
+```
+
+```
+## Warning: Too few values at 1 locations: 2
+```
+
+```
+## # A tibble: 3 × 3
+##     one   two three
+## * <chr> <chr> <chr>
+## 1     a     b     c
+## 2     d     e  <NA>
+## 3     f     g     i
+```
+
+```r
+#Too few values at 1 locations: 2
+
+#?separate
+
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "drop")
+```
+
+```
+## # A tibble: 3 × 3
+##     one   two three
+## * <chr> <chr> <chr>
+## 1     a     b     c
+## 2     d     e     f
+## 3     h     i     j
+```
+
+```r
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "merge")
+```
+
+```
+## # A tibble: 3 × 3
+##     one   two three
+## * <chr> <chr> <chr>
+## 1     a     b     c
+## 2     d     e   f,g
+## 3     h     i     j
+```
+
+```r
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "right")
+```
+
+```
+## # A tibble: 3 × 3
+##     one   two three
+## * <chr> <chr> <chr>
+## 1     a     b     c
+## 2     d     e  <NA>
+## 3     f     g     i
+```
+
+```r
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "left")
+```
+
+```
+## # A tibble: 3 × 3
+##     one   two three
+## * <chr> <chr> <chr>
+## 1     a     b     c
+## 2  <NA>     d     e
+## 3     f     g     i
+```
+
+> extra	
+If sep is a character vector, this controls what happens when there are too many pieces. There are three valid options:
+"warn" (the default): emit a warning and drop extra values.
+"drop": drop any extra values without a warning.
+"merge": only splits at most length(into) times
+
+> fill	
+If sep is a character vector, this controls what happens when there are not enough pieces. There are three valid options:
+"warn" (the default): emit a warning and fill from the right
+"right": fill with missing values on the right
+"left": fill with missing values on the left
+
+2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?
+
+
+```r
+#?unite
+#?separate
+
+table5 %>% 
+  unite(new, century, year, sep = "", remove = F)
+```
+
+```
+## # A tibble: 6 × 5
+##       country   new century  year              rate
+## *       <chr> <chr>   <chr> <chr>             <chr>
+## 1 Afghanistan  1999      19    99      745/19987071
+## 2 Afghanistan  2000      20    00     2666/20595360
+## 3      Brazil  1999      19    99   37737/172006362
+## 4      Brazil  2000      20    00   80488/174504898
+## 5       China  1999      19    99 212258/1272915272
+## 6       China  2000      20    00 213766/1280428583
+```
+
+```r
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/", remove = F)
+```
+
+```
+## # A tibble: 6 × 5
+##       country  year              rate  cases population
+## *       <chr> <int>             <chr>  <chr>      <chr>
+## 1 Afghanistan  1999      745/19987071    745   19987071
+## 2 Afghanistan  2000     2666/20595360   2666   20595360
+## 3      Brazil  1999   37737/172006362  37737  172006362
+## 4      Brazil  2000   80488/174504898  80488  174504898
+## 5       China  1999 212258/1272915272 212258 1272915272
+## 6       China  2000 213766/1280428583 213766 1280428583
+```
+
+> separate {tidyr} remove	
+If TRUE, remove input column from output data frame.
+
+> unite {tidyr} remove	
+If TRUE, remove input columns from output data frame.
+
+
+3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?
+
+
+```r
+#?separate
+#?extract
+```
+
+> extract {tidyr} Extract one column into multiple columns.
+Description
+Given a regular expression with capturing groups, extract() turns each group into a new column. If the groups don't match, or the input is NA, the output will be NA.
+
+
+```r
+df <- data.frame(x = c(NA, "a-b", "a-d", "b-c", "d-e"))
+df
+```
+
+```
+##      x
+## 1 <NA>
+## 2  a-b
+## 3  a-d
+## 4  b-c
+## 5  d-e
+```
+
+```r
+df %>% extract(x, "A")
+```
+
+```
+##      A
+## 1 <NA>
+## 2    a
+## 3    a
+## 4    b
+## 5    d
+```
+
+```r
+df %>% extract(x, c("A", "B"), "([[:alnum:]]+)-([[:alnum:]]+)")
+```
+
+```
+##      A    B
+## 1 <NA> <NA>
+## 2    a    b
+## 3    a    d
+## 4    b    c
+## 5    d    e
+```
+
+> separate {tidyr} Separate one column into multiple columns.
+
 
