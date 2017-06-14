@@ -43,13 +43,13 @@ ggplot(table1, aes(year, cases)) +
 
 1.Using prose, describe how the variables and observations are organised in each of the sample tables.
 
-> Table 1: each variable is in a column.
+> Table 1: each variable is in a column. Each observation have its own row.
 
-> 
+> Table 2: type is nested in year and country
 
-> 
+> Table 3: rate column is calculated from 2 variable (cases / population)
 
-> 
+> Table 4: Spread across two tibbles, table4a is cases and table4b is population data.
 
 
 2.Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
@@ -58,10 +58,65 @@ Extract the number of TB cases per country per year.
 Extract the matching population per country per year.
 Divide cases by population, and multiply by 10000.
 Store back in the appropriate place.
+
+```{r}
+#T2
+T2cases <- table2 %>%
+  group_by(country, year) %>%
+   filter(type == "cases")
+T2cases
+T2population <- table2 %>%
+  group_by(country, year) %>%
+   filter(type == "population")
+T2population
+
+newT2 <- bind_cols(T2cases[, c(1:2,4)], T2population[, 4])
+newT2
+colnames(newT2)[3:4] <- c("cases", "population")
+newT2
+
+finalT2 <- newT2 %>%
+  mutate(rates = cases / population * 10000)
+finalT2
+
+#T4
+newT4 <- bind_cols(table4a, table4b[, 2:3])
+newT4
+colnames(newT4)[2:5] <- c("cases1999", "cases2000", "pop1999", "pop2000")
+newT4
+
+finalT4 <- newT4 %>%
+  mutate( rate1999 = cases1999 / pop1999 * 10000,
+          rate2000 = cases2000 / pop2000 * 10000)
+finalT4
+
+
+```
+
+
 Which representation is easiest to work with? Which is hardest? Why?
+
+> T1 is easiest to work with. T2 is hardest to work with.
 
 3.Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
 
+```{r}
+#T1
+ggplot(table1, aes(year, cases)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
+
+#T2
+T2cases <- table2 %>%
+  group_by(country, year) %>%
+   filter(type == "cases")
+T2cases
+ggplot(T2cases, aes(year, count)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
+```
+
+> I need to do filter first.
 
 ## 12.3 Spreading and gathering
 
