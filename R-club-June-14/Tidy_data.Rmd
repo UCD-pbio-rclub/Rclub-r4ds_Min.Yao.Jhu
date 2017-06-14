@@ -13,9 +13,55 @@ output:
 
 ### 12.1.1 Prerequisites
 
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+
 ## 12.2 Tidy data
 
+```{r}
+table1
+table2
+table3
+table4a
+table4b
+
+table1 %>% 
+  mutate(rate = cases / population * 10000)
+table1 %>% 
+  count(year, wt = cases)
+
+ggplot(table1, aes(year, cases)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
+
+```
+
 ### 12.2.1 Exercises
+
+1.Using prose, describe how the variables and observations are organised in each of the sample tables.
+
+> Table 1: each variable is in a column.
+
+> 
+
+> 
+
+> 
+
+
+2.Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
+
+Extract the number of TB cases per country per year.
+Extract the matching population per country per year.
+Divide cases by population, and multiply by 10000.
+Store back in the appropriate place.
+Which representation is easiest to work with? Which is hardest? Why?
+
+3.Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
+
 
 ## 12.3 Spreading and gathering
 
