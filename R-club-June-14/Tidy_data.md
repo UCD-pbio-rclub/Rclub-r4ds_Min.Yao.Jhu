@@ -444,6 +444,10 @@ left_join(tidy4a, tidy4b)
 ## 6       China  2000 213766 1280428583
 ```
 
+```r
+# only`
+```
+
 ### 12.3.2 Spreading
 
 
@@ -649,6 +653,23 @@ spread(people2, key, value)
 ## 1 Jessica Cordero     1    37    156
 ## 2   Phillip Woods     1    45    186
 ## 3   Phillip Woods     2    50     NA
+```
+
+```r
+people  %>% group_by(name,key) %>% 
+  mutate(observation=row_number()) %>% 
+  spread(key = key,value = value)
+```
+
+```
+## Source: local data frame [3 x 4]
+## Groups: name [2]
+## 
+##              name observation   age height
+## *           <chr>       <int> <dbl>  <dbl>
+## 1 Jessica Cordero           1    37    156
+## 2   Phillip Woods           1    45    186
+## 3   Phillip Woods           2    50     NA
 ```
 
 > Error: Duplicate identifiers for rows (1, 3)

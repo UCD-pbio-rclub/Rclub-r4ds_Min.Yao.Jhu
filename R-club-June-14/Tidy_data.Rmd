@@ -134,7 +134,7 @@ tidy4b <- table4b %>%
   gather(`1999`, `2000`, key = "year", value = "population")
 left_join(tidy4a, tidy4b)
 
-
+# only`
 ```
 
 ### 12.3.2 Spreading
@@ -226,7 +226,9 @@ people2
 
 spread(people2, key, value)
 
-
+people  %>% group_by(name,key) %>% 
+  mutate(observation=row_number()) %>% 
+  spread(key = key,value = value)
 ```
 
 > Error: Duplicate identifiers for rows (1, 3)
