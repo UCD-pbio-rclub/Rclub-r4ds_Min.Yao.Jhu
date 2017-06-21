@@ -280,6 +280,5 @@ These special dates may be holiday, so I can make a new columns with year, month
 
 ```{r}
 summary(flights)
-
 ```
 
