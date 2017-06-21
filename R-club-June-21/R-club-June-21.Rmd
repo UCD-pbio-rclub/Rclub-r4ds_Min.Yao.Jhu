@@ -52,11 +52,142 @@ treatment %>%
 
 1. Compare and contrast the fill arguments to spread() and complete().
 
+```{r}
+#?fill
+#?spread
+#?complete
+
+
+# Spread and gather are complements
+df <- data.frame(x = c("a", "b"), y = c(3, 4), z = c(5, 6))
+df
+df %>% spread(x, y)
+df %>% spread(x, y) %>% gather(x, y, a:b, na.rm = TRUE)
+
+```
+
+> fill {tidyr}
+Fills missing values in using the previous entry. This is useful in the common output format where values are not repeated, they're recorded each time they change.
+
+> spread {tidyr}
+Spread a key-value pair across multiple columns.
+
+> complete {tidyr}
+Turns implicit missing values into explicit missing values. This is a wrapper around expand(), left_join() and replace_na that's useful for completing missing combinations of data.
+
 2. What does the direction argument to fill() do?
 
+```{r}
+#?fill
+df <- data.frame(Month = 1:12, Year = c(2000, rep(NA, 10), 10))
+df
+df %>% fill(Year)
+df %>% fill(Year, .direction = c("up"))
+```
+
+> fill {tidyr}
+.direction	
+Direction in which to fill missing values. Currently either "down" (the default) or "up".
 
 ## 12.6 Case Study
 
+```{r}
+who
+
+who1 <- who %>% 
+  gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
+who1
+
+who1 %>% 
+  count(key)
+
+who2 <- who1 %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
+who2
+
+who3 <- who2 %>% 
+  separate(key, c("new", "type", "sexage"), sep = "_")
+who3
+
+who3 %>% 
+  count(new)
+
+who4 <- who3 %>% 
+  select(-new, -iso2, -iso3)
+
+who5 <- who4 %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who5
+
+who.final <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who.final
+```
+
+
 ### 12.6.1 Exercises
 
+1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?
+
+```{r}
+who.na <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who.na
+
+summary(who.final)
+summary(who.na)
+who.complete.na <- who.na %>% complete(country,year,var,sex,age)
+summary(who.complete.na)
+```
+
+
+2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, "newrel", "new_rel")))
+
+```{r}
+who.nomutate <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+summary(who.nomutate)
+
+who.nomutate[73460:73470,]
+
+```
+
+
+3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.
+
+```{r}
+who %>% count(country)
+who %>% count(iso2)
+who %>% count(iso3)
+who %>% count(country,iso2,iso3)
+```
+
+
+4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
+
+```{r}
+who.final <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who.final
+
+
+```
+
+
 ## 12.7 Non-tidy data
+
