@@ -1,0 +1,62 @@
+---
+title: "R-club-June-21"
+author: "Min-Yao"
+date: "2017年6月20日"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+## 12.5 Missing values
+
+```{r}
+stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+)
+stocks
+
+# make the implicit missing value explicit
+stocks %>% 
+  spread(year, return)
+
+# turn explicit missing values implicit
+stocks %>% 
+  spread(year, return) %>% 
+  gather(year, return, `2015`:`2016`, na.rm = TRUE)
+
+stocks %>% 
+  complete(year, qtr)
+
+treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+)
+treatment
+
+treatment %>% 
+  fill(person)
+```
+
+
+### 12.5.1 Exercises
+
+1. Compare and contrast the fill arguments to spread() and complete().
+
+2. What does the direction argument to fill() do?
+
+
+## 12.6 Case Study
+
+### 12.6.1 Exercises
+
+## 12.7 Non-tidy data
