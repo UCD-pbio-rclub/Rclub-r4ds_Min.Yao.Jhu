@@ -771,6 +771,165 @@ who.final
 ## # ... with 76,036 more rows
 ```
 
+```r
+summary.who.final<- who.final %>% 
+  group_by(country, year, sex) %>%
+  summarize(totalnumber=sum(value))
+summary.who.final
+```
+
+```
+## # A tibble: 6,921 x 4
+## # Groups:   country, year [?]
+##        country  year   sex totalnumber
+##          <chr> <int> <chr>       <int>
+##  1 Afghanistan  1997     f         102
+##  2 Afghanistan  1997     m          26
+##  3 Afghanistan  1998     f        1207
+##  4 Afghanistan  1998     m         571
+##  5 Afghanistan  1999     f         517
+##  6 Afghanistan  1999     m         228
+##  7 Afghanistan  2000     f        1751
+##  8 Afghanistan  2000     m         915
+##  9 Afghanistan  2001     f        3062
+## 10 Afghanistan  2001     m        1577
+## # ... with 6,911 more rows
+```
+
+```r
+summary.who.final %>% ggplot() + 
+  geom_point(aes(x=totalnumber, y=country, color=sex))
+```
+
+![](R-club-June-21_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+```r
+summary.who.final %>% ggplot() + 
+  geom_point(aes(x=totalnumber, y=year, color=sex))
+```
+
+![](R-club-June-21_files/figure-html/unnamed-chunk-9-2.png)<!-- -->
+
+```r
+summary.who.final %>% ggplot() + 
+  geom_point(aes(x=totalnumber, y=country, shape=sex, color=year))
+```
+
+![](R-club-June-21_files/figure-html/unnamed-chunk-9-3.png)<!-- -->
+
 
 ## 12.7 Non-tidy data
 
+# 13 Relational data
+
+## 13.1 Introduction
+
+### 13.1.1 Prerequisites
+
+
+```r
+library(tidyverse)
+library(nycflights13)
+```
+
+```
+## Warning: package 'nycflights13' was built under R version 3.3.3
+```
+
+
+## 13.2 nycflights13
+
+
+```r
+airlines
+```
+
+```
+## # A tibble: 16 x 2
+##    carrier                        name
+##      <chr>                       <chr>
+##  1      9E           Endeavor Air Inc.
+##  2      AA      American Airlines Inc.
+##  3      AS        Alaska Airlines Inc.
+##  4      B6             JetBlue Airways
+##  5      DL        Delta Air Lines Inc.
+##  6      EV    ExpressJet Airlines Inc.
+##  7      F9      Frontier Airlines Inc.
+##  8      FL AirTran Airways Corporation
+##  9      HA      Hawaiian Airlines Inc.
+## 10      MQ                   Envoy Air
+## 11      OO       SkyWest Airlines Inc.
+## 12      UA       United Air Lines Inc.
+## 13      US             US Airways Inc.
+## 14      VX              Virgin America
+## 15      WN      Southwest Airlines Co.
+## 16      YV          Mesa Airlines Inc.
+```
+
+```r
+airports
+```
+
+```
+## # A tibble: 1,458 x 8
+##      faa                           name      lat        lon   alt    tz
+##    <chr>                          <chr>    <dbl>      <dbl> <int> <dbl>
+##  1   04G              Lansdowne Airport 41.13047  -80.61958  1044    -5
+##  2   06A  Moton Field Municipal Airport 32.46057  -85.68003   264    -6
+##  3   06C            Schaumburg Regional 41.98934  -88.10124   801    -6
+##  4   06N                Randall Airport 41.43191  -74.39156   523    -5
+##  5   09J          Jekyll Island Airport 31.07447  -81.42778    11    -5
+##  6   0A9 Elizabethton Municipal Airport 36.37122  -82.17342  1593    -5
+##  7   0G6        Williams County Airport 41.46731  -84.50678   730    -5
+##  8   0G7  Finger Lakes Regional Airport 42.88356  -76.78123   492    -5
+##  9   0P2   Shoestring Aviation Airfield 39.79482  -76.64719  1000    -5
+## 10   0S9          Jefferson County Intl 48.05381 -122.81064   108    -8
+## # ... with 1,448 more rows, and 2 more variables: dst <chr>, tzone <chr>
+```
+
+```r
+planes
+```
+
+```
+## # A tibble: 3,322 x 9
+##    tailnum  year                    type     manufacturer     model
+##      <chr> <int>                   <chr>            <chr>     <chr>
+##  1  N10156  2004 Fixed wing multi engine          EMBRAER EMB-145XR
+##  2  N102UW  1998 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+##  3  N103US  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+##  4  N104UW  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+##  5  N10575  2002 Fixed wing multi engine          EMBRAER EMB-145LR
+##  6  N105UW  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+##  7  N107US  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+##  8  N108UW  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+##  9  N109UW  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+## 10  N110UW  1999 Fixed wing multi engine AIRBUS INDUSTRIE  A320-214
+## # ... with 3,312 more rows, and 4 more variables: engines <int>,
+## #   seats <int>, speed <int>, engine <chr>
+```
+
+```r
+weather
+```
+
+```
+## # A tibble: 26,130 x 15
+##    origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
+##     <chr> <dbl> <dbl> <int> <int> <dbl> <dbl> <dbl>    <dbl>      <dbl>
+##  1    EWR  2013     1     1     0 37.04 21.92 53.97      230   10.35702
+##  2    EWR  2013     1     1     1 37.04 21.92 53.97      230   13.80936
+##  3    EWR  2013     1     1     2 37.94 21.92 52.09      230   12.65858
+##  4    EWR  2013     1     1     3 37.94 23.00 54.51      230   13.80936
+##  5    EWR  2013     1     1     4 37.94 24.08 57.04      240   14.96014
+##  6    EWR  2013     1     1     6 39.02 26.06 59.37      270   10.35702
+##  7    EWR  2013     1     1     7 39.02 26.96 61.63      250    8.05546
+##  8    EWR  2013     1     1     8 39.02 28.04 64.43      240   11.50780
+##  9    EWR  2013     1     1     9 39.92 28.04 62.21      250   12.65858
+## 10    EWR  2013     1     1    10 39.02 28.04 64.43      260   12.65858
+## # ... with 26,120 more rows, and 5 more variables: wind_gust <dbl>,
+## #   precip <dbl>, pressure <dbl>, visib <dbl>, time_hour <dttm>
+```
+
+
+### 13.2.1 Exercises

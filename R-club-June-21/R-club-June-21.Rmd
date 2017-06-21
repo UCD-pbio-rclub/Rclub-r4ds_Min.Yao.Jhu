@@ -185,9 +185,49 @@ who.final <- who %>%
   separate(sexage, c("sex", "age"), sep = 1)
 who.final
 
+summary.who.final<- who.final %>% 
+  group_by(country, year, sex) %>%
+  summarize(totalnumber=sum(value))
+summary.who.final
+
+summary.who.final %>% ggplot() + 
+  geom_point(aes(x=totalnumber, y=country, color=sex))
+
+summary.who.final %>% ggplot() + 
+  geom_point(aes(x=totalnumber, y=year, color=sex))
+
+summary.who.final %>% ggplot() + 
+  geom_point(aes(x=totalnumber, y=country, shape=sex, color=year))
+
 
 ```
 
 
 ## 12.7 Non-tidy data
 
+# 13 Relational data
+
+## 13.1 Introduction
+
+### 13.1.1 Prerequisites
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+## 13.2 nycflights13
+
+```{r}
+airlines
+airports
+planes
+weather
+
+
+
+```
+
+
+### 13.2.1 Exercises
