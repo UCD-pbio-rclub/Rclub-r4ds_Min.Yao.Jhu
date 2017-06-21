@@ -231,3 +231,55 @@ weather
 
 
 ### 13.2.1 Exercises
+
+1.Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?
+
+> I need `year:day`, `hour`, `origin`, `dest`, `tailnum`, `carrier`.
+
+> I need to combine `planes`, `airlines`, `airports`, `weather`, which is `flights`.
+
+```{r}
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier)
+flights2
+
+flights2 %>% ggplot() + 
+  geom_point(aes(x=carrier, y=dest, color=origin))
+
+
+```
+
+
+
+2.I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?
+
+> `flights` connects to `airports` via the `origin` and `dest` variables.
+
+> `flights` connects to `weather` via `origin` (the location), and `year`, `month`, `day` and `hour` (the time).
+
+> `weather` connects to `airports` via `origin` (the location), identified by the `faa` airport code.
+
+```{r}
+summary(weather)
+summary(airports)
+```
+
+
+3.weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?
+
+> the dest of flights
+
+```{r}
+summary(weather)
+
+```
+
+4.We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
+
+These special dates may be holiday, so I can make a new columns with year, month, day.
+
+```{r}
+summary(flights)
+
+```
+

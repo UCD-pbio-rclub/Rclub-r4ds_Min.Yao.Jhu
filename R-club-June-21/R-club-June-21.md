@@ -933,3 +933,209 @@ weather
 
 
 ### 13.2.1 Exercises
+
+1.Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?
+
+> I need `year:day`, `hour`, `origin`, `dest`, `tailnum`, `carrier`.
+
+> I need to combine `planes`, `airlines`, `airports`, `weather`, which is `flights`.
+
+
+```r
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier)
+flights2
+```
+
+```
+## # A tibble: 336,776 x 8
+##     year month   day  hour origin  dest tailnum carrier
+##    <int> <int> <int> <dbl>  <chr> <chr>   <chr>   <chr>
+##  1  2013     1     1     5    EWR   IAH  N14228      UA
+##  2  2013     1     1     5    LGA   IAH  N24211      UA
+##  3  2013     1     1     5    JFK   MIA  N619AA      AA
+##  4  2013     1     1     5    JFK   BQN  N804JB      B6
+##  5  2013     1     1     6    LGA   ATL  N668DN      DL
+##  6  2013     1     1     5    EWR   ORD  N39463      UA
+##  7  2013     1     1     6    EWR   FLL  N516JB      B6
+##  8  2013     1     1     6    LGA   IAD  N829AS      EV
+##  9  2013     1     1     6    JFK   MCO  N593JB      B6
+## 10  2013     1     1     6    LGA   ORD  N3ALAA      AA
+## # ... with 336,766 more rows
+```
+
+```r
+flights2 %>% ggplot() + 
+  geom_point(aes(x=carrier, y=dest, color=origin))
+```
+
+![](R-club-June-21_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+
+
+2.I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?
+
+> `flights` connects to `airports` via the `origin` and `dest` variables.
+
+> `flights` connects to `weather` via `origin` (the location), and `year`, `month`, `day` and `hour` (the time).
+
+> `weather` connects to `airports` via `origin` (the location), identified by the `faa` airport code.
+
+
+```r
+summary(weather)
+```
+
+```
+##     origin               year          month             day       
+##  Length:26130       Min.   :2013   Min.   : 1.000   Min.   : 1.00  
+##  Class :character   1st Qu.:2013   1st Qu.: 4.000   1st Qu.: 8.00  
+##  Mode  :character   Median :2013   Median : 7.000   Median :16.00  
+##                     Mean   :2013   Mean   : 6.506   Mean   :15.68  
+##                     3rd Qu.:2013   3rd Qu.: 9.000   3rd Qu.:23.00  
+##                     Max.   :2013   Max.   :12.000   Max.   :31.00  
+##                                                                    
+##       hour            temp             dewp           humid       
+##  Min.   : 0.00   Min.   : 10.94   Min.   :-9.94   Min.   : 12.74  
+##  1st Qu.: 6.00   1st Qu.: 39.92   1st Qu.:26.06   1st Qu.: 46.99  
+##  Median :12.00   Median : 55.04   Median :42.08   Median : 61.66  
+##  Mean   :11.52   Mean   : 55.20   Mean   :41.39   Mean   : 62.35  
+##  3rd Qu.:18.00   3rd Qu.: 69.98   3rd Qu.:57.92   3rd Qu.: 78.62  
+##  Max.   :23.00   Max.   :100.04   Max.   :78.08   Max.   :100.00  
+##                  NA's   :1        NA's   :1       NA's   :1       
+##     wind_dir       wind_speed         wind_gust            precip        
+##  Min.   :  0.0   Min.   :   0.000   Min.   :   0.000   Min.   :0.000000  
+##  1st Qu.:120.0   1st Qu.:   6.905   1st Qu.:   7.946   1st Qu.:0.000000  
+##  Median :220.0   Median :   9.206   Median :  10.594   Median :0.000000  
+##  Mean   :198.1   Mean   :  10.396   Mean   :  11.963   Mean   :0.002726  
+##  3rd Qu.:290.0   3rd Qu.:  13.809   3rd Qu.:  15.892   3rd Qu.:0.000000  
+##  Max.   :360.0   Max.   :1048.361   Max.   :1206.432   Max.   :1.180000  
+##  NA's   :418     NA's   :3          NA's   :3                            
+##     pressure          visib          time_hour                  
+##  Min.   : 983.8   Min.   : 0.000   Min.   :2012-12-31 16:00:00  
+##  1st Qu.:1012.9   1st Qu.:10.000   1st Qu.:2013-04-01 14:00:00  
+##  Median :1017.6   Median :10.000   Median :2013-07-01 07:30:00  
+##  Mean   :1017.9   Mean   : 9.205   Mean   :2013-07-01 12:07:20  
+##  3rd Qu.:1023.0   3rd Qu.:10.000   3rd Qu.:2013-09-30 07:45:00  
+##  Max.   :1042.1   Max.   :10.000   Max.   :2013-12-30 15:00:00  
+##  NA's   :2730
+```
+
+```r
+summary(airports)
+```
+
+```
+##      faa                name                lat             lon         
+##  Length:1458        Length:1458        Min.   :19.72   Min.   :-176.65  
+##  Class :character   Class :character   1st Qu.:34.26   1st Qu.:-119.19  
+##  Mode  :character   Mode  :character   Median :40.09   Median : -94.66  
+##                                        Mean   :41.65   Mean   :-103.39  
+##                                        3rd Qu.:45.07   3rd Qu.: -82.52  
+##                                        Max.   :72.27   Max.   : 174.11  
+##       alt                tz              dst               tzone          
+##  Min.   : -54.00   Min.   :-10.000   Length:1458        Length:1458       
+##  1st Qu.:  70.25   1st Qu.: -8.000   Class :character   Class :character  
+##  Median : 473.00   Median : -6.000   Mode  :character   Mode  :character  
+##  Mean   :1001.42   Mean   : -6.519                                        
+##  3rd Qu.:1062.50   3rd Qu.: -5.000                                        
+##  Max.   :9078.00   Max.   :  8.000
+```
+
+
+3.weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?
+
+> the dest of flights
+
+
+```r
+summary(weather)
+```
+
+```
+##     origin               year          month             day       
+##  Length:26130       Min.   :2013   Min.   : 1.000   Min.   : 1.00  
+##  Class :character   1st Qu.:2013   1st Qu.: 4.000   1st Qu.: 8.00  
+##  Mode  :character   Median :2013   Median : 7.000   Median :16.00  
+##                     Mean   :2013   Mean   : 6.506   Mean   :15.68  
+##                     3rd Qu.:2013   3rd Qu.: 9.000   3rd Qu.:23.00  
+##                     Max.   :2013   Max.   :12.000   Max.   :31.00  
+##                                                                    
+##       hour            temp             dewp           humid       
+##  Min.   : 0.00   Min.   : 10.94   Min.   :-9.94   Min.   : 12.74  
+##  1st Qu.: 6.00   1st Qu.: 39.92   1st Qu.:26.06   1st Qu.: 46.99  
+##  Median :12.00   Median : 55.04   Median :42.08   Median : 61.66  
+##  Mean   :11.52   Mean   : 55.20   Mean   :41.39   Mean   : 62.35  
+##  3rd Qu.:18.00   3rd Qu.: 69.98   3rd Qu.:57.92   3rd Qu.: 78.62  
+##  Max.   :23.00   Max.   :100.04   Max.   :78.08   Max.   :100.00  
+##                  NA's   :1        NA's   :1       NA's   :1       
+##     wind_dir       wind_speed         wind_gust            precip        
+##  Min.   :  0.0   Min.   :   0.000   Min.   :   0.000   Min.   :0.000000  
+##  1st Qu.:120.0   1st Qu.:   6.905   1st Qu.:   7.946   1st Qu.:0.000000  
+##  Median :220.0   Median :   9.206   Median :  10.594   Median :0.000000  
+##  Mean   :198.1   Mean   :  10.396   Mean   :  11.963   Mean   :0.002726  
+##  3rd Qu.:290.0   3rd Qu.:  13.809   3rd Qu.:  15.892   3rd Qu.:0.000000  
+##  Max.   :360.0   Max.   :1048.361   Max.   :1206.432   Max.   :1.180000  
+##  NA's   :418     NA's   :3          NA's   :3                            
+##     pressure          visib          time_hour                  
+##  Min.   : 983.8   Min.   : 0.000   Min.   :2012-12-31 16:00:00  
+##  1st Qu.:1012.9   1st Qu.:10.000   1st Qu.:2013-04-01 14:00:00  
+##  Median :1017.6   Median :10.000   Median :2013-07-01 07:30:00  
+##  Mean   :1017.9   Mean   : 9.205   Mean   :2013-07-01 12:07:20  
+##  3rd Qu.:1023.0   3rd Qu.:10.000   3rd Qu.:2013-09-30 07:45:00  
+##  Max.   :1042.1   Max.   :10.000   Max.   :2013-12-30 15:00:00  
+##  NA's   :2730
+```
+
+4.We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
+
+These special dates may be holiday, so I can make a new columns with year, month, day.
+
+
+```r
+summary(flights)
+```
+
+```
+##       year          month             day           dep_time   
+##  Min.   :2013   Min.   : 1.000   Min.   : 1.00   Min.   :   1  
+##  1st Qu.:2013   1st Qu.: 4.000   1st Qu.: 8.00   1st Qu.: 907  
+##  Median :2013   Median : 7.000   Median :16.00   Median :1401  
+##  Mean   :2013   Mean   : 6.549   Mean   :15.71   Mean   :1349  
+##  3rd Qu.:2013   3rd Qu.:10.000   3rd Qu.:23.00   3rd Qu.:1744  
+##  Max.   :2013   Max.   :12.000   Max.   :31.00   Max.   :2400  
+##                                                  NA's   :8255  
+##  sched_dep_time   dep_delay          arr_time    sched_arr_time
+##  Min.   : 106   Min.   : -43.00   Min.   :   1   Min.   :   1  
+##  1st Qu.: 906   1st Qu.:  -5.00   1st Qu.:1104   1st Qu.:1124  
+##  Median :1359   Median :  -2.00   Median :1535   Median :1556  
+##  Mean   :1344   Mean   :  12.64   Mean   :1502   Mean   :1536  
+##  3rd Qu.:1729   3rd Qu.:  11.00   3rd Qu.:1940   3rd Qu.:1945  
+##  Max.   :2359   Max.   :1301.00   Max.   :2400   Max.   :2359  
+##                 NA's   :8255      NA's   :8713                 
+##    arr_delay          carrier              flight       tailnum         
+##  Min.   : -86.000   Length:336776      Min.   :   1   Length:336776     
+##  1st Qu.: -17.000   Class :character   1st Qu.: 553   Class :character  
+##  Median :  -5.000   Mode  :character   Median :1496   Mode  :character  
+##  Mean   :   6.895                      Mean   :1972                     
+##  3rd Qu.:  14.000                      3rd Qu.:3465                     
+##  Max.   :1272.000                      Max.   :8500                     
+##  NA's   :9430                                                           
+##     origin              dest              air_time        distance   
+##  Length:336776      Length:336776      Min.   : 20.0   Min.   :  17  
+##  Class :character   Class :character   1st Qu.: 82.0   1st Qu.: 502  
+##  Mode  :character   Mode  :character   Median :129.0   Median : 872  
+##                                        Mean   :150.7   Mean   :1040  
+##                                        3rd Qu.:192.0   3rd Qu.:1389  
+##                                        Max.   :695.0   Max.   :4983  
+##                                        NA's   :9430                  
+##       hour           minute        time_hour                  
+##  Min.   : 1.00   Min.   : 0.00   Min.   :2013-01-01 05:00:00  
+##  1st Qu.: 9.00   1st Qu.: 8.00   1st Qu.:2013-04-04 13:00:00  
+##  Median :13.00   Median :29.00   Median :2013-07-03 10:00:00  
+##  Mean   :13.18   Mean   :26.23   Mean   :2013-07-03 05:02:36  
+##  3rd Qu.:17.00   3rd Qu.:44.00   3rd Qu.:2013-10-01 07:00:00  
+##  Max.   :23.00   Max.   :59.00   Max.   :2013-12-31 23:00:00  
+## 
+```
+
