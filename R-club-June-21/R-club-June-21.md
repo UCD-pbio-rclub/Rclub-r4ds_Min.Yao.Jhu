@@ -208,6 +208,10 @@ df %>% spread(x, y) %>% gather(x, y, a:b, na.rm = TRUE)
 ## 4 6 b 4
 ```
 
+```r
+#
+```
+
 > fill {tidyr}
 Fills missing values in using the previous entry. This is useful in the common output format where values are not repeated, they're recorded each time they change.
 
@@ -816,6 +820,10 @@ summary.who.final %>% ggplot() +
 ```
 
 ![](R-club-June-21_files/figure-html/unnamed-chunk-9-3.png)<!-- -->
+
+```r
+# ggsave -> you can change size
+```
 
 
 ## 12.7 Non-tidy data

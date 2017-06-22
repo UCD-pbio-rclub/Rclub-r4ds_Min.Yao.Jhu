@@ -64,6 +64,8 @@ df
 df %>% spread(x, y)
 df %>% spread(x, y) %>% gather(x, y, a:b, na.rm = TRUE)
 
+#
+
 ```
 
 > fill {tidyr}
@@ -199,7 +201,7 @@ summary.who.final %>% ggplot() +
 summary.who.final %>% ggplot() + 
   geom_point(aes(x=totalnumber, y=country, shape=sex, color=year))
 
-
+# ggsave -> you can change size
 ```
 
 
