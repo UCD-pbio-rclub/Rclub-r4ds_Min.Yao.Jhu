@@ -2,7 +2,9 @@
 title: "Lab 2"
 author: "Min-Yao"
 date: "2017?~11??28??"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r}
@@ -162,5 +164,112 @@ sd(new.Auto$acceleration)
 sd(new.Auto$displacement)
 sd(new.Auto$horsepower)
 sd(new.Auto$weight)
+```
+
+```{r}
+#9.(e)
+plot(cylinders, mpg, xlab="cylinders", ylab="MPG")
+plot(displacement, mpg, xlab="displacement", ylab="MPG")
+plot(horsepower, mpg, xlab="horsepower", ylab="MPG")
+plot(weight, mpg, xlab="weight", ylab="MPG")
+plot(acceleration, mpg, xlab="acceleration", ylab="MPG")
+plot(year, mpg, xlab="year", ylab="MPG")
+plot(origin, mpg, xlab="origin", ylab="MPG")
+
+
+```
+
+> The cars with lower displacement, horsepower, weight have higher gas mileage (mpg). 
+
+```{r}
+#10.
+#(a)
+library (MASS)
+Boston
+?Boston
+summary(Boston)
+str(Boston)
+dim(Boston)
+```
+> 506 rows and 14 columns
+
+>This data frame contains the following columns:
+
+crim
+per capita crime rate by town.
+
+zn
+proportion of residential land zoned for lots over 25,000 sq.ft.
+
+indus
+proportion of non-retail business acres per town.
+
+chas
+Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+
+nox
+nitrogen oxides concentration (parts per 10 million).
+
+rm
+average number of rooms per dwelling.
+
+age
+proportion of owner-occupied units built prior to 1940.
+
+dis
+weighted mean of distances to five Boston employment centres.
+
+rad
+index of accessibility to radial highways.
+
+tax
+full-value property-tax rate per \$10,000.
+
+ptratio
+pupil-teacher ratio by town.
+
+black
+1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
+
+lstat
+lower status of the population (percent).
+
+medv
+median value of owner-occupied homes in \$1000s.
+
+```{r}
+#(b)
+pairs(Boston)
+#(c)
+
+#(d)
+summary(Boston$crim)
+range(Boston$crim)
+summary(Boston$tax)
+range(Boston$tax)
+summary(Boston$ptratio)
+range(Boston$ptratio)
+#(e)
+as.data.frame(table(Boston$chas))
+
+#(f)
+summary(Boston$ptratio)
+#(g)
+summary(Boston$medv)
+range(Boston$medv)
+as.data.frame(table(Boston$medv))
+min(Boston$medv)
+attach(Boston)
+newBoston <- Boston[order(medv),] 
+newBoston
+#(h)
+as.data.frame(table(Boston$rm))
+library(plyr)
+count(which(Boston$rm > 7))
+Bostonrm7 <- subset(Boston, rm > 7)
+Bostonrm7
+Bostonrm8 <- subset(Boston, rm > 8)
+Bostonrm8
+
 ```
 
