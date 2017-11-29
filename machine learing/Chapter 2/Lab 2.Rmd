@@ -291,15 +291,15 @@ summary(Boston$ptratio)
 #(g)
 summary(Boston$medv)
 range(Boston$medv)
-as.data.frame(table(Boston$medv))
+#as.data.frame(table(Boston$medv))
 min(Boston$medv)
 attach(Boston)
 newBoston <- Boston[order(medv),] 
-newBoston
+head(newBoston)
 #(h)
 as.data.frame(table(Boston$rm))
 library(plyr)
-count(which(Boston$rm > 7))
+#count(which(Boston$rm > 7))
 Bostonrm7 <- subset(Boston, rm > 7)
 Bostonrm7
 Bostonrm8 <- subset(Boston, rm > 8)
