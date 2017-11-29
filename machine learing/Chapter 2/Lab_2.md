@@ -1,7 +1,7 @@
 # Lab 2
 Min-Yao  
 2017?~11??28??  
-
+# Chapter 2 Lab: Introduction to R
 
 ```r
 # Chapter 2 Lab: Introduction to R
@@ -147,7 +147,7 @@ cor(x,y)
 ```
 
 ```
-## [1] 0.9966433
+## [1] 0.9950389
 ```
 
 ```r
@@ -201,7 +201,7 @@ sd(y)
 ```
 ## [1] 0.8560768
 ```
-
+# Graphics
 
 ```r
 # Graphics
@@ -300,7 +300,7 @@ persp(x,y,fa,theta=30,phi=40)
 ```
 
 ![](Lab_2_files/figure-html/unnamed-chunk-2-10.png)<!-- -->
-
+# Indexing Data
 
 ```r
 # Indexing Data
@@ -401,7 +401,7 @@ dim(A)
 ```
 ## [1] 4 4
 ```
-
+# Loading Data
 
 ```r
 # Loading Data
@@ -454,7 +454,7 @@ names(Auto)
 ## [5] "weight"       "acceleration" "year"         "origin"      
 ## [9] "name"
 ```
-
+# Additional Graphical and Numerical Summaries
 
 ```r
 # Additional Graphical and Numerical Summaries
@@ -545,11 +545,11 @@ identify(horsepower,mpg,name)
 ```
 
 
-#9.(a)
+# 9.(a)
 > quan: mpg, acceleration, weight, horsepower, displacement
 > qual: origin, year, cylinders
 
-#9.(b,C)
+# 9.(b,C)
 
 
 ```r
@@ -692,7 +692,7 @@ sd(weight)
 ## [1] 849.4026
 ```
 
-#9.(d)
+# 9.(d)
 
 ```r
 new.Auto = Auto[-c(10:85),]
@@ -2271,7 +2271,7 @@ sd(new.Auto$weight)
 ## [1] 811.3002
 ```
 
-#9.(e)
+# 9.(e)
 
 ```r
 #9.(e)
@@ -2315,10 +2315,10 @@ plot(origin, mpg, xlab="origin", ylab="MPG")
 ```
 
 ![](Lab_2_files/figure-html/unnamed-chunk-9-7.png)<!-- -->
-#9.(f)
+# 9.(f)
 > The cars with lower displacement, horsepower, weight have higher gas mileage (mpg). 
 
-#10.(a)
+# 10.(a)
 
 ```r
 #10.
@@ -3345,18 +3345,7 @@ Boston
 ```
 
 ```r
-?Boston
-```
-
-```
-## starting httpd help server ...
-```
-
-```
-##  done
-```
-
-```r
+#?Boston
 summary(Boston)
 ```
 
@@ -3466,7 +3455,7 @@ lower status of the population (percent).
 medv
 median value of owner-occupied homes in \$1000s.
 
-#10(b-c)
+# 10(b-c)
 
 ```r
 #(b)
