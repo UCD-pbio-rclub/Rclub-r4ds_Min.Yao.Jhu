@@ -98,18 +98,7 @@ ls()
 
 ```r
 rm(list=ls())
-?matrix
-```
-
-```
-## starting httpd help server ...
-```
-
-```
-##  done
-```
-
-```r
+#?matrix
 x=matrix(data=c(1,2,3,4), nrow=2, ncol=2)
 x
 ```
@@ -158,7 +147,7 @@ cor(x,y)
 ```
 
 ```
-## [1] 0.9962651
+## [1] 0.9966433
 ```
 
 ```r
@@ -418,11 +407,11 @@ dim(A)
 # Loading Data
 
 Auto=read.table("Auto.data")
-fix(Auto)
+#fix(Auto)
 Auto=read.table("Auto.data",header=T,na.strings="?")
-fix(Auto)
+#fix(Auto)
 Auto=read.csv("Auto.csv",header=T,na.strings="?")
-fix(Auto)
+#fix(Auto)
 dim(Auto)
 ```
 
@@ -555,6 +544,14 @@ identify(horsepower,mpg,name)
 ## integer(0)
 ```
 
+
+#9.(a)
+> quan: mpg, acceleration, weight, horsepower, displacement
+> qual: origin, year, cylinders
+
+#9.(b,C)
+
+
 ```r
 summary(Auto)
 ```
@@ -586,6 +583,7 @@ summary(Auto)
 ##  (Other)           :365
 ```
 
+
 ```r
 str(Auto)
 ```
@@ -593,13 +591,13 @@ str(Auto)
 ```
 ## 'data.frame':	392 obs. of  9 variables:
 ##  $ mpg         : num  18 15 18 16 17 15 14 14 14 15 ...
-##  $ cylinders   : num  8 8 8 8 8 8 8 8 8 8 ...
+##  $ cylinders   : int  8 8 8 8 8 8 8 8 8 8 ...
 ##  $ displacement: num  307 350 318 304 302 429 454 440 455 390 ...
-##  $ horsepower  : num  130 165 150 150 140 198 220 215 225 190 ...
-##  $ weight      : num  3504 3693 3436 3433 3449 ...
+##  $ horsepower  : int  130 165 150 150 140 198 220 215 225 190 ...
+##  $ weight      : int  3504 3693 3436 3433 3449 4341 4354 4312 4425 3850 ...
 ##  $ acceleration: num  12 11.5 11 12 10.5 10 9 8.5 10 8.5 ...
-##  $ year        : num  70 70 70 70 70 70 70 70 70 70 ...
-##  $ origin      : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ year        : int  70 70 70 70 70 70 70 70 70 70 ...
+##  $ origin      : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ name        : Factor w/ 304 levels "amc ambassador brougham",..: 49 36 231 14 161 141 54 223 241 2 ...
 ##  - attr(*, "na.action")=Class 'omit'  Named int [1:5] 33 127 331 337 355
 ##   .. ..- attr(*, "names")= chr [1:5] "33" "127" "331" "337" ...
@@ -693,6 +691,8 @@ sd(weight)
 ```
 ## [1] 849.4026
 ```
+
+#9.(d)
 
 ```r
 new.Auto = Auto[-c(10:85),]
@@ -2271,52 +2271,54 @@ sd(new.Auto$weight)
 ## [1] 811.3002
 ```
 
+#9.(e)
 
 ```r
 #9.(e)
 plot(cylinders, mpg, xlab="cylinders", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 ```r
 plot(displacement, mpg, xlab="displacement", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-9-2.png)<!-- -->
 
 ```r
 plot(horsepower, mpg, xlab="horsepower", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-3.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-9-3.png)<!-- -->
 
 ```r
 plot(weight, mpg, xlab="weight", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-9-4.png)<!-- -->
 
 ```r
 plot(acceleration, mpg, xlab="acceleration", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-5.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-9-5.png)<!-- -->
 
 ```r
 plot(year, mpg, xlab="year", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-6.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-9-6.png)<!-- -->
 
 ```r
 plot(origin, mpg, xlab="origin", ylab="MPG")
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-6-7.png)<!-- -->
-
+![](Lab_2_files/figure-html/unnamed-chunk-9-7.png)<!-- -->
+#9.(f)
 > The cars with lower displacement, horsepower, weight have higher gas mileage (mpg). 
 
+#10.(a)
 
 ```r
 #10.
@@ -3344,6 +3346,17 @@ Boston
 
 ```r
 ?Boston
+```
+
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
+
+```r
 summary(Boston)
 ```
 
@@ -3453,17 +3466,99 @@ lower status of the population (percent).
 medv
 median value of owner-occupied homes in \$1000s.
 
+#10(b-c)
 
 ```r
 #(b)
 pairs(Boston)
 ```
 
-![](Lab_2_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](Lab_2_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 ```r
 #(c)
+attach(Boston)
+plot(zn, crim, xlab="zn", ylab="crim")
+```
 
+![](Lab_2_files/figure-html/unnamed-chunk-11-2.png)<!-- -->
+
+```r
+plot(indus, crim, xlab="indus", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-3.png)<!-- -->
+
+```r
+plot(chas, crim, xlab="chas", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-4.png)<!-- -->
+
+```r
+plot(nox, crim, xlab="nox", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-5.png)<!-- -->
+
+```r
+plot(rm, crim, xlab="rm", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-6.png)<!-- -->
+
+```r
+plot(age, crim, xlab="age", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-7.png)<!-- -->
+
+```r
+plot(dis, crim, xlab="dis", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-8.png)<!-- -->
+
+```r
+plot(rad, crim, xlab="rad", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-9.png)<!-- -->
+
+```r
+plot(tax, crim, xlab="tax", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-10.png)<!-- -->
+
+```r
+plot(ptratio, crim, xlab="ptratio", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-11.png)<!-- -->
+
+```r
+plot(black, crim, xlab="black", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-12.png)<!-- -->
+
+```r
+plot(lstat, crim, xlab="lstat", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-13.png)<!-- -->
+
+```r
+plot(medv, crim, xlab="medv", ylab="crim")
+```
+
+![](Lab_2_files/figure-html/unnamed-chunk-11-14.png)<!-- -->
+
+#10(d-h)
+
+
+```r
 #(d)
 summary(Boston$crim)
 ```
@@ -3801,6 +3896,16 @@ min(Boston$medv)
 
 ```r
 attach(Boston)
+```
+
+```
+## The following objects are masked from Boston (pos = 3):
+## 
+##     age, black, chas, crim, dis, indus, lstat, medv, nox, ptratio,
+##     rad, rm, tax, zn
+```
+
+```r
 newBoston <- Boston[order(medv),] 
 newBoston
 ```

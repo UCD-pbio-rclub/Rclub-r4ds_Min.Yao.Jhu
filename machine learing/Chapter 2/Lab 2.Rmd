@@ -27,7 +27,7 @@ ls()
 rm(x,y)
 ls()
 rm(list=ls())
-?matrix
+#?matrix
 x=matrix(data=c(1,2,3,4), nrow=2, ncol=2)
 x
 x=matrix(c(1,2,3,4),2,2)
@@ -96,11 +96,11 @@ dim(A)
 # Loading Data
 
 Auto=read.table("Auto.data")
-fix(Auto)
+#fix(Auto)
 Auto=read.table("Auto.data",header=T,na.strings="?")
-fix(Auto)
+#fix(Auto)
 Auto=read.csv("Auto.csv",header=T,na.strings="?")
-fix(Auto)
+#fix(Auto)
 dim(Auto)
 Auto[1:4,]
 Auto=na.omit(Auto)
@@ -128,9 +128,20 @@ pairs(Auto)
 pairs(~ mpg + displacement + horsepower + weight + acceleration, Auto)
 plot(horsepower,mpg)
 identify(horsepower,mpg,name)
+```
 
+
+#9.(a)
+> quan: mpg, acceleration, weight, horsepower, displacement
+> qual: origin, year, cylinders
+
+#9.(b,C)
+
+```{r}
 summary(Auto)
+```
 
+```{r}
 str(Auto)
 summary(mpg)
 
@@ -145,7 +156,10 @@ sd(acceleration)
 sd(displacement)
 sd(horsepower)
 sd(weight)
+```
 
+#9.(d)
+```{r}
 new.Auto = Auto[-c(10:85),]
 new.Auto
 Auto
@@ -166,6 +180,7 @@ sd(new.Auto$horsepower)
 sd(new.Auto$weight)
 ```
 
+#9.(e)
 ```{r}
 #9.(e)
 plot(cylinders, mpg, xlab="cylinders", ylab="MPG")
@@ -178,15 +193,16 @@ plot(origin, mpg, xlab="origin", ylab="MPG")
 
 
 ```
-
+#9.(f)
 > The cars with lower displacement, horsepower, weight have higher gas mileage (mpg). 
 
+#10.(a)
 ```{r}
 #10.
 #(a)
 library (MASS)
 Boston
-?Boston
+#?Boston
 summary(Boston)
 str(Boston)
 dim(Boston)
@@ -237,11 +253,30 @@ lower status of the population (percent).
 medv
 median value of owner-occupied homes in \$1000s.
 
+#10(b-c)
 ```{r}
 #(b)
 pairs(Boston)
 #(c)
+attach(Boston)
+plot(zn, crim, xlab="zn", ylab="crim")
+plot(indus, crim, xlab="indus", ylab="crim")
+plot(chas, crim, xlab="chas", ylab="crim")
+plot(nox, crim, xlab="nox", ylab="crim")
+plot(rm, crim, xlab="rm", ylab="crim")
+plot(age, crim, xlab="age", ylab="crim")
+plot(dis, crim, xlab="dis", ylab="crim")
+plot(rad, crim, xlab="rad", ylab="crim")
+plot(tax, crim, xlab="tax", ylab="crim")
+plot(ptratio, crim, xlab="ptratio", ylab="crim")
+plot(black, crim, xlab="black", ylab="crim")
+plot(lstat, crim, xlab="lstat", ylab="crim")
+plot(medv, crim, xlab="medv", ylab="crim")
+```
 
+#10(d-h)
+
+```{r}
 #(d)
 summary(Boston$crim)
 range(Boston$crim)
