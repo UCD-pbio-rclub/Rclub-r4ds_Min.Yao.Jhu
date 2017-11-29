@@ -161,8 +161,8 @@ sd(weight)
 # 9.(d)
 ```{r}
 new.Auto = Auto[-c(10:85),]
-new.Auto
-Auto
+#new.Auto
+#Auto
 
 summary(Auto)
 summary(new.Auto)
@@ -191,7 +191,6 @@ plot(acceleration, mpg, xlab="acceleration", ylab="MPG")
 plot(year, mpg, xlab="year", ylab="MPG")
 plot(origin, mpg, xlab="origin", ylab="MPG")
 
-
 ```
 # 9.(f)
 > The cars with lower displacement, horsepower, weight have higher gas mileage (mpg). 
@@ -201,7 +200,7 @@ plot(origin, mpg, xlab="origin", ylab="MPG")
 #10.
 #(a)
 library (MASS)
-Boston
+#Boston
 #?Boston
 summary(Boston)
 str(Boston)
